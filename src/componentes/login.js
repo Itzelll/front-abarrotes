@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './login.css'; 
+import { useHistory } from 'react-router-dom';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const handleLogin = async () => {
     try {
@@ -13,10 +15,12 @@ const LoginForm = () => {
         password: password,
       });
       console.log('Respuesta del backend', response.data);
+      if (response.data.success) {
+        history.push('/salesReport');
+      }            
     } catch (error) {
-      console.log('Error al iniciar sesión', error.message);
+      console.error('Error al iniciar sesión', error.message);
     }
-    
     console.log(`Usuario: ${username}, Contraseña: ${password}`);
   };
 

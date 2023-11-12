@@ -1,0 +1,31 @@
+/* salesReport.css */
+
+/* Estilos para el contenedor principal del informe de ventas */
+div {
+    margin: 20px;
+  }
+  
+  /* Estilos para el encabezado del informe de ventas */
+  h1 {
+    color: #333;
+  }
+  
+  /* Estilos para la tabla de ventas */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  /* Estilos para las celdas de la tabla */
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* Estilos para las filas impares de la tabla */
+  tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+  }
+  
