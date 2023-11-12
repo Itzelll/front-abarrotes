@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './login.css'; 
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Aquí puedes agregar la lógica de autenticación con el backend
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('/api/login', {
+        username: username,
+        password: password,
+      });
+      console.log('Respuesta del backend', response.data);
+    } catch (error) {
+      console.log('Error al iniciar sesión', error.message);
+    }
+    
     console.log(`Usuario: ${username}, Contraseña: ${password}`);
   };
 
