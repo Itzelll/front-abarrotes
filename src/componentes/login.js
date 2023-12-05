@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './login.css'; 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const history = useNavigate();
 
   const handleLogin = async () => {
     try {

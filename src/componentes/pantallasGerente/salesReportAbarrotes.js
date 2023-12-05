@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './salesReport.css';
+import './style/salesReport.css';
+import './style/registroEmp.css';
+import MenuHamburguesa from '../MenuHamburguesa';
 
-const SalesReport = () => {
+const SalesReportAbarrotes = () => {
   // Estado para almacenar los datos de ventas
   const [salesData, setSalesData] = useState([]);
 
@@ -26,8 +28,10 @@ const SalesReport = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Reporte de Ventas</h1>
+    <div className='registro'>
+      <MenuHamburguesa />
+      <h1>Informe de Ventas Abarrotes</h1>
+      <h4>Ventas de la semana</h4>
       <table>
         <thead>
           <tr>
@@ -55,4 +59,4 @@ const SalesReport = () => {
   );
 };
 
-export default SalesReport;
+export default SalesReportAbarrotes;

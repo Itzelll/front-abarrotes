@@ -1,13 +1,32 @@
 import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginForm from './componentes/login';
-import SalesReport from './componentes/salesReport';
+import SalesReportAbarrotes from './componentes/pantallasGerente/salesReportAbarrotes';
+import Gerente from './componentes/pantallasGerente/gerente';
+import RegistroEmp from './componentes/pantallasGerente/registroEmp';
+import InfoVentas from './componentes/pantallasGerente/infoVentas';
+import CrearNota from './componentes/pantallasGerente/crearNotaGastos';
+import AgregarEmpleado from './componentes/pantallasGerente/AgregarEmpleado';
+import EliminarEmpleado from './componentes/pantallasGerente/EliminarEmpleado';
+import SalesReportBanqueteria from './componentes/pantallasGerente/salesReportBanqueteria';
 
 function App() {
   return (
     <div>
-      <h1>Mi Aplicación</h1>
-      <LoginForm />
-      <SalesReport />
+    <Router>
+      
+      <Routes>
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/salesReportAbarrotes" element={<SalesReportAbarrotes />} />
+        <Route path="/gerente" element={<Gerente />} />
+        <Route path="/registroEmpleado" element={<RegistroEmp />} />
+        <Route path="infoVentas" element={<InfoVentas />} />
+        <Route path="/crearNota" element={<CrearNota />} />
+        <Route path="/agregarEmpleado" element={<AgregarEmpleado />} />
+        <Route path="/eliminarEmpleado" element={<EliminarEmpleado />} />
+        <Route path="/salesReportBanqueteria" element={<SalesReportBanqueteria />} />
+      </Routes>
+    </Router>
     </div>
   );
 };

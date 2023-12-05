@@ -2,8 +2,17 @@
 
 /* Estilos para el contenedor principal del informe de ventas */
 div {
-    margin: 20px;
+    margin: auto;
   }
+
+  .registro {
+    width: 60%;
+    padding-bottom:40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+}
   
   /* Estilos para el encabezado del informe de ventas */
   h1 {
@@ -12,9 +21,10 @@ div {
   
   /* Estilos para la tabla de ventas */
   table {
-    width: 100%;
+    width: 80%;
     border-collapse: collapse;
     margin-top: 20px;
+    margin: auto;
   }
   
   /* Estilos para las celdas de la tabla */
