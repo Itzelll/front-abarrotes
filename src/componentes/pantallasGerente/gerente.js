@@ -1,9 +1,9 @@
 import React from "react";
 import './style/gerente.css';
 import { Link } from 'react-router-dom';
-import imgRegistroEmp from '../../img/registroEmp.png';
-import imginfoVent from '../../img/infoVentas.png';
-import imgNotaGastos from '../../img/notaGastos.png';
+import imgRegistroEmp from './img/registroEmp.png';
+import imginfoVent from './img/infoVentas.png';
+import imgNotaGastos from './img/notaGastos.png';
 
 const Gerente = () => {
     return (
