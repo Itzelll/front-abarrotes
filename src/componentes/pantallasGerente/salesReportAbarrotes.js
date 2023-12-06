@@ -31,6 +31,13 @@ const SalesReportAbarrotes = () => {
     <div className='registro'>
       <MenuHamburguesa />
       <h1>Informe de Ventas Abarrotes</h1>
+
+      <div className='btn-ventas'>
+        <button className='ventas-diarias'>Ventas del día</button>
+        <button className='ventas-mensuales'>Ventas mensuales</button>
+        <button className='ventas-anuales'>Ventas anuales</button>
+      </div>
+
       <h4>Ventas de la semana</h4>
       <table>
         <thead>

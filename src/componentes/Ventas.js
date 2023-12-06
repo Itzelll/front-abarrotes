@@ -66,7 +66,7 @@ const Ventas = () => {
                     value={nuevoProducto.precio}
                     onChange={handleInputChange}
                 />
-                <button onClick={agregarProducto}>Agregar</button>
+                <button className="agregar" onClick={agregarProducto}>Agregar</button>
             </div>
             <div className="scroll-panel">
                 <table>

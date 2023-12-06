@@ -42,3 +42,39 @@ div {
   h4 {
     text-align: center;
   }
+
+  .btn-ventas {
+    text-align: center;;
+  }
+
+  .ventas-diarias {
+    margin-right: 5px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 25%;
+  }
+
+  .ventas-mensuales {
+    margin-right: 5px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 25%;
+  }
+
+  .ventas-anuales {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 25%;
+  }

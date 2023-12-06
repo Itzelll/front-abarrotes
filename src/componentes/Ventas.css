@@ -24,12 +24,31 @@
     width: 35%;
 }
 
+.precio {
+    height: 20px;
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 20%;
+}
+
 .total {
     text-align: center;
 }
 
 .btns {
     text-align: center;
+}
+
+.agregar {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 10%;
+    margin-left: 5px;
 }
 
 .btn-finalizar {
