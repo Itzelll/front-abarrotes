@@ -20,27 +20,12 @@ const SalesReportBanqueteria = () => {
             </tr>
             </thead>
             <tbody>
-            {/* Iterar sobre los datos de ventas y mostrar cada fila */}
             <tr>
                 <td>1</td>
-                <td>Empanada</td>
-                <td>2</td>
+                <td>Sillas</td>
+                <td>100</td>
+                <td>10</td>
                 <td>1000</td>
-                <td>2000</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Completo</td>
-                <td>1</td>
-                <td>1500</td>
-                <td>1500</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Chorrillana</td>
-                <td>1</td>
-                <td>5000</td>
-                <td>5000</td>
             </tr>
             </tbody>
         </table>

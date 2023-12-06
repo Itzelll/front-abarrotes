@@ -18,7 +18,7 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
 
             <div className={`menu ${menuOpen ? 'open' : ''}`}>
                 <ul className='opciones'>
-                    <Link to='/gerente' className='no-underline'><li className='titulo'>Pantalla del Gerente</li></Link>
+                    <Link to='/ventas' className='no-underline'><li className='titulo'>Ventas</li></Link>
                     <Link to='/registroEmpleado' className='no-underline'><li className='titulo'>Registro de empleados</li></Link>
                     <li className='titulo'>Informe de Ventas</li>
                     <Link to='/salesReportAbarrotes' className='no-underline'><li className='opc'>Abarrotes</li></Link>
