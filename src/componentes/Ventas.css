@@ -1,5 +1,5 @@
 .scroll-panel {
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
 }
 
@@ -47,7 +47,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 10%;
+    width: 15%;
     margin-left: 5px;
 }
 
