@@ -19,7 +19,9 @@ const Gerente = () => {
             <br />
             <img src={imgNotaGastos} alt="registro" width={85} height={90}></img><br />
             <Link to="/crearNota"><button className="btn">Crear nota de gastos</button></Link>
-
+            <br />
+            <img src={imgNotaGastos} alt="registro" width={85} height={90}></img><br />
+            <Link to="/productos"><button className="btn">Productos</button></Link>
         </div>
     );
 };
