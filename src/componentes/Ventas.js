@@ -25,9 +25,9 @@ const Ventas = () => {
             setTotal((prevTotal) => prevTotal + subtotal);
 
             // Limpiar los campos después de agregar el producto
-            setCantidad("");
-            setProducto("");
-            setPrecioUnitario("");
+            //setCantidad("");
+            //setProducto("");
+            //setPrecioUnitario("");
         }
     }, [cantidad, producto, precioUnitario]);
 

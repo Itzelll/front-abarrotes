@@ -25,7 +25,7 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <Link to='/salesReportFerreteria' className='no-underline'><li className='opc'>Ferrtería</li></Link>
                     <Link to='/salesReportBanqueteria' className='no-underline'><li className='opc'>Banquetería</li></Link> 
                     
-                    <Link to='/crearNota' className='no-underline'><li className='titulo'>Crear nota de gastos</li></Link>
+                    <Link to='/crearNotaGastos' className='no-underline'><li className='titulo'>Crear nota de gastos</li></Link>
                 </ul>
             </div>
         </div>

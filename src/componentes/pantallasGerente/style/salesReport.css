@@ -6,7 +6,7 @@ div {
   }
 
   .registro {
-    width: 60%;
+    width: 70%;
     padding-bottom:40px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -31,7 +31,7 @@ div {
   th, td {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    text-align: center;
   }
   
   /* Estilos para las filas impares de la tabla */
@@ -44,18 +44,7 @@ div {
   }
 
   .btn-ventas {
-    text-align: center;;
-  }
-
-  .ventas-diarias {
-    margin-right: 5px;
-    background-color: #4caf50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 25%;
+    text-align: center;
   }
 
   .ventas-mensuales {
@@ -66,15 +55,5 @@ div {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 25%;
-  }
-
-  .ventas-anuales {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 25%;
+    width: 80%;
   }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './style/salesReport.css';
 import './style/registroEmp.css';
+import { Link } from 'react-router-dom';
 import MenuHamburguesa from '../MenuHamburguesa';
 
 const SalesReportAbarrotes = () => {
@@ -33,9 +34,7 @@ const SalesReportAbarrotes = () => {
       <h1>Informe de Ventas Abarrotes</h1>
 
       <div className='btn-ventas'>
-        <button className='ventas-diarias'>Ventas del día</button>
-        <button className='ventas-mensuales'>Ventas mensuales</button>
-        <button className='ventas-anuales'>Ventas anuales</button>
+        <Link to='/ventasMensualesAbarrotes'><button className='ventas-mensuales'>Ventas mensuales</button></Link>
       </div>
 
       <h4>Ventas de la semana</h4>
