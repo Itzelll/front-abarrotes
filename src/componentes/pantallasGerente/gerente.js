@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import imgRegistroEmp from './img/registroEmp.png';
 import imginfoVent from './img/infoVentas.png';
 import imgNotaGastos from './img/notaGastos.png';
+import imgProductos from './img/producto.png';
 
 const Gerente = () => {
     return (
@@ -20,8 +21,8 @@ const Gerente = () => {
             <img src={imgNotaGastos} alt="registro" width={85} height={90}></img><br />
             <Link to="/crearNota"><button className="btn">Crear nota de gastos</button></Link>
             <br />
-            <img src={imgNotaGastos} alt="registro" width={85} height={90}></img><br />
-            <Link to="/productos"><button className="btn">Productos</button></Link>
+            <img src={imgProductos} alt="registro" width={85} height={90}></img><br />
+            <Link to="/catalogo"><button className="btn">Productos</button></Link>
         </div>
     );
 };

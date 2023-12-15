@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './styles/MenuHamburguesa.css';
+import './estilos/MenuHamburguesa.css';
 
 const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <li className='titulo'>Productos</li>
                     <Link to='/catalogo' className='no-underline'><li className='opc'>Catalogo</li></Link>
                     <Link to='/agregarProducto' className='no-underline'><li className='opc'>Agregar</li></Link>
-                    <Link to='/modificarProducto' className='no-underline'><li className='opc'>Modificar</li></Link> 
+                    {/* <Link to='/modificarProducto' className='no-underline'><li className='opc'>Modificar</li></Link>  */}
                     <li className='titulo'>Otros</li>
                     <Link to='/marcas' className='no-underline'><li className='opc'>Listado marcas</li></Link>
                     <Link to='/categoria' className='no-underline'><li className='opc'>Categoria</li></Link>

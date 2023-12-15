@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from './MenuHamburguesa';
-import './styles/catalogo.css';
+import './estilos/catalogo.css';
 
 const Catalogo = () => {
     const [productos, setProductos] = useState([]);
