@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import '../style/catalogo.css';
+import '../style/salesReport.css';
+import '../style/registroEmp.css';
+// import { FaEdit } from "react-icons/fa";
 
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);
@@ -131,9 +135,9 @@ const CreateProduct = () => {
         , []);
 
     return (
-        <div>
+        <div className='registro'>
             <MenuHamburguesa />
-            <h2>Crear Producto</h2>
+            <h1>Crear Producto</h1>
             <input
                 className='input-producto'
                 type="number"
@@ -189,18 +193,17 @@ const CreateProduct = () => {
                     </option>
                 ))}
             </select>
-            {/* <button onClick={handleCreate}>Agregar</button> */}
-            {editingId ? (
-                <button onClick={handleUpdate}>Actualizar</button>
-            ) : (
-                <button onClick={handleCreate}>Agregar</button>
-            )}
-            <br />
-            <br />
+            <div className='botones'>
+                {editingId ? (
+                    <button onClick={handleUpdate} className='btn-finalizar'>Actualizar</button>
+                ) : (
+                    <button onClick={handleCreate} className='btn-finalizar'>Agregar</button>
+                )}
+            </div>
 
             {/* Lista en tabla de los productos que se van agregando */}
-            <h2>Lista de Productos</h2>
-            <table className='tabla'>
+            <h4>Lista de Productos</h4>
+            <table className="registroEmp2">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -221,8 +224,10 @@ const CreateProduct = () => {
                             <td>{producto.categoria}</td>
                             <td>{producto.marca}</td>
                             <td>{producto.unidadMedida}</td>
-                            <td>
-                                <button onClick={() => handleEdit(producto.id)}>Editar</button>
+                            <td className='btn-ventas'>
+                                <div className='botones'>
+                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.id)}>Editar</button>
+                                </div>
                             </td>
                         </tr>
                     ))}

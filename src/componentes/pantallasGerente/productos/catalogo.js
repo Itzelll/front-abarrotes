@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
 import '../style/catalogo.css';
+import '../style/salesReport.css';
 
 const Catalogo = () => {
     const [productos, setProductos] = useState([]);
@@ -34,10 +35,10 @@ const Catalogo = () => {
 
     return (
 
-        <div>
+        <div className='registro'>
             <MenuHamburguesa />
-            <div>
-                <h2 className='titulos'>Buscar Producto por Nombre</h2>
+            <div className='btns'>
+                <h1 className='titulos'>Buscar Producto por Nombre</h1>
                 <input
                     className='input-producto'
                     type="text"
@@ -45,7 +46,9 @@ const Catalogo = () => {
                     value={nombreBusqueda}
                     onChange={(e) => setnombreBusqueda(e.target.value)}
                 />
-                <button onClick={handleBuscarProducto}>Buscar</button>
+                <div className='botones'>
+                    <button onClick={handleBuscarProducto} className='btn-finalizar'>Buscar</button>
+                </div>
                 {productoEncontrado && (
                     <div>
                         <h3>Producto Encontrado:</h3>
@@ -57,7 +60,7 @@ const Catalogo = () => {
             </div>
 
             <h2 className='titulos'>Catalogo de Productos</h2>
-            <table className='tabla'> 
+            <table className='registroEmp'>
                 <thead>
                     <tr>
                         <th>Código</th>

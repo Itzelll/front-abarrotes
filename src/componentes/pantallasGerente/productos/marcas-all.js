@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import '../style/catalogo.css';
+import '../style/salesReport.css';
 
 const MarcaList = () => {
   const [marcas, setMarcas] = useState([]);
@@ -56,12 +58,12 @@ const MarcaList = () => {
   }, []);
 
   return (
-    <div>
+    <div className='registro'>
       <MenuHamburguesa />
-      <h2>Administrar Marcas</h2>
+      <h1>Administrar Marcas</h1>
 
       <div>
-        <h3>{marcaSeleccionada ? 'Editar' : 'Agregar'} Marca</h3>
+        <h4>{marcaSeleccionada ? 'Editar' : 'Agregar'} Marca</h4>
         <input
           className='input-producto'
           type="text"
@@ -69,17 +71,19 @@ const MarcaList = () => {
           value={marcaSeleccionada ? nuevoNombre : nombre}
           onChange={(e) => marcaSeleccionada ? setNuevoNombre(e.target.value) : setNombre(e.target.value)}
         />
-        {marcaSeleccionada ? (
-          <button onClick={handleActualizarMarca}>Actualizar Marca</button>
-        ) : (
-          <button onClick={handleCrearMarca}>Agregar Marca</button>
-        )}
+        <div className='botones'>
+          {marcaSeleccionada ? (
+            <button onClick={handleActualizarMarca}>Actualizar Marca</button>
+          ) : (
+            <button onClick={handleCrearMarca}>Agregar Marca</button>
+          )}
+        </div>
       </div>
 
       <div>
-        <h3>Listado de Marcas</h3>
+        <h4>Listado de Marcas</h4>
         {mensaje && <p className={mensaje.includes('Error') ? 'mensaje-error' : 'mensaje-exito'}>{mensaje}</p>}
-        <table className='tabla'>
+        <table className='registroEmp'>
           <thead>
             <tr>
               <th>ID</th>
@@ -92,8 +96,10 @@ const MarcaList = () => {
               <tr key={marca.id}>
                 <td>{marca.id}</td>
                 <td>{marca.nombre}</td>
-                <td>
-                  <button onClick={() => handleEditarMarca(marca)}>Editar</button>
+                <td className='btn-ventas'>
+                  <div className='botones'>
+                    <button className='btn-finalizar' onClick={() => handleEditarMarca(marca)}>Editar</button>
+                  </div>
                 </td>
               </tr>
             ))}

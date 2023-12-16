@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import '../style/catalogo.css';
+import '../style/salesReport.css';
 
 const CategoriaList = () => {
     const [categorias, setCategorias] = useState([]);
@@ -75,11 +77,11 @@ const CategoriaList = () => {
     }, []);
 
     return (
-        <div>
+        <div className='registro'>
             <MenuHamburguesa />
-            <h2>Administrar Categorías</h2>
+            <h1>Administrar Categorías</h1>
             <div>
-                <h3>{modoEdicion ? 'Editar' : 'Crear'} Categoría</h3>
+                <h4>{modoEdicion ? 'Editar' : 'Crear'} Categoría</h4>
                 <input
                     className='input-producto'
                     type="text"
@@ -87,17 +89,19 @@ const CategoriaList = () => {
                     value={nombreCategoria}
                     onChange={(e) => setNombreCategoria(e.target.value)}
                 />
-                {modoEdicion ? (
-                    <button onClick={handleActualizarCategoria}>Actualizar</button>
-                ) : (
-                    <button onClick={handleCrearCategoria}>Crear</button>
-                )}
+                <div className='botones'>
+                    {modoEdicion ? (
+                        <button className='btn-finalizar' onClick={handleActualizarCategoria}>Actualizar</button>
+                    ) : (
+                        <button className='btn-finalizar' onClick={handleCrearCategoria}>Crear</button>
+                    )}
+                </div>
             </div>
 
             {/* Listado de Categorías */}
             <div>
-                <h3>Listado de Categorías</h3>
-                <table className='tabla'>
+                <h4>Listado de Categorías</h4>
+                <table className='registroEmp'>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -110,9 +114,9 @@ const CategoriaList = () => {
                             <tr key={categoria.id}>
                                 <td>{categoria.id}</td>
                                 <td>{categoria.nombre}</td>
-                                <td>
+                                <td className='btn-ventas'>
                                     {/* <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button> */}
-                                    <button onClick={() => handleEditarCategoria(categoria)}>Editar</button>
+                                    <button className='btn-finalizar' onClick={() => handleEditarCategoria(categoria)}>Editar</button>
                                 </td>
                             </tr>
                         ))}

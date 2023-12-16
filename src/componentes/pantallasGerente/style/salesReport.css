@@ -57,3 +57,18 @@ div {
     cursor: pointer;
     width: 80%;
   }
+
+  .input-producto {
+    height: 20px;
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 35%;
+  }
+
+  .select-producto{
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 37%;
+  }
