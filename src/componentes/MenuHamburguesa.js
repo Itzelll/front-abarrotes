@@ -26,6 +26,14 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <Link to='/salesReportBanqueteria' className='no-underline'><li className='opc'>Banquetería</li></Link> 
                     
                     <Link to='/crearNotaGastos' className='no-underline'><li className='titulo'>Crear nota de gastos</li></Link>
+
+                    <li className='titulo'>Productos</li>
+                    <Link to='/catalogo' className='no-underline'><li className='opc'>Catalogo</li></Link>
+                    <Link to='/agregarProducto' className='no-underline'><li className='opc'>Agregar</li></Link>
+                    <li className='titulo'>Otros</li>
+                    <Link to='/marcas' className='no-underline'><li className='opc'>Listado marcas</li></Link>
+                    <Link to='/categoria' className='no-underline'><li className='opc'>Categoria</li></Link>
+                    <Link to='/unidadMedida' className='no-underline'><li className='opc'>Unidad medida</li></Link>
                 </ul>
             </div>
         </div>
