@@ -52,13 +52,13 @@ const MarcaList = () => {
   }, []);
 
   return (
-    <div>
+    <div className='registro'>
       <MenuHamburguesa />
-      <h2>Administrar Marcas</h2>
+      <h1>Administrar Marcas</h1>
 
       {/* Agregar Nueva Marca */}
       <div>
-        <h3>Agregar Nueva Marca</h3>
+        <h4>Agregar Nueva Marca</h4>
         <input
           className='input-producto'
           type="text"
@@ -66,13 +66,15 @@ const MarcaList = () => {
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
         />
-        <button onClick={handleCrearMarca}>Agregar Marca</button>
+        <div className='botones'>
+          <button onClick={handleCrearMarca} className='btn-finalizar'>Agregar Marca</button>
+        </div>
       </div>
 
       {/* Listado de Marcas */}
       <div>
-        <h3>Listado de Marcas</h3>
-        <table className='tabla'>
+        <h4>Listado de Marcas</h4>
+        <table className='registroEmp'>
           <thead>
             <tr>
               <th>ID</th>

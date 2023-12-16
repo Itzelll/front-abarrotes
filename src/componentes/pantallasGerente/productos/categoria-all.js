@@ -75,11 +75,11 @@ const CategoriaList = () => {
     }, []);
 
     return (
-        <div>
+        <div className='registro'>
             <MenuHamburguesa />
-            <h2>Administrar Categorías</h2>
+            <h1>Administrar Categorías</h1>
             <div>
-                <h3>{modoEdicion ? 'Editar' : 'Crear'} Categoría</h3>
+                <h4>{modoEdicion ? 'Editar' : 'Crear'} Categoría</h4>
                 <input
                     className='input-producto'
                     type="text"
@@ -87,17 +87,19 @@ const CategoriaList = () => {
                     value={nombreCategoria}
                     onChange={(e) => setNombreCategoria(e.target.value)}
                 />
-                {modoEdicion ? (
-                    <button onClick={handleActualizarCategoria}>Actualizar</button>
-                ) : (
-                    <button onClick={handleCrearCategoria}>Crear</button>
-                )}
+                <div className='botones'>
+                    {modoEdicion ? (
+                        <button onClick={handleActualizarCategoria} className='btn-finalizar'>Actualizar</button>
+                    ) : (
+                        <button onClick={handleCrearCategoria} className='btn-finalizar'>Crear</button>
+                    )}
+                </div>
             </div>
 
             {/* Listado de Categorías */}
             <div>
-                <h3>Listado de Categorías</h3>
-                <table className='tabla'>
+                <h4>Listado de Categorías</h4>
+                <table className='registroEmp'>
                     <thead>
                         <tr>
                             <th>ID</th>

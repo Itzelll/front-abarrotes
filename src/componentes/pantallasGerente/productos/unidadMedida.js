@@ -77,11 +77,11 @@ const UnidadMedidaList = () => {
   }, []);
 
   return (
-    <div>
-        <MenuHamburguesa />
-      <h2>Administrar Unidades de Medida</h2>
+    <div className='registro'>
+      <MenuHamburguesa />
+      <h1>Administrar Unidades de Medida</h1>
       <div>
-        <h3>{modoEdicion ? 'Editar' : 'Crear'} Unidad de Medida</h3>
+        <h4>{modoEdicion ? 'Editar' : 'Crear'} Unidad de Medida</h4>
         <input
           className='input-producto'
           type="text"
@@ -89,17 +89,19 @@ const UnidadMedidaList = () => {
           value={nombreUnidadMedida}
           onChange={(e) => setNombreUnidadMedida(e.target.value)}
         />
-        {modoEdicion ? (
-          <button className='btn-ventas' onClick={handleActualizarUnidadMedida}>Actualizar</button>
-        ) : (
-          <button className='btn-ventas' onClick={handleCrearUnidadMedida}>Crear</button>
-        )}
+        <div className='botones'>
+          {modoEdicion ? (
+            <button className='btn-finalizar' onClick={handleActualizarUnidadMedida}>Actualizar</button>
+          ) : (
+            <button className='btn-finalizar' onClick={handleCrearUnidadMedida}>Crear</button>
+          )}
+        </div>
       </div>
 
       {/* Listado de Unidades de Medida */}
       <div>
-        <h3>Listado de Unidades de Medida</h3>
-        <table className='tabla'>
+        <h4>Listado de Unidades de Medida</h4>
+        <table className='registroEmp'>
           <thead>
             <tr>
               <th>ID</th>
