@@ -33,15 +33,15 @@ const CategoriaList = () => {
         }
     };
 
-    const handleEliminarCategoria = async (id) => {
-        try {
-            const response = await axios.delete(`http://localhost:8080/api/categorias/${id}`);
-            console.log('Categoría eliminada:', response.data);
-            fetchCategorias();
-        } catch (error) {
-            console.error('Error al eliminar categoría', error);
-        }
-    };
+    // const handleEliminarCategoria = async (id) => {
+    //     try {
+    //         const response = await axios.delete(`http://localhost:8080/api/categorias/${id}`);
+    //         console.log('Categoría eliminada:', response.data);
+    //         fetchCategorias();
+    //     } catch (error) {
+    //         console.error('Error al eliminar categoría', error);
+    //     }
+    // };
 
     const handleEditarCategoria = (categoria) => {
         setNombreCategoria(categoria.nombre);
@@ -111,7 +111,7 @@ const CategoriaList = () => {
                                 <td>{categoria.id}</td>
                                 <td>{categoria.nombre}</td>
                                 <td>
-                                    <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button>
+                                    {/* <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button> */}
                                     <button onClick={() => handleEditarCategoria(categoria)}>Editar</button>
                                 </td>
                             </tr>

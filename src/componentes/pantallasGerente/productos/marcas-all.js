@@ -4,8 +4,11 @@ import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
 
 const MarcaList = () => {
-  const [nombre, setNombre] = useState('');
   const [marcas, setMarcas] = useState([]);
+  const [nombre, setNombre] = useState('');
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [marcaSeleccionada, setMarcaSeleccionada] = useState(null);
 
   const fetchMarcas = async () => {
     try {
@@ -21,29 +24,30 @@ const MarcaList = () => {
       const response = await axios.post('http://localhost:8080/api/marcas', { nombre });
       console.log('Marca creada:', response.data);
       setNombre('');
+      setMensaje('Marca creada con éxito.');
       fetchMarcas();
     } catch (error) {
       console.error('Error al crear marca', error);
+      setMensaje('Error al crear marca.');
     }
   };
 
-  const handleEliminarMarca = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:8080/api/marcas/${id}`);
-      console.log('Marca eliminada:', response.data);
-      fetchMarcas();
-    } catch (error) {
-      console.error('Error al eliminar marca', error);
-    }
+  const handleEditarMarca = (marca) => {
+    setMarcaSeleccionada(marca);
+    setNuevoNombre(marca.nombre);
   };
 
-  const handleModificarMarca = async (id, nuevoNombre) => {
+  const handleActualizarMarca = async () => {
     try {
-      const response = await axios.put(`http://localhost:8080/api/marcas/${id}`, { nombre: nuevoNombre });
+      const response = await axios.put(`http://localhost:8080/api/marcas/${marcaSeleccionada.id}`, { nombre: nuevoNombre });
       console.log('Marca actualizada:', response.data);
+      setNuevoNombre('');
+      setMarcaSeleccionada(null);
+      setMensaje('Marca actualizada con éxito.');
       fetchMarcas();
     } catch (error) {
       console.error('Error al actualizar marca', error);
+      setMensaje('Error al actualizar marca.');
     }
   };
 
@@ -56,22 +60,25 @@ const MarcaList = () => {
       <MenuHamburguesa />
       <h2>Administrar Marcas</h2>
 
-      {/* Agregar Nueva Marca */}
       <div>
-        <h3>Agregar Nueva Marca</h3>
+        <h3>{marcaSeleccionada ? 'Editar' : 'Agregar'} Marca</h3>
         <input
           className='input-producto'
           type="text"
           placeholder="Nombre de la Marca"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          value={marcaSeleccionada ? nuevoNombre : nombre}
+          onChange={(e) => marcaSeleccionada ? setNuevoNombre(e.target.value) : setNombre(e.target.value)}
         />
-        <button onClick={handleCrearMarca}>Agregar Marca</button>
+        {marcaSeleccionada ? (
+          <button onClick={handleActualizarMarca}>Actualizar Marca</button>
+        ) : (
+          <button onClick={handleCrearMarca}>Agregar Marca</button>
+        )}
       </div>
 
-      {/* Listado de Marcas */}
       <div>
         <h3>Listado de Marcas</h3>
+        {mensaje && <p className={mensaje.includes('Error') ? 'mensaje-error' : 'mensaje-exito'}>{mensaje}</p>}
         <table className='tabla'>
           <thead>
             <tr>
@@ -86,14 +93,7 @@ const MarcaList = () => {
                 <td>{marca.id}</td>
                 <td>{marca.nombre}</td>
                 <td>
-                  <button onClick={() => handleEliminarMarca(marca.id)}>Eliminar</button>
-                  <input
-                    className='input-producto'
-                    type="text"
-                    placeholder="Nuevo Nombre"
-                    onChange={(e) => setNombre(e.target.value)}
-                  />
-                  <button onClick={() => handleModificarMarca(marca.id, nombre)}>Modificar</button>
+                  <button onClick={() => handleEditarMarca(marca)}>Editar</button>
                 </td>
               </tr>
             ))}

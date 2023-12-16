@@ -35,15 +35,15 @@ const UnidadMedidaList = () => {
     }
   };
 
-  const handleEliminarUnidadMedida = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:8080/api/unidadesMedida/${id}`);
-      console.log('Unidad de medida eliminada:', response.data);
-      fetchUnidadesMedida();
-    } catch (error) {
-      console.error('Error al eliminar unidad de medida', error);
-    }
-  };
+  // const handleEliminarUnidadMedida = async (id) => {
+  //   try {
+  //     const response = await axios.delete(`http://localhost:8080/api/unidadesMedida/${id}`);
+  //     console.log('Unidad de medida eliminada:', response.data);
+  //     fetchUnidadesMedida();
+  //   } catch (error) {
+  //     console.error('Error al eliminar unidad de medida', error);
+  //   }
+  // };
 
   const handleEditarUnidadMedida = (unidadMedida) => {
     setNombreUnidadMedida(unidadMedida.nombre);
@@ -113,7 +113,7 @@ const UnidadMedidaList = () => {
                 <td>{unidadMedida.id}</td>
                 <td>{unidadMedida.nombre}</td>
                 <td className='btn-ventas'>
-                  <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button>
+                  {/* <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button> */}
                   <button onClick={() => handleEditarUnidadMedida(unidadMedida)}>Editar</button>
                 </td>
               </tr>
