@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import './style/gerente.css';
 import { Link } from 'react-router-dom';
 import imgRegistroEmp from './img/registroEmp.png';
@@ -24,4 +24,4 @@ const Gerente = () => {
     );
 };
 
-export default Gerente;
+export default Gerente;*/

@@ -1,37 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import './style/salesReport.css';
-import './style/registroEmp.css';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import MenuHamburguesa from '../MenuHamburguesa';
+import { SalesReportAbarrotesPDF } from './styleAbarrotesPDF';
 
 const SalesReportAbarrotes = () => {
-  // Estado para almacenar los datos de ventas
   const [salesData, setSalesData] = useState([]);
+  const [editingSale, setEditingSale] = useState(null);
 
-  // Simulación de carga de datos de ventas (puedes cambiar esto con una llamada a la API real)
   useEffect(() => {
-    // Lógica para obtener los datos de ventas
+    // Simulated API call to fetch sales data
     const fetchData = async () => {
       try {
-        // Llamada a la API para obtener datos de ventas
-        const response = await fetch('/api/salesReport');
+        // Replace this with your actual API endpoint to fetch sales data
+        const response = await fetch('/api/salesReportAbarrotes');
         const data = await response.json();
-
-        // Actualizar el estado con los datos de ventas
         setSalesData(data);
       } catch (error) {
         console.error('Error al obtener datos de ventas:', error);
       }
     };
 
-    // Llamar a la función para obtener datos al montar el componente
     fetchData();
   }, []);
+
+  const handleDelete = (id) => {
+    const updatedSalesData = salesData.filter((sale) => sale.id !== id);
+    setSalesData(updatedSalesData);
+  };
+
+  const handleEdit = (id) => {
+    // Buscar el elemento que se está editando
+    const saleToEdit = salesData.find((sale) => sale.id === id);
+    // Establecer el elemento que se está editando en el estado
+    setEditingSale(saleToEdit);
+
+    console.log(`Editar elemento con ID ${id}`);
+  };
+
 
   return (
     <div className='registro'>
       <MenuHamburguesa />
       <h1>Informe de Ventas Abarrotes</h1>
       <h4>Ventas de la semana</h4>
+      <PDFDownloadLink document={<SalesReportAbarrotesPDF salesData={salesData} />}
+        fileName="sales_report_abarrotes.pdf">
+        {({ blob, url, loading, error }) =>
+          loading ? 'Generando PDF...' : 'Descargar PDF'
+        }
+      </PDFDownloadLink>
+      {/* <table style={{ width: '90%', marginTop: '10px', borderCollapse: 'collapse' }}> */}
       <table>
         <thead>
           <tr>
@@ -43,7 +61,6 @@ const SalesReportAbarrotes = () => {
           </tr>
         </thead>
         <tbody>
-          {/* Iterar sobre los datos de ventas y mostrar cada fila */}
           {salesData.map((sale) => (
             <tr key={sale.id}>
               <td>{sale.id}</td>
@@ -51,6 +68,13 @@ const SalesReportAbarrotes = () => {
               <td>{sale.cantidad}</td>
               <td>{sale.precioUnitario}</td>
               <td>{sale.cantidad * sale.precioUnitario}</td>
+              <td>
+                <button onClick={() => handleEdit(sale.id)}>Editar</button>
+              </td>
+
+              <td>
+                <button onClick={() => handleDelete(sale.id)}>Eliminar</button>
+              </td>
             </tr>
           ))}
         </tbody>

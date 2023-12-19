@@ -31,7 +31,7 @@ const LoginForm = () => {
         <label className="label">
           Usuario:
           <input
-            className="input"
+            className="user"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -41,7 +41,7 @@ const LoginForm = () => {
         <label className="label">
           Contraseña:
           <input
-            className="input"
+            className="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

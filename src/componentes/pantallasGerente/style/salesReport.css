@@ -6,7 +6,7 @@ div {
   }
 
   .registro {
-    width: 60%;
+    width: 70%;
     padding-bottom:40px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -31,7 +31,7 @@ div {
   th, td {
     border: 1px solid #ddd;
     padding: 8px;
-    text-align: left;
+    text-align: center;
   }
   
   /* Estilos para las filas impares de la tabla */
@@ -39,3 +39,36 @@ div {
     background-color: #f2f2f2;
   }
   
+  h4 {
+    text-align: center;
+  }
+
+  .btn-ventas {
+    text-align: center;
+  }
+
+  .ventas-mensuales {
+    margin-right: 5px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 80%;
+  }
+
+  .input-producto {
+    height: 20px;
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 35%;
+  }
+
+  .select-producto{
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 37%;
+  }
