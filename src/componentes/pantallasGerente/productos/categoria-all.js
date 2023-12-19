@@ -23,7 +23,7 @@ const CategoriaList = () => {
     const handleCrearCategoria = async () => {
         try {
             const nuevaCategoria = {
-                nombre: nombreCategoria,
+                nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.post('http://localhost:8080/api/categorias', nuevaCategoria);
@@ -54,7 +54,7 @@ const CategoriaList = () => {
     const handleActualizarCategoria = async () => {
         try {
             const categoriaActualizada = {
-                nombre: nombreCategoria,
+                nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.put(
@@ -87,7 +87,7 @@ const CategoriaList = () => {
                     type="text"
                     placeholder="Nombre de la Categoría"
                     value={nombreCategoria}
-                    onChange={(e) => setNombreCategoria(e.target.value)}
+                    onChange={(e) => setNombreCategoria(e.target.value.toLowerCase())}
                 />
                 <div className='botones'>
                     {modoEdicion ? (

@@ -25,7 +25,7 @@ const Catalogo = () => {
 
     const handleBuscarProducto = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/productos/buscar?nombre=${nombreBusqueda}`);
+            const response = await axios.get(`http://localhost:8080/api/productos/buscar?nombre=${nombreBusqueda.toLowerCase()}`);
             setProductoEncontrado(response.data[0]);
         } catch (error) {
             console.error('Error al buscar producto', error);
@@ -44,7 +44,7 @@ const Catalogo = () => {
                     type="text"
                     placeholder="Nombre del Producto"
                     value={nombreBusqueda}
-                    onChange={(e) => setnombreBusqueda(e.target.value)}
+                    onChange={(e) => setnombreBusqueda(e.target.value.toLowerCase())}
                 />
                 <div className='botones'>
                     <button onClick={handleBuscarProducto} className='btn-finalizar'>Buscar</button>

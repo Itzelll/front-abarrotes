@@ -23,7 +23,7 @@ const UnidadMedidaList = () => {
   const handleCrearUnidadMedida = async () => {
     try {
       const nuevaUnidadMedida = {
-        nombre: nombreUnidadMedida,
+        nombre: nombreUnidadMedida.toLowerCase(),
       };
 
       const response = await axios.post('http://localhost:8080/api/unidadesMedida', nuevaUnidadMedida);
@@ -54,7 +54,7 @@ const UnidadMedidaList = () => {
   const handleActualizarUnidadMedida = async () => {
     try {
       const unidadMedidaActualizada = {
-        nombre: nombreUnidadMedida,
+        nombre: nombreUnidadMedida.toLowerCase(),
       };
 
       const response = await axios.put(
@@ -87,7 +87,7 @@ const UnidadMedidaList = () => {
           type="text"
           placeholder="Nombre de la Unidad de Medida"
           value={nombreUnidadMedida}
-          onChange={(e) => setNombreUnidadMedida(e.target.value)}
+          onChange={(e) => setNombreUnidadMedida(e.target.value.toLowerCase())}
         />
         <div className='botones'>
           {modoEdicion ? (

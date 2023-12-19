@@ -24,7 +24,7 @@ const CreateProduct = () => {
         try {
             const response = await axios.post('http://localhost:8080/api/productos', {
                 codigo,
-                nombre,
+                nombre: nombre.toLowerCase(),
                 existencia,
                 categoria: categoriaSeleccionada,  // Utilizar la categoría seleccionada
                 marca: marcaSeleccionada,  // Utilizar la marca seleccionada
@@ -56,7 +56,7 @@ const CreateProduct = () => {
         try {
             const response = await axios.put(`http://localhost:8080/api/productos/${editingId}`, {
                 codigo,
-                nombre,
+                nombre: nombre.toLowerCase(),
                 existencia,
                 categoria: categoriaSeleccionada,
                 marca: marcaSeleccionada,
@@ -150,7 +150,7 @@ const CreateProduct = () => {
                 type="text"
                 placeholder="Nombre"
                 value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                onChange={(e) => setNombre(e.target.value.toLowerCase())}
             />
             <input
                 className='input-producto'

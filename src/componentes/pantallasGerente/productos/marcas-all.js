@@ -23,7 +23,7 @@ const MarcaList = () => {
 
   const handleCrearMarca = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/marcas', { nombre });
+      const response = await axios.post('http://localhost:8080/api/marcas', { nombre: nombre.toLowerCase() });
       console.log('Marca creada:', response.data);
       setNombre('');
       setMensaje('Marca creada con éxito.');
@@ -41,7 +41,7 @@ const MarcaList = () => {
 
   const handleActualizarMarca = async () => {
     try {
-      const response = await axios.put(`http://localhost:8080/api/marcas/${marcaSeleccionada.id}`, { nombre: nuevoNombre });
+      const response = await axios.put(`http://localhost:8080/api/marcas/${marcaSeleccionada.id}`, { nombre: nuevoNombre.toLowerCase() });
       console.log('Marca actualizada:', response.data);
       setNuevoNombre('');
       setMarcaSeleccionada(null);
@@ -69,7 +69,7 @@ const MarcaList = () => {
           type="text"
           placeholder="Nombre de la Marca"
           value={marcaSeleccionada ? nuevoNombre : nombre}
-          onChange={(e) => marcaSeleccionada ? setNuevoNombre(e.target.value) : setNombre(e.target.value)}
+          onChange={(e) => marcaSeleccionada ? setNuevoNombre(e.target.value.toLowerCase()) : setNombre(e.target.value.toLowerCase())}
         />
         <div className='botones'>
           {marcaSeleccionada ? (
