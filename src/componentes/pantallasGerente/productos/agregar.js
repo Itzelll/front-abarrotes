@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import '../style/catalogo.css';
+import '../style/salesReport.css';
+import '../style/registroEmp.css';
+// import { FaEdit } from "react-icons/fa";
 
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);
@@ -20,7 +24,7 @@ const CreateProduct = () => {
         try {
             const response = await axios.post('http://localhost:8080/api/productos', {
                 codigo,
-                nombre,
+                nombre: nombre.toLowerCase(),
                 existencia,
                 categoria: categoriaSeleccionada,  // Utilizar la categoría seleccionada
                 marca: marcaSeleccionada,  // Utilizar la marca seleccionada
@@ -52,7 +56,7 @@ const CreateProduct = () => {
         try {
             const response = await axios.put(`http://localhost:8080/api/productos/${editingId}`, {
                 codigo,
-                nombre,
+                nombre: nombre.toLowerCase(),
                 existencia,
                 categoria: categoriaSeleccionada,
                 marca: marcaSeleccionada,
@@ -146,7 +150,7 @@ const CreateProduct = () => {
                 type="text"
                 placeholder="Nombre"
                 value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                onChange={(e) => setNombre(e.target.value.toLowerCase())}
             />
             <input
                 className='input-producto'
@@ -199,7 +203,7 @@ const CreateProduct = () => {
 
             {/* Lista en tabla de los productos que se van agregando */}
             <h4>Lista de Productos</h4>
-            <table className="registrosEmp">
+            <table className="registroEmp2">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -220,8 +224,10 @@ const CreateProduct = () => {
                             <td>{producto.categoria}</td>
                             <td>{producto.marca}</td>
                             <td>{producto.unidadMedida}</td>
-                            <td>
-                                <button onClick={() => handleEdit(producto.id)}>Editar</button>
+                            <td className='btn-ventas'>
+                                <div className='botones'>
+                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.id)}>Editar</button>
+                                </div>
                             </td>
                         </tr>
                     ))}

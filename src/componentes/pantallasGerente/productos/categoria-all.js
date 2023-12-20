@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import '../style/catalogo.css';
+import '../style/salesReport.css';
 
 const CategoriaList = () => {
     const [categorias, setCategorias] = useState([]);
@@ -21,7 +23,7 @@ const CategoriaList = () => {
     const handleCrearCategoria = async () => {
         try {
             const nuevaCategoria = {
-                nombre: nombreCategoria,
+                nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.post('http://localhost:8080/api/categorias', nuevaCategoria);
@@ -33,15 +35,15 @@ const CategoriaList = () => {
         }
     };
 
-    const handleEliminarCategoria = async (id) => {
-        try {
-            const response = await axios.delete(`http://localhost:8080/api/categorias/${id}`);
-            console.log('Categoría eliminada:', response.data);
-            fetchCategorias();
-        } catch (error) {
-            console.error('Error al eliminar categoría', error);
-        }
-    };
+    // const handleEliminarCategoria = async (id) => {
+    //     try {
+    //         const response = await axios.delete(`http://localhost:8080/api/categorias/${id}`);
+    //         console.log('Categoría eliminada:', response.data);
+    //         fetchCategorias();
+    //     } catch (error) {
+    //         console.error('Error al eliminar categoría', error);
+    //     }
+    // };
 
     const handleEditarCategoria = (categoria) => {
         setNombreCategoria(categoria.nombre);
@@ -52,7 +54,7 @@ const CategoriaList = () => {
     const handleActualizarCategoria = async () => {
         try {
             const categoriaActualizada = {
-                nombre: nombreCategoria,
+                nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.put(
@@ -85,13 +87,13 @@ const CategoriaList = () => {
                     type="text"
                     placeholder="Nombre de la Categoría"
                     value={nombreCategoria}
-                    onChange={(e) => setNombreCategoria(e.target.value)}
+                    onChange={(e) => setNombreCategoria(e.target.value.toLowerCase())}
                 />
                 <div className='botones'>
                     {modoEdicion ? (
-                        <button onClick={handleActualizarCategoria} className='btn-finalizar'>Actualizar</button>
+                        <button className='btn-finalizar' onClick={handleActualizarCategoria}>Actualizar</button>
                     ) : (
-                        <button onClick={handleCrearCategoria} className='btn-finalizar'>Crear</button>
+                        <button className='btn-finalizar' onClick={handleCrearCategoria}>Crear</button>
                     )}
                 </div>
             </div>
@@ -112,9 +114,9 @@ const CategoriaList = () => {
                             <tr key={categoria.id}>
                                 <td>{categoria.id}</td>
                                 <td>{categoria.nombre}</td>
-                                <td>
-                                    <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button>
-                                    <button onClick={() => handleEditarCategoria(categoria)}>Editar</button>
+                                <td className='btn-ventas'>
+                                    {/* <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button> */}
+                                    <button className='btn-finalizar' onClick={() => handleEditarCategoria(categoria)}>Editar</button>
                                 </td>
                             </tr>
                         ))}

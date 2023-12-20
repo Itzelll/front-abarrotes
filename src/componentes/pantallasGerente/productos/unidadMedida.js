@@ -23,7 +23,7 @@ const UnidadMedidaList = () => {
   const handleCrearUnidadMedida = async () => {
     try {
       const nuevaUnidadMedida = {
-        nombre: nombreUnidadMedida,
+        nombre: nombreUnidadMedida.toLowerCase(),
       };
 
       const response = await axios.post('http://localhost:8080/api/unidadesMedida', nuevaUnidadMedida);
@@ -35,15 +35,15 @@ const UnidadMedidaList = () => {
     }
   };
 
-  const handleEliminarUnidadMedida = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:8080/api/unidadesMedida/${id}`);
-      console.log('Unidad de medida eliminada:', response.data);
-      fetchUnidadesMedida();
-    } catch (error) {
-      console.error('Error al eliminar unidad de medida', error);
-    }
-  };
+  // const handleEliminarUnidadMedida = async (id) => {
+  //   try {
+  //     const response = await axios.delete(`http://localhost:8080/api/unidadesMedida/${id}`);
+  //     console.log('Unidad de medida eliminada:', response.data);
+  //     fetchUnidadesMedida();
+  //   } catch (error) {
+  //     console.error('Error al eliminar unidad de medida', error);
+  //   }
+  // };
 
   const handleEditarUnidadMedida = (unidadMedida) => {
     setNombreUnidadMedida(unidadMedida.nombre);
@@ -54,7 +54,7 @@ const UnidadMedidaList = () => {
   const handleActualizarUnidadMedida = async () => {
     try {
       const unidadMedidaActualizada = {
-        nombre: nombreUnidadMedida,
+        nombre: nombreUnidadMedida.toLowerCase(),
       };
 
       const response = await axios.put(
@@ -87,7 +87,7 @@ const UnidadMedidaList = () => {
           type="text"
           placeholder="Nombre de la Unidad de Medida"
           value={nombreUnidadMedida}
-          onChange={(e) => setNombreUnidadMedida(e.target.value)}
+          onChange={(e) => setNombreUnidadMedida(e.target.value.toLowerCase())}
         />
         <div className='botones'>
           {modoEdicion ? (
@@ -115,8 +115,8 @@ const UnidadMedidaList = () => {
                 <td>{unidadMedida.id}</td>
                 <td>{unidadMedida.nombre}</td>
                 <td className='btn-ventas'>
-                  <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button>
-                  <button onClick={() => handleEditarUnidadMedida(unidadMedida)}>Editar</button>
+                  {/* <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button> */}
+                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida)}>Editar</button>
                 </td>
               </tr>
             ))}

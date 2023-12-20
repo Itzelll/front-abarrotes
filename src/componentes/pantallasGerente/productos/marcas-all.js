@@ -2,10 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import '../style/catalogo.css';
+import '../style/salesReport.css';
 
 const MarcaList = () => {
-  const [nombre, setNombre] = useState('');
   const [marcas, setMarcas] = useState([]);
+  const [nombre, setNombre] = useState('');
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [marcaSeleccionada, setMarcaSeleccionada] = useState(null);
 
   const fetchMarcas = async () => {
     try {
@@ -18,32 +23,33 @@ const MarcaList = () => {
 
   const handleCrearMarca = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/marcas', { nombre });
+      const response = await axios.post('http://localhost:8080/api/marcas', { nombre: nombre.toLowerCase() });
       console.log('Marca creada:', response.data);
       setNombre('');
+      setMensaje('Marca creada con éxito.');
       fetchMarcas();
     } catch (error) {
       console.error('Error al crear marca', error);
+      setMensaje('Error al crear marca.');
     }
   };
 
-  const handleEliminarMarca = async (id) => {
-    try {
-      const response = await axios.delete(`http://localhost:8080/api/marcas/${id}`);
-      console.log('Marca eliminada:', response.data);
-      fetchMarcas();
-    } catch (error) {
-      console.error('Error al eliminar marca', error);
-    }
+  const handleEditarMarca = (marca) => {
+    setMarcaSeleccionada(marca);
+    setNuevoNombre(marca.nombre);
   };
 
-  const handleModificarMarca = async (id, nuevoNombre) => {
+  const handleActualizarMarca = async () => {
     try {
-      const response = await axios.put(`http://localhost:8080/api/marcas/${id}`, { nombre: nuevoNombre });
+      const response = await axios.put(`http://localhost:8080/api/marcas/${marcaSeleccionada.id}`, { nombre: nuevoNombre.toLowerCase() });
       console.log('Marca actualizada:', response.data);
+      setNuevoNombre('');
+      setMarcaSeleccionada(null);
+      setMensaje('Marca actualizada con éxito.');
       fetchMarcas();
     } catch (error) {
       console.error('Error al actualizar marca', error);
+      setMensaje('Error al actualizar marca.');
     }
   };
 
@@ -56,24 +62,27 @@ const MarcaList = () => {
       <MenuHamburguesa />
       <h1>Administrar Marcas</h1>
 
-      {/* Agregar Nueva Marca */}
       <div>
-        <h4>Agregar Nueva Marca</h4>
+        <h4>{marcaSeleccionada ? 'Editar' : 'Agregar'} Marca</h4>
         <input
           className='input-producto'
           type="text"
           placeholder="Nombre de la Marca"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          value={marcaSeleccionada ? nuevoNombre : nombre}
+          onChange={(e) => marcaSeleccionada ? setNuevoNombre(e.target.value.toLowerCase()) : setNombre(e.target.value.toLowerCase())}
         />
         <div className='botones'>
-          <button onClick={handleCrearMarca} className='btn-finalizar'>Agregar Marca</button>
+          {marcaSeleccionada ? (
+            <button onClick={handleActualizarMarca}>Actualizar Marca</button>
+          ) : (
+            <button onClick={handleCrearMarca}>Agregar Marca</button>
+          )}
         </div>
       </div>
 
-      {/* Listado de Marcas */}
       <div>
         <h4>Listado de Marcas</h4>
+        {mensaje && <p className={mensaje.includes('Error') ? 'mensaje-error' : 'mensaje-exito'}>{mensaje}</p>}
         <table className='registroEmp'>
           <thead>
             <tr>
@@ -87,15 +96,10 @@ const MarcaList = () => {
               <tr key={marca.id}>
                 <td>{marca.id}</td>
                 <td>{marca.nombre}</td>
-                <td>
-                  <button onClick={() => handleEliminarMarca(marca.id)}>Eliminar</button>
-                  <input
-                    className='input-producto'
-                    type="text"
-                    placeholder="Nuevo Nombre"
-                    onChange={(e) => setNombre(e.target.value)}
-                  />
-                  <button onClick={() => handleModificarMarca(marca.id, nombre)}>Modificar</button>
+                <td className='btn-ventas'>
+                  <div className='botones'>
+                    <button className='btn-finalizar' onClick={() => handleEditarMarca(marca)}>Editar</button>
+                  </div>
                 </td>
               </tr>
             ))}
