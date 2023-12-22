@@ -1,5 +1,5 @@
 import React from 'react';
-import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { PDFDownloadLink, Page, Text, View, Document } from '@react-pdf/renderer';
 import MenuHamburguesa from '../MenuHamburguesa';
 
 const SalesReportBanqueteriaPDF = () => (

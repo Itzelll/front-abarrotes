@@ -33,6 +33,7 @@ const CreateProduct = () => {
             console.log('Producto creado:', response.data);
             // Puedes actualizar la lista de productos después de la creación
             setProductos([...productos, response.data]);
+            console.log(productos)
         } catch (error) {
             console.error('Error al crear producto', error);
         }
@@ -226,7 +227,7 @@ const CreateProduct = () => {
                             <td>{producto.unidadMedida}</td>
                             <td className='btn-ventas'>
                                 <div className='botones'>
-                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.id)}>Editar</button>
+                                    <button className='btn-editar' onClick={() => handleEdit(producto.id)}>Editar</button>
                                 </div>
                             </td>
                         </tr>

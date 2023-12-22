@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './login.css'; 
 import { useNavigate } from 'react-router-dom';
 
@@ -51,6 +52,7 @@ const LoginForm = () => {
         <button className="button" type="button" onClick={handleLogin}>
           Iniciar Sesión
         </button>
+        <div className='new-user'><Link to="/">Nueva Cuenta</Link></div>
       </form>
     </div>
   );

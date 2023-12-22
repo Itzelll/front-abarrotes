@@ -20,6 +20,7 @@ import UpdateProduct from './componentes/pantallasGerente/productos/modificar';
 import MarcaList from './componentes/pantallasGerente/productos/marcas-all';
 import CategoriaList from './componentes/pantallasGerente/productos/categoria-all';
 import UnidadMedidaList from './componentes/pantallasGerente/productos/unidadMedida';
+import CreateUser from './componentes/createUser';
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
     <Router>
       
       <Routes>
-        <Route path="/" element={<LoginForm />} />
+        <Route path="/login" element={<LoginForm />} />
         <Route path="/salesReportAbarrotes" element={<SalesReportAbarrotes />} />
         <Route path="/registroEmpleado" element={<RegistroEmp />} />
         <Route path="infoVentas" element={<InfoVentas />} />
@@ -47,6 +48,7 @@ function App() {
         <Route path="/marcas" element={<MarcaList />} />
         <Route path="/categoria" element={<CategoriaList />} />
         <Route path="/unidadMedida" element={<UnidadMedidaList />} />
+        <Route path='/' element={<CreateUser />} />
       </Routes>
     </Router>
     </div>
