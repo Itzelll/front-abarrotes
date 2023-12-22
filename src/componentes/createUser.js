@@ -24,6 +24,15 @@ const CreateUser = () => {
                     />
                 </label>
                 <br />
+                <label className="label">
+                    Confirmar contraseña:
+                    <input
+                        className="password"
+                        type="password"
+                        placeholder="password"
+                    />
+                </label>
+                <br />
                 <button className="button" type="button">
                     Crear Usuario
                 </button>
