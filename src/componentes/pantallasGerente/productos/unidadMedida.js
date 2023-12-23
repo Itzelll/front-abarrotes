@@ -8,6 +8,7 @@ import '../style/salesReport.css';
 const UnidadMedidaList = () => {
   const [unidadesMedida, setUnidadesMedida] = useState([]);
   const [nombreUnidadMedida, setNombreUnidadMedida] = useState('');
+  const [idUnidadMedida, setIdUnidadMedida] = useState('');
   const [unidadMedidaSeleccionada, setUnidadMedidaSeleccionada] = useState('');
   const [modoEdicion, setModoEdicion] = useState(false);
 
@@ -23,11 +24,13 @@ const UnidadMedidaList = () => {
   const handleCrearUnidadMedida = async () => {
     try {
       const nuevaUnidadMedida = {
+        idUnidadMed: idUnidadMedida,
         nombre: nombreUnidadMedida.toLowerCase(),
       };
 
       const response = await axios.post('http://localhost:8080/api/unidadesMedida', nuevaUnidadMedida);
       console.log('Unidad de medida creada:', response.data);
+      setIdUnidadMedida('');
       setNombreUnidadMedida('');
       fetchUnidadesMedida();
     } catch (error) {
@@ -35,27 +38,29 @@ const UnidadMedidaList = () => {
     }
   };
 
-  // const handleEliminarUnidadMedida = async (id) => {
-  //   try {
-  //     const response = await axios.delete(`http://localhost:8080/api/unidadesMedida/${id}`);
-  //     console.log('Unidad de medida eliminada:', response.data);
-  //     fetchUnidadesMedida();
-  //   } catch (error) {
-  //     console.error('Error al eliminar unidad de medida', error);
-  //   }
-  // };
-
-  const handleEditarUnidadMedida = (unidadMedida) => {
-    setNombreUnidadMedida(unidadMedida.nombre);
-    setUnidadMedidaSeleccionada(unidadMedida.id);
-    setModoEdicion(true);
+  const handleEditarUnidadMedida = (idUnidadMed) => {
+    console.log('Editar unidad de medida con ID:', idUnidadMed);
+    if (idUnidadMed !== undefined) {
+      const unidadMedida = unidadesMedida.find((u) => u.idUnidadMed === idUnidadMed);
+      if (unidadMedida) {
+        setUnidadMedidaSeleccionada(idUnidadMed);
+        setNombreUnidadMedida(unidadMedida.nombre);
+        setModoEdicion(true);
+      } else {
+        console.error(`No se encontró la unidad de medida con ID: ${idUnidadMed}`);
+      }
+    } else {
+      console.error('ID de unidad de medida indefinido');
+    }
   };
 
   const handleActualizarUnidadMedida = async () => {
+    console.log('unidadMedidaSeleccionada:', unidadMedidaSeleccionada);
     try {
       const unidadMedidaActualizada = {
         nombre: nombreUnidadMedida.toLowerCase(),
       };
+      console.log(unidadMedidaActualizada);
 
       const response = await axios.put(
         `http://localhost:8080/api/unidadesMedida/${unidadMedidaSeleccionada}`,
@@ -82,6 +87,13 @@ const UnidadMedidaList = () => {
       <h1>Administrar Unidades de Medida</h1>
       <div>
         <h4>{modoEdicion ? 'Editar' : 'Crear'} Unidad de Medida</h4>
+        <input
+          className='input-producto'
+          type="number"
+          placeholder="ID"
+          value={unidadMedidaSeleccionada}
+          disabled={true}
+        />
         <input
           className='input-producto'
           type="text"
@@ -111,12 +123,12 @@ const UnidadMedidaList = () => {
           </thead>
           <tbody>
             {unidadesMedida.map((unidadMedida) => (
-              <tr key={unidadMedida.id}>
-                <td>{unidadMedida.id}</td>
+              console.log(unidadMedida),
+              <tr key={unidadMedida.idUnidadMed}>
+                <td>{unidadMedida.idUnidadMed}</td>
                 <td>{unidadMedida.nombre}</td>
                 <td className='btn-ventas'>
-                  {/* <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button> */}
-                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida)}>Editar</button>
+                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida.idUnidadMed)}>Editar</button>
                 </td>
               </tr>
             ))}
