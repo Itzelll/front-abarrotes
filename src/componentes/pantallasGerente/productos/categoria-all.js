@@ -35,16 +35,6 @@ const CategoriaList = () => {
         }
     };
 
-    // const handleEliminarCategoria = async (id) => {
-    //     try {
-    //         const response = await axios.delete(`http://localhost:8080/api/categorias/${id}`);
-    //         console.log('Categoría eliminada:', response.data);
-    //         fetchCategorias();
-    //     } catch (error) {
-    //         console.error('Error al eliminar categoría', error);
-    //     }
-    // };
-
     const handleEditarCategoria = (categoria) => {
         setNombreCategoria(categoria.nombre);
         setCategoriaSeleccionada(categoria.id);
