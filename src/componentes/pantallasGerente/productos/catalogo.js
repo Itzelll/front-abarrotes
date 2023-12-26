@@ -13,7 +13,7 @@ const Catalogo = () => {
     useEffect(() => {
         const fetchProductos = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/productos');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos');
                 setProductos(response.data);
             } catch (error) {
                 console.error('Error al obtener productos', error);
@@ -25,7 +25,7 @@ const Catalogo = () => {
 
     const handleBuscarProducto = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/productos/buscar?nombre=${nombreBusqueda.toLowerCase()}`);
+            const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/buscar?nombre=${nombreBusqueda.toLowerCase()}`);
             setProductoEncontrado(response.data[0]);
         } catch (error) {
             console.error('Error al buscar producto', error);

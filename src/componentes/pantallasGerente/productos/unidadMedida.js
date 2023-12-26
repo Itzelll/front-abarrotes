@@ -14,7 +14,7 @@ const UnidadMedidaList = () => {
 
   const fetchUnidadesMedida = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/unidadesMedida');
+      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida');
       setUnidadesMedida(response.data);
     } catch (error) {
       console.error('Error al obtener unidades de medida', error);
@@ -28,7 +28,7 @@ const UnidadMedidaList = () => {
         nombre: nombreUnidadMedida.toLowerCase(),
       };
 
-      const response = await axios.post('http://localhost:8080/api/unidadesMedida', nuevaUnidadMedida);
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida', nuevaUnidadMedida);
       console.log('Unidad de medida creada:', response.data);
       setIdUnidadMedida('');
       setNombreUnidadMedida('');
@@ -59,7 +59,7 @@ const UnidadMedidaList = () => {
       console.log(unidadMedidaActualizada);
 
       const response = await axios.put(
-        `http://localhost:8080/api/unidadesMedida/${unidadMedidaSeleccionada.idUnidadMedida}`,
+        `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida/${unidadMedidaSeleccionada.idUnidadMedida}`,
         unidadMedidaActualizada
       );
 

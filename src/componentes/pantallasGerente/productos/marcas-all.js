@@ -14,7 +14,7 @@ const MarcaList = () => {
 
   const fetchMarcas = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/marcas');
+      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas');
       setMarcas(response.data);
     } catch (error) {
       console.error('Error al obtener marcas', error);
@@ -28,7 +28,7 @@ const MarcaList = () => {
         nombre: nombreMarca.toLowerCase(),
       };
 
-      const response = await axios.post('http://localhost:8080/api/marcas', nuevaMarca);
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas', nuevaMarca);
       console.log('Marca creada:', response.data);
       setIdMarca('');
       setNombreMarca('');
@@ -57,7 +57,7 @@ const MarcaList = () => {
         nombre: nombreMarca.toLowerCase(),
       }
       const response = await axios.put(
-        `http://localhost:8080/api/marcas/${marcaSeleccionada.idMarca}`,
+        `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas/${marcaSeleccionada.idMarca}`,
         marcaActualizada
       );
       console.log('Marca actualizada:', response.data);

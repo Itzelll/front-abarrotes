@@ -14,7 +14,7 @@ const CategoriaList = () => {
 
     const fetchCategorias = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/categorias');
+            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/categorias');
             setCategorias(response.data);
         } catch (error) {
             console.error('Error al obtener categorías', error);
@@ -28,7 +28,7 @@ const CategoriaList = () => {
                 nombre: nombreCategoria.toLowerCase(),
             };
 
-            const response = await axios.post('http://localhost:8080/api/categorias', nuevaCategoria);
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/categorias', nuevaCategoria);
             console.log('Categoría creada:', response.data);
             setIdCategoria('');
             setNombreCategoria('');
@@ -58,7 +58,7 @@ const CategoriaList = () => {
             };
 
             const response = await axios.put(
-                `http://localhost:8080/api/categorias/${categoriaSeleccionada.idCategoria}`,
+                `https://abarrotesapi-service-yacruz.cloud.okteto.net/categorias/${categoriaSeleccionada.idCategoria}`,
                 categoriaActualizada
             );
 

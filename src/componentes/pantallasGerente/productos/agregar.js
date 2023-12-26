@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
-import UnidadMedidaList from './unidadMedida';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 import '../style/registroEmp.css';
@@ -12,6 +11,7 @@ const CreateProduct = () => {
     const [codigo, setCodigo] = useState('');
     const [nombre, setNombre] = useState('');
     const [existencia, setExistencia] = useState('');
+    const [precio, setPrecio] = useState('');
     const [categorias, setCategorias] = useState([]);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
     const [marcas, setMarcas] = useState([]);
@@ -21,50 +21,49 @@ const CreateProduct = () => {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [modoEdicion, setModoEdicion] = useState(false);
 
-
-
     const handleCreate = async () => {
         try {
             const nuevoProducto = {
-                codigo,
+                codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
-                existencia,
-                categoria: categoriaSeleccionada.idCategoria,
-                marca: marcaSeleccionada.idMarca,
-                unidadMedida: unidadMedidaSeleccionada.idUnidadMedida,
+                existencia: parseInt(existencia),
+                precio: parseFloat(precio),
+                categoria: {
+                    idCategoria: parseInt(categoriaSeleccionada)
+                },
+                marca: {
+                    idMarca: parseInt(marcaSeleccionada)
+                },
+                unidadMedida: {
+                    idUnidadMedida: parseInt(unidadMedidaSeleccionada)
+                },
             };
 
-            const response = await axios.post('http://localhost:8080/api/productos', nuevoProducto);
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos', nuevoProducto);
             console.log('Producto creado:', response.data);
-            setCodigo('');
-            setNombre('');
-            setExistencia('');
-            setCategoriaSeleccionada('');
-            setMarcaSeleccionada('');
-            setUnidadMedidaSeleccionada('');
             fetchProductos();
-            // setProductos([...productos, response.data]);
             resetForm();
         } catch (error) {
             console.error('Error al crear producto', error);
         }
     };
 
-    const handleEdit = (codigo) => {
+    const handleEdit = async (codigo) => {
         console.log('Editar producto con código:', codigo);
         const productoAEditar = productos.find((producto) => producto.codigo === codigo);
         if (productoAEditar) {
             setProductoSeleccionado(productoAEditar);
-            setCodigo(productoAEditar.codigo);
+            setCodigo(productoAEditar.codigo.toString());
             setNombre(productoAEditar.nombre);
-            setExistencia(productoAEditar.existencia);
-            setCategoriaSeleccionada(productoAEditar.categoria);
-            setMarcaSeleccionada(productoAEditar.marca);
-            setUnidadMedidaSeleccionada(productoAEditar.unidadMedida);
+            setExistencia(productoAEditar.existencia.toString());
+            setPrecio(productoAEditar.precio.toString());
+            setCategoriaSeleccionada(productoAEditar.categoria.toString());
+            setMarcaSeleccionada(productoAEditar.marca.toString());
+            setUnidadMedidaSeleccionada(productoAEditar.unidadMedida.toString());
             setModoEdicion(true);
         } else {
             console.error(`No se encontró el producto con código: ${codigo}`);
-        };
+        }
     };
 
     const handleUpdate = async () => {
@@ -72,24 +71,26 @@ const CreateProduct = () => {
         try {
             const productoActualizado = {
                 nombre: nombre.toLowerCase(),
-                existencia,
-                categoria: categoriaSeleccionada,
-                marca: marcaSeleccionada,
-                unidadMedida: unidadMedidaSeleccionada,
+                existencia: parseInt(existencia),
+                precio: parseFloat(precio),
+                categoria: {
+                    idCategoria: parseInt(categoriaSeleccionada)
+                },
+                marca: {
+                    idMarca: parseInt(marcaSeleccionada)
+                },
+                unidadMedida: {
+                    idUnidadMedida: parseInt(unidadMedidaSeleccionada)
+                },
             };
+
             const response = await axios.put(
-                `http://localhost:8080/api/productos/${productoSeleccionado.codigo}`, 
+                `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${productoSeleccionado.codigo}`,
                 productoActualizado
             );
             console.log('Producto actualizado:', response.data);
-            setNombre('');
-            setExistencia('');
-            setCategoriaSeleccionada('');
-            setMarcaSeleccionada('');
-            setUnidadMedidaSeleccionada('');
             setModoEdicion(false);
-            fetchProductos();            
-            // setProductos(productos.map((producto) => (producto.id === editingId ? response.data : producto)));
+            fetchProductos();
             resetForm();
         } catch (error) {
             console.error('Error al actualizar producto', error);
@@ -100,15 +101,16 @@ const CreateProduct = () => {
         setCodigo('');
         setNombre('');
         setExistencia('');
+        setPrecio('');
         setCategoriaSeleccionada('');
         setMarcaSeleccionada('');
         setUnidadMedidaSeleccionada('');
-        // setEditingId(null);
     };
 
     const fetchProductos = async () => {
-        try{
-            const response = await axios.get('http://localhost:8080/api/productos');
+        try {
+            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos');
+            // console.log('Productos obtenidos:', response.data);
             setProductos(response.data);
         } catch (error) {
             console.error('Error al obtener productos', error);
@@ -116,22 +118,13 @@ const CreateProduct = () => {
     };
 
     useEffect(() => {
-        const fetchProductos = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/productos');
-                setProductos(response.data);
-            } catch (error) {
-                console.error('Error al obtener productos', error);
-            }
-        };
-
         fetchProductos();
     }, []);
 
     useEffect(() => {
         const fetchMarcas = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/marcas');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas');
                 setMarcas(response.data);
             } catch (error) {
                 console.error('Error al obtener marcas', error);
@@ -144,7 +137,7 @@ const CreateProduct = () => {
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/categorias');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias');
                 setCategorias(response.data);
             } catch (error) {
                 console.error('Error al obtener categorías', error);
@@ -157,7 +150,7 @@ const CreateProduct = () => {
     useEffect(() => {
         const fetchUnidadMedidas = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/unidadesMedida');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida');
                 setUnidadMedidas(response.data);
             } catch (error) {
                 console.error('Error al obtener unidades de medida', error);
@@ -194,6 +187,13 @@ const CreateProduct = () => {
                     value={existencia}
                     onChange={(e) => setExistencia(e.target.value)}
                 />
+                <input
+                    className='input-producto'
+                    type="number"
+                    placeholder="Precio"
+                    value={precio}
+                    onChange={(e) => setPrecio(e.target.value)}
+                />
                 <select
                     className='select-producto'
                     value={categoriaSeleccionada}
@@ -213,7 +213,7 @@ const CreateProduct = () => {
                 >
                     <option value="">Selecciona una marca</option>
                     {marcas.map((marca) => (
-                        <option key={marca.id} value={marca.id}>
+                        <option key={marca.idMarca} value={marca.idMarca}>
                             {marca.nombre}
                         </option>
                     ))}
@@ -225,16 +225,16 @@ const CreateProduct = () => {
                 >
                     <option value="">Selecciona una unidad de medida</option>
                     {unidadMedidas.map((unidadMedida) => (
-                        <option key={unidadMedida.id} value={unidadMedida.id}>
+                        <option key={unidadMedida.idUnidadMedida} value={unidadMedida.idUnidadMedida}>
                             {unidadMedida.nombre}
                         </option>
                     ))}
                 </select>
                 <div className='botones'>
                     {modoEdicion ? (
-                        <button onClick={handleUpdate} className='btn-finalizar'>Actualizar</button>
+                        <button className='btn-finalizar' onClick={handleUpdate}>Actualizar</button>
                     ) : (
-                        <button onClick={handleCreate} className='btn-finalizar'>Crear</button>
+                        <button className='btn-finalizar' onClick={handleCreate}>Crear</button>
                     )}
                 </div>
             </div>
@@ -245,6 +245,7 @@ const CreateProduct = () => {
                         <th>Código</th>
                         <th>Nombre</th>
                         <th>Existencia</th>
+                        <th>Precio</th>
                         <th>Categoría</th>
                         <th>Marca</th>
                         <th>Unidad de Medida</th>
@@ -253,11 +254,12 @@ const CreateProduct = () => {
                 </thead>
                 <tbody>
                     {productos.map((producto) => (
-                        console.log(producto),
+                        // console.log(producto),
                         <tr key={producto.codigo}>
                             <td>{producto.codigo}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.existencia}</td>
+                            <td>{producto.precio}</td>
                             <td>{producto.categoria}</td>
                             <td>{producto.marca}</td>
                             <td>{producto.unidadMedida}</td>
