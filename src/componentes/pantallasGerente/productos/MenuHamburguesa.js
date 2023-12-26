@@ -24,8 +24,8 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     {/* <Link to='/modificarProducto' className='no-underline'><li className='opc'>Modificar</li></Link>  */}
                     <li className='titulo'>Otros</li>
                     <Link to='/marcas' className='no-underline'><li className='opc'>Listado marcas</li></Link>
-                    <Link to='/categoria' className='no-underline'><li className='opc'>Categoria</li></Link>
-                    <Link to='/unidadMedida' className='no-underline'><li className='opc'>Unidad medida</li></Link>
+                    <Link to='/categoria' className='no-underline'><li className='opc'>Categorias</li></Link>
+                    <Link to='/unidadMedida' className='no-underline'><li className='opc'>Unidades medida</li></Link>
                     
                 </ul>
             </div>

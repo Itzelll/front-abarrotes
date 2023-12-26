@@ -2,80 +2,116 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
+import UnidadMedidaList from './unidadMedida';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 import '../style/registroEmp.css';
-// import { FaEdit } from "react-icons/fa";
 
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);
     const [codigo, setCodigo] = useState('');
     const [nombre, setNombre] = useState('');
-    const [existencia, setexistencia] = useState('');
+    const [existencia, setExistencia] = useState('');
     const [categorias, setCategorias] = useState([]);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
-    const [marcas, setMarcas] = useState([]);  // Nuevo estado para almacenar la lista de marcas
+    const [marcas, setMarcas] = useState([]);
     const [marcaSeleccionada, setMarcaSeleccionada] = useState('');
     const [unidadMedidas, setUnidadMedidas] = useState([]);
     const [unidadMedidaSeleccionada, setUnidadMedidaSeleccionada] = useState('');
-    const [editingId, setEditingId] = useState(false);  // Nuevo estado para rastrear el ID del producto que se está editando
+    const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+    const [modoEdicion, setModoEdicion] = useState(false);
+
+
 
     const handleCreate = async () => {
-
         try {
-            const response = await axios.post('http://localhost:8080/api/productos', {
+            const nuevoProducto = {
                 codigo,
                 nombre: nombre.toLowerCase(),
                 existencia,
-                categoria: categoriaSeleccionada.idCategoria,  // Utilizar la categoría seleccionada
-                marca: marcaSeleccionada.idCategoria,  // Utilizar la marca seleccionada
-                unidadMedida: unidadMedidaSeleccionada.idCategoria,
-            });
+                categoria: categoriaSeleccionada.idCategoria,
+                marca: marcaSeleccionada.idMarca,
+                unidadMedida: unidadMedidaSeleccionada.idUnidadMedida,
+            };
+
+            const response = await axios.post('http://localhost:8080/api/productos', nuevoProducto);
             console.log('Producto creado:', response.data);
-            // Puedes actualizar la lista de productos después de la creación
-            setProductos([...productos, response.data]);
+            setCodigo('');
+            setNombre('');
+            setExistencia('');
+            setCategoriaSeleccionada('');
+            setMarcaSeleccionada('');
+            setUnidadMedidaSeleccionada('');
+            fetchProductos();
+            // setProductos([...productos, response.data]);
+            resetForm();
         } catch (error) {
             console.error('Error al crear producto', error);
         }
     };
 
-    const handleEdit = (id) => {
-        // Establecer los valores actuales del producto en los campos de entrada
-        const productoAEditar = productos.find((producto) => producto.id === id);
+    const handleEdit = (codigo) => {
+        console.log('Editar producto con código:', codigo);
+        const productoAEditar = productos.find((producto) => producto.codigo === codigo);
         if (productoAEditar) {
+            setProductoSeleccionado(productoAEditar);
             setCodigo(productoAEditar.codigo);
             setNombre(productoAEditar.nombre);
-            setexistencia(productoAEditar.existencia);
+            setExistencia(productoAEditar.existencia);
             setCategoriaSeleccionada(productoAEditar.categoria);
             setMarcaSeleccionada(productoAEditar.marca);
             setUnidadMedidaSeleccionada(productoAEditar.unidadMedida);
-            setEditingId(true);
-        }
+            setModoEdicion(true);
+        } else {
+            console.error(`No se encontró el producto con código: ${codigo}`);
+        };
     };
 
     const handleUpdate = async () => {
+        console.log('productoSeleccionado:', productoSeleccionado);
         try {
-            const response = await axios.put(`http://localhost:8080/api/productos/${editingId}`, {
-                codigo,
+            const productoActualizado = {
                 nombre: nombre.toLowerCase(),
                 existencia,
-                categoria: categoriaSeleccionada.id,
-                marca: marcaSeleccionada.id,
-                unidadMedida: unidadMedidaSeleccionada.id,
-            });
+                categoria: categoriaSeleccionada,
+                marca: marcaSeleccionada,
+                unidadMedida: unidadMedidaSeleccionada,
+            };
+            const response = await axios.put(
+                `http://localhost:8080/api/productos/${productoSeleccionado.codigo}`, 
+                productoActualizado
+            );
             console.log('Producto actualizado:', response.data);
-            // Actualizar la lista de productos después de la edición
-            setProductos(productos.map((producto) => (producto.id === editingId ? response.data : producto)));
-            // Limpiar los campos de entrada y el ID de edición
-            setCodigo('');
             setNombre('');
-            setexistencia('');
+            setExistencia('');
             setCategoriaSeleccionada('');
             setMarcaSeleccionada('');
             setUnidadMedidaSeleccionada('');
-            setEditingId(null);
+            setModoEdicion(false);
+            fetchProductos();            
+            // setProductos(productos.map((producto) => (producto.id === editingId ? response.data : producto)));
+            resetForm();
         } catch (error) {
             console.error('Error al actualizar producto', error);
+        }
+    };
+
+    const resetForm = () => {
+        setCodigo('');
+        setNombre('');
+        setExistencia('');
+        setCategoriaSeleccionada('');
+        setMarcaSeleccionada('');
+        setUnidadMedidaSeleccionada('');
+        // setEditingId(null);
+    };
+
+    const fetchProductos = async () => {
+        try{
+            const response = await axios.get('http://localhost:8080/api/productos');
+            setProductos(response.data);
+        } catch (error) {
+            console.error('Error al obtener productos', error);
         }
     };
 
@@ -92,7 +128,6 @@ const CreateProduct = () => {
         fetchProductos();
     }, []);
 
-    // Obtener la lista de marcas al cargar el componente
     useEffect(() => {
         const fetchMarcas = async () => {
             try {
@@ -106,13 +141,11 @@ const CreateProduct = () => {
         fetchMarcas();
     }, []);
 
-    // Obtener la lista de categorías al cargar el componente
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/categorias');
                 setCategorias(response.data);
-                console.log('Categorías:', response.data);
             } catch (error) {
                 console.error('Error al obtener categorías', error);
             }
@@ -121,7 +154,6 @@ const CreateProduct = () => {
         fetchCategorias();
     }, []);
 
-    // Obtener la lista de unidades de medida al cargar el componente
     useEffect(() => {
         const fetchUnidadMedidas = async () => {
             try {
@@ -133,15 +165,14 @@ const CreateProduct = () => {
         };
 
         fetchUnidadMedidas();
-    }
-        , []);
+    }, []);
 
     return (
         <div className='registro'>
             <MenuHamburguesa />
             <h1>Crear Producto</h1>
             <div>
-                <h4>{editingId ? 'Editar' : 'Crear'} Producto</h4>
+                <h4>{modoEdicion ? 'Editar' : 'Agregar'} Producto</h4>
                 <input
                     className='input-producto'
                     type="number"
@@ -161,11 +192,11 @@ const CreateProduct = () => {
                     type="number"
                     placeholder="Existencia"
                     value={existencia}
-                    onChange={(e) => setexistencia(e.target.value)}
+                    onChange={(e) => setExistencia(e.target.value)}
                 />
-                {/* Listas desplegables */}
-                <select className='select-producto'
-                    value={categoriaSeleccionada.idCategoria}
+                <select
+                    className='select-producto'
+                    value={categoriaSeleccionada}
                     onChange={(e) => setCategoriaSeleccionada(e.target.value)}
                 >
                     <option value="">Selecciona una categoría</option>
@@ -175,7 +206,8 @@ const CreateProduct = () => {
                         </option>
                     ))}
                 </select>
-                <select className='select-producto'
+                <select
+                    className='select-producto'
                     value={marcaSeleccionada}
                     onChange={(e) => setMarcaSeleccionada(e.target.value)}
                 >
@@ -186,7 +218,8 @@ const CreateProduct = () => {
                         </option>
                     ))}
                 </select>
-                <select className='select-producto'
+                <select
+                    className='select-producto'
                     value={unidadMedidaSeleccionada}
                     onChange={(e) => setUnidadMedidaSeleccionada(e.target.value)}
                 >
@@ -198,16 +231,15 @@ const CreateProduct = () => {
                     ))}
                 </select>
                 <div className='botones'>
-                    {editingId ? (
+                    {modoEdicion ? (
                         <button onClick={handleUpdate} className='btn-finalizar'>Actualizar</button>
                     ) : (
                         <button onClick={handleCreate} className='btn-finalizar'>Crear</button>
                     )}
                 </div>
             </div>
-            {/* Lista en tabla de los productos que se van agregando */}
             <h4>Lista de Productos</h4>
-            <table className="registroEmp2">
+            <table className="registroEmp">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -219,9 +251,10 @@ const CreateProduct = () => {
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody >
+                <tbody>
                     {productos.map((producto) => (
-                        <tr key={producto.id}>
+                        console.log(producto),
+                        <tr key={producto.codigo}>
                             <td>{producto.codigo}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.existencia}</td>
@@ -230,15 +263,13 @@ const CreateProduct = () => {
                             <td>{producto.unidadMedida}</td>
                             <td className='btn-ventas'>
                                 <div className='botones'>
-                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.id)}>Editar</button>
+                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.codigo)}>Editar</button>
                                 </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
-
             </table>
-
         </div>
     );
 };

@@ -9,6 +9,7 @@ const CategoriaList = () => {
     const [categorias, setCategorias] = useState([]);
     const [nombreCategoria, setNombreCategoria] = useState('');
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
+    const [idCategoria, setIdCategoria] = useState('');
     const [modoEdicion, setModoEdicion] = useState(false);
 
     const fetchCategorias = async () => {
@@ -23,11 +24,13 @@ const CategoriaList = () => {
     const handleCrearCategoria = async () => {
         try {
             const nuevaCategoria = {
+                idCategoria: idCategoria,
                 nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.post('http://localhost:8080/api/categorias', nuevaCategoria);
             console.log('Categoría creada:', response.data);
+            setIdCategoria('');
             setNombreCategoria('');
             fetchCategorias();
         } catch (error) {
@@ -35,20 +38,27 @@ const CategoriaList = () => {
         }
     };
 
-    const handleEditarCategoria = (categoria) => {
-        setNombreCategoria(categoria.nombre);
-        setCategoriaSeleccionada(categoria.id);
-        setModoEdicion(true);
+    const handleEditarCategoria = (idCategoria) => {
+        console.log('Editar categoría con ID:', idCategoria);
+        const categoria = categorias.find((c) => c.idCategoria === idCategoria);
+        if (categoria) {
+            setCategoriaSeleccionada(categoria);
+            setNombreCategoria(categoria.nombre);
+            setModoEdicion(true);
+        } else {
+            console.error(`No se encontró la categoría con ID: ${idCategoria}`);
+        };
     };
 
     const handleActualizarCategoria = async () => {
+        console.log('categoriaSeleccionada:', categoriaSeleccionada);
         try {
             const categoriaActualizada = {
                 nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.put(
-                `http://localhost:8080/api/categorias/${categoriaSeleccionada}`,
+                `http://localhost:8080/api/categorias/${categoriaSeleccionada.idCategoria}`,
                 categoriaActualizada
             );
 
@@ -101,12 +111,12 @@ const CategoriaList = () => {
                     </thead>
                     <tbody>
                         {categorias.map((categoria) => (
-                            <tr key={categoria.id}>
-                                <td>{categoria.id}</td>
+                            <tr key={categoria.idCategoria}>
+                                <td>{categoria.idCategoria}</td>
                                 <td>{categoria.nombre}</td>
                                 <td className='btn-ventas'>
                                     {/* <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button> */}
-                                    <button className='btn-finalizar' onClick={() => handleEditarCategoria(categoria)}>Editar</button>
+                                    <button className='btn-finalizar' onClick={() => handleEditarCategoria(categoria.idCategoria)}>Editar</button>
                                 </td>
                             </tr>
                         ))}

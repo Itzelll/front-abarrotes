@@ -40,17 +40,13 @@ const UnidadMedidaList = () => {
 
   const handleEditarUnidadMedida = (idUnidadMed) => {
     console.log('Editar unidad de medida con ID:', idUnidadMed);
-    if (idUnidadMed !== undefined) {
-      const unidadMedida = unidadesMedida.find((u) => u.idUnidadMed === idUnidadMed);
-      if (unidadMedida) {
-        setUnidadMedidaSeleccionada(idUnidadMed);
-        setNombreUnidadMedida(unidadMedida.nombre);
-        setModoEdicion(true);
-      } else {
-        console.error(`No se encontró la unidad de medida con ID: ${idUnidadMed}`);
-      }
+    const unidadMedida = unidadesMedida.find((u) => u.idUnidadMedida === idUnidadMed);
+    if (unidadMedida) {
+      setUnidadMedidaSeleccionada(unidadMedida);
+      setNombreUnidadMedida(unidadMedida.nombre);
+      setModoEdicion(true);
     } else {
-      console.error('ID de unidad de medida indefinido');
+      console.error(`No se encontró la unidad de medida con ID: ${idUnidadMed}`);
     }
   };
 
@@ -63,7 +59,7 @@ const UnidadMedidaList = () => {
       console.log(unidadMedidaActualizada);
 
       const response = await axios.put(
-        `http://localhost:8080/api/unidadesMedida/${unidadMedidaSeleccionada}`,
+        `http://localhost:8080/api/unidadesMedida/${unidadMedidaSeleccionada.idUnidadMedida}`,
         unidadMedidaActualizada
       );
 
@@ -87,13 +83,6 @@ const UnidadMedidaList = () => {
       <h1>Administrar Unidades de Medida</h1>
       <div>
         <h4>{modoEdicion ? 'Editar' : 'Crear'} Unidad de Medida</h4>
-        <input
-          className='input-producto'
-          type="number"
-          placeholder="ID"
-          value={unidadMedidaSeleccionada}
-          disabled={true}
-        />
         <input
           className='input-producto'
           type="text"
@@ -123,12 +112,12 @@ const UnidadMedidaList = () => {
           </thead>
           <tbody>
             {unidadesMedida.map((unidadMedida) => (
-              console.log(unidadMedida),
-              <tr key={unidadMedida.idUnidadMed}>
-                <td>{unidadMedida.idUnidadMed}</td>
+              // console.log(unidadMedida),
+              <tr key={unidadMedida.idUnidadMedida}>
+                <td>{unidadMedida.idUnidadMedida}</td>
                 <td>{unidadMedida.nombre}</td>
                 <td className='btn-ventas'>
-                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida.idUnidadMed)}>Editar</button>
+                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida.idUnidadMedida)}>Editar</button>
                 </td>
               </tr>
             ))}
