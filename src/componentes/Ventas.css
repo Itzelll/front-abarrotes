@@ -71,3 +71,8 @@
     cursor: pointer;
     width: 30%;
 }
+
+.fecha {
+    width: 80%;
+    text-align: right;
+}

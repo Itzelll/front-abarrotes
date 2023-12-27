@@ -7,14 +7,14 @@ import '../style/salesReport.css';
 
 const MarcaList = () => {
   const [marcas, setMarcas] = useState([]);
-  const [nombre, setNombre] = useState('');
-  const [nuevoNombre, setNuevoNombre] = useState('');
-  const [mensaje, setMensaje] = useState('');
+  const [nombreMarca, setNombreMarca] = useState('');
+  const [idMarca, setIdMarca] = useState('');
   const [marcaSeleccionada, setMarcaSeleccionada] = useState(null);
+  const [modoEdicion, setModoEdicion] = useState(false);
 
   const fetchMarcas = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/marcas');
+      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas');
       setMarcas(response.data);
     } catch (error) {
       console.error('Error al obtener marcas', error);
@@ -23,33 +23,53 @@ const MarcaList = () => {
 
   const handleCrearMarca = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/marcas', { nombre: nombre.toLowerCase() });
+      const nuevaMarca = {
+        idMarca: idMarca,
+        nombre: nombreMarca.toLowerCase(),
+      };
+
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas', nuevaMarca);
       console.log('Marca creada:', response.data);
-      setNombre('');
-      setMensaje('Marca creada con éxito.');
+      alert('Marca creada con éxito.');
+      setIdMarca('');
+      setNombreMarca('');
       fetchMarcas();
     } catch (error) {
       console.error('Error al crear marca', error);
-      setMensaje('Error al crear marca.');
     }
   };
 
-  const handleEditarMarca = (marca) => {
-    setMarcaSeleccionada(marca);
-    setNuevoNombre(marca.nombre);
+  const handleEditarMarca = (idMarca) => {
+    console.log('Editar marca con ID:', idMarca);
+    const marca = marcas.find((m) => m.idMarca === idMarca);
+    if (marca) {
+      setMarcaSeleccionada(marca);
+      setNombreMarca(marca.nombre);
+      setModoEdicion(true);
+    } else {
+      console.error(`No se encontró la marca con ID: ${idMarca}`);
+    }
   };
 
   const handleActualizarMarca = async () => {
+    console.log('marcaSeleccionada:', marcaSeleccionada);
     try {
-      const response = await axios.put(`http://localhost:8080/api/marcas/${marcaSeleccionada.id}`, { nombre: nuevoNombre.toLowerCase() });
+      const marcaActualizada = {
+        nombre: nombreMarca.toLowerCase(),
+      }
+      const response = await axios.put(
+        `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas/${marcaSeleccionada.idMarca}`,
+        marcaActualizada
+      );
       console.log('Marca actualizada:', response.data);
-      setNuevoNombre('');
-      setMarcaSeleccionada(null);
-      setMensaje('Marca actualizada con éxito.');
+      alert('Marca actualizada con éxito.');
+      setNombreMarca('');
+      setMarcaSeleccionada('');
+      setModoEdicion(false);
       fetchMarcas();
     } catch (error) {
       console.error('Error al actualizar marca', error);
-      setMensaje('Error al actualizar marca.');
+      alert('Error al actualizar marca.');
     }
   };
 
@@ -61,28 +81,26 @@ const MarcaList = () => {
     <div className='registro'>
       <MenuHamburguesa />
       <h1>Administrar Marcas</h1>
-
       <div>
-        <h4>{marcaSeleccionada ? 'Editar' : 'Agregar'} Marca</h4>
+        <h4>{modoEdicion ? 'Editar' : 'Agregar'} Marca</h4>
         <input
           className='input-producto'
           type="text"
           placeholder="Nombre de la Marca"
-          value={marcaSeleccionada ? nuevoNombre : nombre}
-          onChange={(e) => marcaSeleccionada ? setNuevoNombre(e.target.value.toLowerCase()) : setNombre(e.target.value.toLowerCase())}
+          value={nombreMarca}
+          onChange={(e) => setNombreMarca(e.target.value.toLowerCase())}
         />
         <div className='botones'>
-          {marcaSeleccionada ? (
-            <button onClick={handleActualizarMarca}>Actualizar Marca</button>
+          {modoEdicion ? (
+            <button className='btn-finalizar' onClick={handleActualizarMarca}>Actualizar</button>
           ) : (
-            <button onClick={handleCrearMarca}>Agregar Marca</button>
+            <button className='btn-finalizar' onClick={handleCrearMarca}>Agregar</button>
           )}
         </div>
       </div>
 
       <div>
         <h4>Listado de Marcas</h4>
-        {mensaje && <p className={mensaje.includes('Error') ? 'mensaje-error' : 'mensaje-exito'}>{mensaje}</p>}
         <table className='registroEmp'>
           <thead>
             <tr>
@@ -93,12 +111,13 @@ const MarcaList = () => {
           </thead>
           <tbody>
             {marcas.map((marca) => (
-              <tr key={marca.id}>
-                <td>{marca.id}</td>
+              // console.log(marca),
+              <tr key={marca.idMarca}>
+                <td>{marca.idMarca}</td>
                 <td>{marca.nombre}</td>
                 <td className='btn-ventas'>
                   <div className='botones'>
-                    <button className='btn-finalizar' onClick={() => handleEditarMarca(marca)}>Editar</button>
+                    <button className='btn-finalizar' onClick={() => handleEditarMarca(marca.idMarca)}>Editar</button>
                   </div>
                 </td>
               </tr>
