@@ -5,99 +5,139 @@ import MenuHamburguesa from '../../MenuHamburguesa';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 import '../style/registroEmp.css';
-// import { FaEdit } from "react-icons/fa";
 
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);
     const [codigo, setCodigo] = useState('');
     const [nombre, setNombre] = useState('');
-    const [existencia, setexistencia] = useState('');
+    const [existencia, setExistencia] = useState('');
+    const [precio, setPrecio] = useState('');
     const [categorias, setCategorias] = useState([]);
-    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');  // Nuevo estado para la categoría seleccionada
-    const [marcas, setMarcas] = useState([]);  // Nuevo estado para almacenar la lista de marcas
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
+    const [marcas, setMarcas] = useState([]);
     const [marcaSeleccionada, setMarcaSeleccionada] = useState('');
     const [unidadMedidas, setUnidadMedidas] = useState([]);
     const [unidadMedidaSeleccionada, setUnidadMedidaSeleccionada] = useState('');
-    const [editingId, setEditingId] = useState(null);  // Nuevo estado para rastrear el ID del producto que se está editando
+    const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+    const [modoEdicion, setModoEdicion] = useState(false);
 
     const handleCreate = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/api/productos', {
-                codigo,
+            const nuevoProducto = {
+                codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
-                existencia,
-                categoria: categoriaSeleccionada.idCategoria,  // Utilizar la categoría seleccionada
-                marca: marcaSeleccionada.idMarca,  // Utilizar la marca seleccionada
-                unidadMedida: unidadMedidaSeleccionada.idUnidadMedida,
-            });
+                existencia: parseInt(existencia),
+                precio: parseFloat(precio),
+                categoria: {
+                    idCategoria: parseInt(categoriaSeleccionada)
+                },
+                marca: {
+                    idMarca: parseInt(marcaSeleccionada)
+                },
+                unidadMedida: {
+                    idUnidadMed: parseInt(unidadMedidaSeleccionada)
+                },
+            };
+
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos', nuevoProducto);
             console.log('Producto creado:', response.data);
-            // Puedes actualizar la lista de productos después de la creación
-            setProductos([...productos, response.data]);
-            console.log(productos)
+            alert('Producto creado con éxito.');
+            fetchProductos();
+            resetForm();
         } catch (error) {
             console.error('Error al crear producto', error);
-            alert('Error al crear el producto. Por favor, inténtelo de nuevo.');
+            alert('Error al crear producto.');
         }
     };
 
-    const handleEdit = (id) => {
-        // Establecer los valores actuales del producto en los campos de entrada
-        const productoAEditar = productos.find((producto) => producto.id === id);
+    const handleEdit = async (codigo) => {
+        console.log('Editar producto con código:', codigo);
+        const productoAEditar = productos.find((producto) => producto.codigo === codigo);
         if (productoAEditar) {
-            setCodigo(productoAEditar.codigo);
+            setProductoSeleccionado(productoAEditar);
+            setCodigo(productoAEditar.codigo.toString());
             setNombre(productoAEditar.nombre);
-            setexistencia(productoAEditar.existencia);
-            setCategoriaSeleccionada(productoAEditar.categoria.idCategoria);
-            setMarcaSeleccionada(productoAEditar.marca.idMarca);
-            setUnidadMedidaSeleccionada(productoAEditar.unidadMedida.idUnidadMedida);
-            setEditingId(id);
+            setExistencia(productoAEditar.existencia.toString());
+            setPrecio(productoAEditar.precio.toString());
+    
+            // Obtener los objetos completos de las listas usando los IDs del producto
+            const categoriaSeleccionadaObj = categorias.find((categoria) => categoria.idCategoria === productoAEditar.categoria);
+            const marcaSeleccionadaObj = marcas.find((marca) => marca.idMarca === productoAEditar.marca);
+            const unidadMedidaSeleccionadaObj = unidadMedidas.find((unidadMedida) => unidadMedida.idUnidadMed === productoAEditar.unidadMedida);
+    
+            // Configurar los estados con los objetos completos
+            setCategoriaSeleccionada(categoriaSeleccionadaObj ? categoriaSeleccionadaObj.idCategoria.toString() : '');
+            setMarcaSeleccionada(marcaSeleccionadaObj ? marcaSeleccionadaObj.idMarca.toString() : '');
+            setUnidadMedidaSeleccionada(unidadMedidaSeleccionadaObj ? unidadMedidaSeleccionadaObj.idUnidadMed.toString() : '');
+    
+            setModoEdicion(true);
+        } else {
+            console.error(`No se encontró el producto con código: ${codigo}`);
         }
-    };
+    };    
 
     const handleUpdate = async () => {
+        console.log('productoSeleccionado:', productoSeleccionado);
         try {
-            const response = await axios.put(`http://localhost:8080/api/productos/${editingId}`, {
-                codigo,
+            const productoActualizado = {
+                codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
-                existencia,
-                categoria: categoriaSeleccionada.idCategoria,
-                marca: marcaSeleccionada.idMarca,
-                unidadMedida: unidadMedidaSeleccionada.idUnidadMedida,
-            });
+                existencia: parseInt(existencia),
+                precio: parseFloat(precio),
+                categoria: {
+                    idCategoria: parseInt(categoriaSeleccionada)
+                },
+                marca: {
+                    idMarca: parseInt(marcaSeleccionada)
+                },
+                unidadMedida: {
+                    idUnidadMed: parseInt(unidadMedidaSeleccionada)
+                },
+            };
+
+            const response = await axios.put(
+                `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${productoSeleccionado.codigo}`,
+                productoActualizado
+            );
             console.log('Producto actualizado:', response.data);
-            // Actualizar la lista de productos después de la edición
-            setProductos(productos.map((producto) => (producto.id === editingId ? response.data : producto)));
-            // Limpiar los campos de entrada y el ID de edición
-            setCodigo('');
-            setNombre('');
-            setexistencia('');
-            setCategoriaSeleccionada('');
-            setMarcaSeleccionada('');
-            setUnidadMedidaSeleccionada('');
-            setEditingId(null);
+            alert('Producto actualizado con éxito.');
+            setModoEdicion(false);
+            fetchProductos();
+            resetForm();
         } catch (error) {
             console.error('Error al actualizar producto', error);
+            alert('Error al actualizar producto.');
+        }
+    };
+
+    const resetForm = () => {
+        setCodigo('');
+        setNombre('');
+        setExistencia('');
+        setPrecio('');
+        setCategoriaSeleccionada('');
+        setMarcaSeleccionada('');
+        setUnidadMedidaSeleccionada('');
+    };
+
+    const fetchProductos = async () => {
+        try {
+            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos');
+            // console.log('Productos obtenidos:', response.data);
+            setProductos(response.data);
+        } catch (error) {
+            console.error('Error al obtener productos', error);
         }
     };
 
     useEffect(() => {
-        const fetchProductos = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/productos');
-                setProductos(response.data);
-            } catch (error) {
-                console.error('Error al obtener productos', error);
-            }
-        };
-
         fetchProductos();
     }, []);
 
-    // Obtener la lista de marcas al cargar el componente
     useEffect(() => {
         const fetchMarcas = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/marcas');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas');
                 setMarcas(response.data);
             } catch (error) {
                 console.error('Error al obtener marcas', error);
@@ -107,11 +147,10 @@ const CreateProduct = () => {
         fetchMarcas();
     }, []);
 
-    // Obtener la lista de categorías al cargar el componente
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/categorias');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias');
                 setCategorias(response.data);
             } catch (error) {
                 console.error('Error al obtener categorías', error);
@@ -121,11 +160,10 @@ const CreateProduct = () => {
         fetchCategorias();
     }, []);
 
-    // Obtener la lista de unidades de medida al cargar el componente
     useEffect(() => {
         const fetchUnidadMedidas = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/unidadesMedida');
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida');
                 setUnidadMedidas(response.data);
             } catch (error) {
                 console.error('Error al obtener unidades de medida', error);
@@ -133,110 +171,120 @@ const CreateProduct = () => {
         };
 
         fetchUnidadMedidas();
-    }
-        , []);
+    }, []);
 
     return (
         <div className='registro'>
             <MenuHamburguesa />
             <h1>Crear Producto</h1>
-            <input
-                className='input-producto'
-                type="number"
-                placeholder="Código"
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value)}
-            />
-            <input
-                className='input-producto'
-                type="text"
-                placeholder="Nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value.toLowerCase())}
-            />
-            <input
-                className='input-producto'
-                type="number"
-                placeholder="Existencia"
-                value={existencia}
-                onChange={(e) => setexistencia(e.target.value)}
-            />
-            {/* Listas desplegables */}
-            <select className='select-producto'
-                value={categoriaSeleccionada}
-                onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-            >
-                <option value="">Selecciona una categoría</option>
-                {categorias.map((categoria) => (
-                    <option key={categoria.idCategoria} value={categoria.idCategoria}>
-                        {categoria.nombre}
-                    </option>
-                ))}
-            </select>
-            <select className='select-producto'
-                value={marcaSeleccionada}
-                onChange={(e) => setMarcaSeleccionada(e.target.value)}
-            >
-                <option value="">Selecciona una marca</option>
-                {marcas.map((marca) => (
-                    <option key={marca.idMarca} value={marca.idMarca}>
-                        {marca.nombre}
-                    </option>
-                ))}
-            </select>
-            <select className='select-producto'
-                value={unidadMedidaSeleccionada}
-                onChange={(e) => setUnidadMedidaSeleccionada(e.target.value)}
-            >
-                <option value="">Selecciona una unidad de medida</option>
-                {unidadMedidas.map((unidadMedida) => (
-                    <option key={unidadMedida.idUnidadMedida} value={unidadMedida.idUnidadMedida}>
-                        {unidadMedida.nombre}
-                    </option>
-                ))}
-            </select>
-            <div className='botones'>
-                {editingId ? (
-                    <button onClick={handleUpdate} className='btn-finalizar'>Actualizar</button>
-                ) : (
-                    <button onClick={handleCreate} className='btn-finalizar'>Agregar</button>
-                )}
+            <div>
+                <h4>{modoEdicion ? 'Editar' : 'Agregar'} Producto</h4>
+                <input
+                    className='input-producto'
+                    type="number"
+                    placeholder="Código"
+                    value={codigo}
+                    onChange={(e) => setCodigo(e.target.value)}
+                />
+                <input
+                    className='input-producto'
+                    type="text"
+                    placeholder="Nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value.toLowerCase())}
+                />
+                <input
+                    className='input-producto'
+                    type="number"
+                    placeholder="Existencia"
+                    value={existencia}
+                    onChange={(e) => setExistencia(e.target.value)}
+                />
+                <input
+                    className='input-producto'
+                    type="number"
+                    placeholder="Precio"
+                    value={precio}
+                    onChange={(e) => setPrecio(e.target.value)}
+                />
+                <select
+                    className='select-producto'
+                    value={categoriaSeleccionada}
+                    onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+                >
+                    <option value="">Selecciona una categoría</option>
+                    {categorias.map((categoria) => (
+                        <option key={categoria.idCategoria} value={categoria.idCategoria}>
+                            {categoria.nombre}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className='select-producto'
+                    value={marcaSeleccionada}
+                    onChange={(e) => setMarcaSeleccionada(e.target.value)}
+                >
+                    <option value="">Selecciona una marca</option>
+                    {marcas.map((marca) => (
+                        <option key={marca.idMarca} value={marca.idMarca}>
+                            {marca.nombre}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className='select-producto'
+                    value={unidadMedidaSeleccionada}
+                    onChange={(e) => setUnidadMedidaSeleccionada(e.target.value)}
+                >
+                    <option value="">Selecciona una unidad de medida</option>
+                    {unidadMedidas.map((unidadMedida) => (
+                        <option key={unidadMedida.idUnidadMedida} value={unidadMedida.idUnidadMedida}>
+                            {unidadMedida.nombre}
+                        </option>
+                    ))}
+                </select>
+                <div className='botones'>
+                    {modoEdicion ? (
+                        <button className='btn-finalizar' onClick={handleUpdate}>Actualizar</button>
+                    ) : (
+                        <button className='btn-finalizar' onClick={handleCreate}>Crear</button>
+                    )}
+                </div>
             </div>
-
-            {/* Lista en tabla de los productos que se van agregando */}
             <h4>Lista de Productos</h4>
-            <table className="registroEmp2">
+            <table className="registroEmp">
                 <thead>
                     <tr>
                         <th>Código</th>
                         <th>Nombre</th>
                         <th>Existencia</th>
+                        <th>Precio</th>
                         <th>Categoría</th>
                         <th>Marca</th>
                         <th>Unidad de Medida</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody >
+                <tbody>
                     {productos.map((producto) => (
+                        // console.log(producto),
                         <tr key={producto.codigo}>
                             <td>{producto.codigo}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.existencia}</td>
+                            <td>{producto.precio}</td>
                             <td>{producto.categoria}</td>
                             <td>{producto.marca}</td>
                             <td>{producto.unidadMedida}</td>
                             <td className='btn-ventas'>
                                 <div className='botones'>
-                                    <button className='btn-editar' onClick={() => handleEdit(producto.id)}>Editar</button>
+                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.codigo)}>Editar</button>
                                 </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
-
             </table>
-
         </div>
     );
 };

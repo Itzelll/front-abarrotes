@@ -1,7 +1,7 @@
 import React from 'react';
 import { PDFDownloadLink, Page, Text, View, Document } from '@react-pdf/renderer';
 import { Link } from 'react-router-dom';
-import MenuHamburguesa from '../MenuHamburguesa';
+import MenuHamburguesa from '../../MenuHamburguesa';
 
 const SalesReportBanqueteriaPDF = () => (
   <Document>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PDFDownloadLink, Page, Document } from '@react-pdf/renderer';
-import MenuHamburguesa from '../MenuHamburguesa';
+import MenuHamburguesa from '../../MenuHamburguesa';
 import { Link } from 'react-router-dom';
 import { SalesReportAbarrotesPDF } from './styleAbarrotesPDF';
 
@@ -13,7 +13,7 @@ const SalesReportAbarrotes = () => {
     const fetchData = async () => {
       try {
         // Replace this with your actual API endpoint to fetch sales data
-        const response = await fetch('http://localhost:8080/api/notasventas');
+        const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas');
         const data = await response.json();
         setSalesData(data);
       } catch (error) {

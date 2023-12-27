@@ -8,12 +8,13 @@ import '../style/salesReport.css';
 const UnidadMedidaList = () => {
   const [unidadesMedida, setUnidadesMedida] = useState([]);
   const [nombreUnidadMedida, setNombreUnidadMedida] = useState('');
+  const [idUnidadMedida, setIdUnidadMedida] = useState('');
   const [unidadMedidaSeleccionada, setUnidadMedidaSeleccionada] = useState('');
   const [modoEdicion, setModoEdicion] = useState(false);
 
   const fetchUnidadesMedida = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/unidadesMedida');
+      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida');
       setUnidadesMedida(response.data);
     } catch (error) {
       console.error('Error al obtener unidades de medida', error);
@@ -23,52 +24,57 @@ const UnidadMedidaList = () => {
   const handleCrearUnidadMedida = async () => {
     try {
       const nuevaUnidadMedida = {
+        idUnidadMed: idUnidadMedida,
         nombre: nombreUnidadMedida.toLowerCase(),
       };
 
-      const response = await axios.post('http://localhost:8080/api/unidadesMedida', nuevaUnidadMedida);
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida', nuevaUnidadMedida);
       console.log('Unidad de medida creada:', response.data);
+      alert('Unidad de medida creada con éxito.');
+      setIdUnidadMedida('');
       setNombreUnidadMedida('');
       fetchUnidadesMedida();
     } catch (error) {
       console.error('Error al crear unidad de medida', error);
+      alert('Error al crear unidad de medida.');
     }
   };
 
-  // const handleEliminarUnidadMedida = async (id) => {
-  //   try {
-  //     const response = await axios.delete(`http://localhost:8080/api/unidadesMedida/${id}`);
-  //     console.log('Unidad de medida eliminada:', response.data);
-  //     fetchUnidadesMedida();
-  //   } catch (error) {
-  //     console.error('Error al eliminar unidad de medida', error);
-  //   }
-  // };
+  const handleEditarUnidadMedida = (idUnidadMed) => {
+    console.log('Editar unidad de medida con ID:', idUnidadMed);
+    const unidadMedida = unidadesMedida.find((u) => u.idUnidadMedida === idUnidadMed);
+    if (unidadMedida) {
+      setUnidadMedidaSeleccionada(unidadMedida);
+      setNombreUnidadMedida(unidadMedida.nombre);
+      setModoEdicion(true);
+    } else {
+      console.error(`No se encontró la unidad de medida con ID: ${idUnidadMed}`);
 
-  const handleEditarUnidadMedida = (unidadMedida) => {
-    setNombreUnidadMedida(unidadMedida.nombre);
-    setUnidadMedidaSeleccionada(unidadMedida.id);
-    setModoEdicion(true);
+    }
   };
 
   const handleActualizarUnidadMedida = async () => {
+    console.log('unidadMedidaSeleccionada:', unidadMedidaSeleccionada);
     try {
       const unidadMedidaActualizada = {
         nombre: nombreUnidadMedida.toLowerCase(),
       };
+      console.log(unidadMedidaActualizada);
 
       const response = await axios.put(
-        `http://localhost:8080/api/unidadesMedida/${unidadMedidaSeleccionada}`,
+        `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida/${unidadMedidaSeleccionada.idUnidadMedida}`,
         unidadMedidaActualizada
       );
 
       console.log('Unidad de medida actualizada:', response.data);
+      alert('Unidad de medida actualizada con éxito.');
       setNombreUnidadMedida('');
       setUnidadMedidaSeleccionada('');
       setModoEdicion(false);
       fetchUnidadesMedida();
     } catch (error) {
       console.error('Error al actualizar unidad de medida', error);
+      alert('Error al actualizar unidad de medida.');
     }
   };
 
@@ -111,12 +117,12 @@ const UnidadMedidaList = () => {
           </thead>
           <tbody>
             {unidadesMedida.map((unidadMedida) => (
+              // console.log(unidadMedida),
               <tr key={unidadMedida.idUnidadMedida}>
                 <td>{unidadMedida.idUnidadMedida}</td>
                 <td>{unidadMedida.nombre}</td>
                 <td className='btn-ventas'>
-                  {/* <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button> */}
-                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida)}>Editar</button>
+                  <button className='btn-finalizar' onClick={() => handleEditarUnidadMedida(unidadMedida.idUnidadMedida)}>Editar</button>
                 </td>
               </tr>
             ))}
