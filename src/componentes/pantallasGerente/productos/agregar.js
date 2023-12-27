@@ -35,12 +35,13 @@ const CreateProduct = () => {
                     idMarca: parseInt(marcaSeleccionada)
                 },
                 unidadMedida: {
-                    idUnidadMedida: parseInt(unidadMedidaSeleccionada)
+                    idUnidadMed: parseInt(unidadMedidaSeleccionada)
                 },
             };
 
             const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos', nuevoProducto);
             console.log('Producto creado:', response.data);
+            alert('Producto creado con éxito.');
             fetchProductos();
             resetForm();
         } catch (error) {
@@ -57,19 +58,28 @@ const CreateProduct = () => {
             setNombre(productoAEditar.nombre);
             setExistencia(productoAEditar.existencia.toString());
             setPrecio(productoAEditar.precio.toString());
-            setCategoriaSeleccionada(productoAEditar.categoria.toString());
-            setMarcaSeleccionada(productoAEditar.marca.toString());
-            setUnidadMedidaSeleccionada(productoAEditar.unidadMedida.toString());
+    
+            // Obtener los objetos completos de las listas usando los IDs del producto
+            const categoriaSeleccionadaObj = categorias.find((categoria) => categoria.idCategoria === productoAEditar.categoria);
+            const marcaSeleccionadaObj = marcas.find((marca) => marca.idMarca === productoAEditar.marca);
+            const unidadMedidaSeleccionadaObj = unidadMedidas.find((unidadMedida) => unidadMedida.idUnidadMed === productoAEditar.unidadMedida);
+    
+            // Configurar los estados con los objetos completos
+            setCategoriaSeleccionada(categoriaSeleccionadaObj ? categoriaSeleccionadaObj.idCategoria.toString() : '');
+            setMarcaSeleccionada(marcaSeleccionadaObj ? marcaSeleccionadaObj.idMarca.toString() : '');
+            setUnidadMedidaSeleccionada(unidadMedidaSeleccionadaObj ? unidadMedidaSeleccionadaObj.idUnidadMed.toString() : '');
+    
             setModoEdicion(true);
         } else {
             console.error(`No se encontró el producto con código: ${codigo}`);
         }
-    };
+    };    
 
     const handleUpdate = async () => {
         console.log('productoSeleccionado:', productoSeleccionado);
         try {
             const productoActualizado = {
+                codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
                 existencia: parseInt(existencia),
                 precio: parseFloat(precio),
@@ -80,7 +90,7 @@ const CreateProduct = () => {
                     idMarca: parseInt(marcaSeleccionada)
                 },
                 unidadMedida: {
-                    idUnidadMedida: parseInt(unidadMedidaSeleccionada)
+                    idUnidadMed: parseInt(unidadMedidaSeleccionada)
                 },
             };
 
@@ -89,6 +99,7 @@ const CreateProduct = () => {
                 productoActualizado
             );
             console.log('Producto actualizado:', response.data);
+            alert('Producto actualizado con éxito.');
             setModoEdicion(false);
             fetchProductos();
             resetForm();
