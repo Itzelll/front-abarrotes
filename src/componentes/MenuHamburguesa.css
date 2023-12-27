@@ -27,7 +27,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 20%;
+    width: 30%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -36,9 +36,9 @@
     transform: translateX(-100%);
     color: white;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.237);
     border: 1px solid #ccc;
-    background-color: #33333310;
+    background-color: #d8ceceb8;
   }
   
   .menu ul {
@@ -50,6 +50,7 @@
     margin: auto;
     font-size: 20px;
     cursor: pointer;
+    text-align: left;
   }
   
   .open {
@@ -60,9 +61,10 @@
     text-decoration: none;
     color:#333;
   }
-  
-  .informe {
-    color: #333;
+
+  .no-underline1 {
+    text-decoration: none;
+    color:#ffffff;
   }
 
   .titulo {
@@ -76,5 +78,5 @@
   }
 
   .opciones {
-    text-align: initial;
+    text-align: left;
   }

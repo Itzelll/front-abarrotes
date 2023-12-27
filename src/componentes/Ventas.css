@@ -1,0 +1,78 @@
+.scroll-panel {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.input {
+    text-align: center;
+}
+
+.producto {
+    height: 20px;
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 35%;
+}
+
+.cantidad {
+    margin-right: 10px;
+    height: 20px;
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 35%;
+}
+
+.precio {
+    height: 20px;
+    border-radius: 15px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 20%;
+}
+
+.total {
+    text-align: center;
+}
+
+.btns {
+    text-align: center;
+}
+
+.agregar {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 15%;
+    margin-left: 5px;
+}
+
+.btn-finalizar {
+    margin-right: 30px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 30%;
+}
+
+.btn-cancelar {
+    background-color: #f44336;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 30%;
+}
+
+.fecha {
+    width: 80%;
+    text-align: right;
+}

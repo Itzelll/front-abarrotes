@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './login.css'; 
 import { useNavigate } from 'react-router-dom';
 
@@ -31,7 +32,7 @@ const LoginForm = () => {
         <label className="label">
           Usuario:
           <input
-            className="input"
+            className="user"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -41,7 +42,7 @@ const LoginForm = () => {
         <label className="label">
           Contraseña:
           <input
-            className="input"
+            className="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -51,6 +52,7 @@ const LoginForm = () => {
         <button className="button" type="button" onClick={handleLogin}>
           Iniciar Sesión
         </button>
+        <div className='new-user'><Link to="/">Nueva Cuenta</Link></div>
       </form>
     </div>
   );

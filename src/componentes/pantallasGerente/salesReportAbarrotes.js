@@ -1,36 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import './style/salesReport.css';
-import './style/registroEmp.css';
+import { PDFDownloadLink, Page, Document } from '@react-pdf/renderer';
 import MenuHamburguesa from '../MenuHamburguesa';
+import { Link } from 'react-router-dom';
+import { SalesReportAbarrotesPDF } from './styleAbarrotesPDF';
 
 const SalesReportAbarrotes = () => {
-  // Estado para almacenar los datos de ventas
   const [salesData, setSalesData] = useState([]);
+  const [editingSale, setEditingSale] = useState(null);
 
-  // Simulación de carga de datos de ventas (puedes cambiar esto con una llamada a la API real)
   useEffect(() => {
-    // Lógica para obtener los datos de ventas
+    // Simulated API call to fetch sales data
     const fetchData = async () => {
       try {
-        // Llamada a la API para obtener datos de ventas
-        const response = await fetch('/api/salesReport');
+        // Replace this with your actual API endpoint to fetch sales data
+        const response = await fetch('http://localhost:8080/api/notasventas');
         const data = await response.json();
-
-        // Actualizar el estado con los datos de ventas
         setSalesData(data);
       } catch (error) {
         console.error('Error al obtener datos de ventas:', error);
       }
     };
 
-    // Llamar a la función para obtener datos al montar el componente
     fetchData();
   }, []);
+
+  const handleDelete = (id) => {
+    const updatedSalesData = salesData.filter((sale) => sale.id !== id);
+    setSalesData(updatedSalesData);
+  };
+
+  const handleEdit = (id) => {
+    // Buscar el elemento que se está editando
+    const saleToEdit = salesData.find((sale) => sale.id === id);
+    // Establecer el elemento que se está editando en el estado
+    setEditingSale(saleToEdit);
+
+    console.log(`Editar elemento con ID ${id}`);
+  };
+
+  const SalesReportAbarrotesPDF = () => (
+    <Document>
+      <Page size="A4">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {salesData.map((sale) => (
+            <tr key={sale.id}>
+              <td>{sale.numeroNota}</td>
+              <td>{sale.producto}</td>
+              <td>{sale.cantidad}</td>
+              <td>{sale.total}</td>
+            </tr>
+          ))}
+        </tbody>
+        </table>
+      </Page>
+    </Document>
+  );
 
   return (
     <div className='registro'>
       <MenuHamburguesa />
       <h1>Informe de Ventas Abarrotes</h1>
+      <div className="btn-ventas">
+        <Link to="/ventasMensualesAbarrotes"><button className='ventas-mensuales'>Ventas Mensuales</button></Link>
+      </div>
+      {/* <table style={{ width: '90%', marginTop: '10px', borderCollapse: 'collapse' }}> */}
       <h4>Ventas de la semana</h4>
       <table>
         <thead>
@@ -38,23 +82,27 @@ const SalesReportAbarrotes = () => {
             <th>ID</th>
             <th>Producto</th>
             <th>Cantidad</th>
-            <th>Precio Unitario</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody>
-          {/* Iterar sobre los datos de ventas y mostrar cada fila */}
           {salesData.map((sale) => (
             <tr key={sale.id}>
-              <td>{sale.id}</td>
+              <td>{sale.numeroNota}</td>
               <td>{sale.producto}</td>
               <td>{sale.cantidad}</td>
-              <td>{sale.precioUnitario}</td>
-              <td>{sale.cantidad * sale.precioUnitario}</td>
+              <td>{sale.total}</td>
             </tr>
           ))}
         </tbody>
+        <PDFDownloadLink document={<SalesReportAbarrotesPDF salesData={salesData} />}
+          fileName="sales_report_abarrotes.pdf">
+          {({ blob, url, loading, error }) =>
+            loading ? 'Generando PDF...' : 'Descargar PDF'
+          }
+        </PDFDownloadLink>
       </table>
+
     </div>
   );
 };
