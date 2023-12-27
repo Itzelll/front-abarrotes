@@ -7,8 +7,9 @@ import '../style/salesReport.css';
 
 const Catalogo = () => {
     const [productos, setProductos] = useState([]);
-    const [nombreBusqueda, setnombreBusqueda] = useState('');
+    const [nombreBusqueda, setNombreBusqueda] = useState('');
     const [productoEncontrado, setProductoEncontrado] = useState(null);
+    const [errorBusqueda, setErrorBusqueda] = useState(null);
 
     useEffect(() => {
         const fetchProductos = async () => {
@@ -27,9 +28,13 @@ const Catalogo = () => {
         try {
             const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/buscar?nombre=${nombreBusqueda.toLowerCase()}`);
             setProductoEncontrado(response.data[0]);
+            setErrorBusqueda(null);
         } catch (error) {
             console.error('Error al buscar producto', error);
+            // alert('Error al buscar producto.');
             setProductoEncontrado(null);
+            setErrorBusqueda('Producto no encontrado');
+            alert('Producto no encontrado.');
         }
     };
 
@@ -44,17 +49,39 @@ const Catalogo = () => {
                     type="text"
                     placeholder="Nombre del Producto"
                     value={nombreBusqueda}
-                    onChange={(e) => setnombreBusqueda(e.target.value.toLowerCase())}
+                    onChange={(e) => setNombreBusqueda(e.target.value.toLowerCase())}
                 />
                 <div className='botones'>
                     <button onClick={handleBuscarProducto} className='btn-finalizar'>Buscar</button>
                 </div>
+                {errorBusqueda && <p className='error-message'>{errorBusqueda}</p>}
                 {productoEncontrado && (
                     <div>
                         <h3>Producto Encontrado:</h3>
-                        <p>Código: {productoEncontrado.codigo}</p>
-                        <p>Nombre: {productoEncontrado.nombre}</p>
-                        {/* Puedes mostrar más detalles según tus necesidades */}
+                        <table className='registroEmp'>
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Existencia</th>
+                                    <th>Precio</th>
+                                    <th>Categoría</th>
+                                    <th>Marca</th>
+                                    <th>Unidad de Medida</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr key={productoEncontrado.codigo}>
+                                    <td>{productoEncontrado.codigo}</td>
+                                    <td>{productoEncontrado.nombre}</td>
+                                    <td>{productoEncontrado.existencia}</td>
+                                    <td>{productoEncontrado.precio}</td>
+                                    <td>{productoEncontrado.categoria}</td>
+                                    <td>{productoEncontrado.marca}</td>
+                                    <td>{productoEncontrado.unidadMedida}</td>
+                                </tr>
+                            </tbody>
+                        </table>                        
                     </div>
                 )}
             </div>
@@ -73,7 +100,7 @@ const Catalogo = () => {
                 </thead>
                 <tbody>
                     {productos.map((producto) => (
-                        <tr key={producto.id}>
+                        <tr key={producto.codigo}>
                             <td>{producto.codigo}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.existencia}</td>
