@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./pantallasGerente/style/salesReport.css";
 import "./pantallasGerente/style/registroEmp.css";
 import "./Ventas.css";
+import axios from 'axios';
+import { format } from 'date-fns';
 import MenuHamburguesa from './MenuHamburguesa';
 import { PDFDownloadLink, Page, Document } from '@react-pdf/renderer';
 import { SalesReportPDF } from '../componentes/pantallasGerente/styleSalesReportPDF';
@@ -27,7 +29,7 @@ const SalesReport = ({ salesData }) => (
                             <td className="ventas">{producto.producto}</td>
                             <td className="ventas">{producto.nombre}</td>
                             <td className="ventas">${producto.precioUnitario}</td>
-                            <td className="ventas">${producto.subtotal}</td>
+                            <td className="ventas">${parseFloat(producto.subtotal)}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -43,9 +45,67 @@ const Ventas = () => {
     const [precioUnitario, setPrecioUnitario] = useState("");
     const [ventas, setVentas] = useState([]);
     const [montoRecibido, setMontoRecibido] = useState("");
+    const [departamento, setDepartamento] = useState([]);
+    const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
 
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
+    const fechaFormateada = format(hoy, 'yyyy-MM-dd');
+
+    const handleCreateVenta = async () => {
+        try {
+            const nuevaVenta = {
+                fecha: fechaFormateada,
+                total: parseFloat(calcularTotal()),
+                anticipo: {
+                    monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
+                },
+                cliente: {
+                    idCliente: 2
+                },
+                empleado: {
+                    idEmpleado: 3
+                },
+                departamento: {
+                    idDepartamento: parseInt(departamentoSeleccionado)
+                },
+                detallePedido: {
+                    idDetallePedido: 3,
+                    fechaEntrega: "2023-12-18",
+                    horaEntrgea : "00:00"
+                },
+                detalleVenta: ventas.map((producto) => ({
+                    cantidad: parseFloat(producto.cantidad),
+                    subtotal: parseFloat(producto.subtotal),
+                    producto: {
+                        codigo: parseInt(producto.producto)
+                    }
+                })),
+            };
+            console.log('Nueva venta:', nuevaVenta);
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas/crearlimpio', nuevaVenta);
+            console.log('Venta creada:', response.data);
+            alert('Nota de venta creada con éxito');
+            resetForm();
+        } catch (error) {
+            console.error('Error al crear la venta:', error);
+            alert('Error al crear la nota de venta');
+        }
+        
+    }
+
+    useEffect(() => {
+        const fetchDepartamento = async () => {
+            try {
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/departamento');
+                setDepartamento(response.data);
+            } catch (error) {
+                console.error('Error al obtener los departamentos', error);
+            }
+        };
+        fetchDepartamento();
+    }, []);
+    
 
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
@@ -83,16 +143,16 @@ const Ventas = () => {
     const agregarProducto = async () => {
         if (cantidad && producto && precioUnitario) {
             try {
-                const response = await fetch(`http://localhost:8080/api/productos/${producto}`);
+                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${producto}`);
                 const data = await response.json();
                 const unidadDeMedida = data.unidadMedida;
 
                 const nuevoProducto = {
-                    cantidad: cantidad,
+                    cantidad: parseFloat(cantidad),
                     producto: producto,
                     nombre: data.nombre, 
                     precioUnitario: parseFloat(precioUnitario).toFixed(2),
-                    subtotal: calcularSubtotal(unidadDeMedida),
+                    subtotal: parseFloat(calcularSubtotal(unidadDeMedida)).toFixed(2),
                 };
 
                 setVentas([...ventas, nuevoProducto]);
@@ -110,10 +170,10 @@ const Ventas = () => {
     const calcularSubtotal = (unidadDeMedida) => {
         console.log('unidad de medida: ', unidadDeMedida)
         if (unidadDeMedida == 'gramos') {
-            return (parseFloat(cantidad) * parseFloat(precioUnitario) / 100).toFixed(2);
+            return parseFloat((parseFloat(cantidad) * parseFloat(precioUnitario) / 100).toFixed(2));
         }
         else {
-            return (parseFloat(cantidad) * parseFloat(precioUnitario)).toFixed(2);
+            return parseFloat((parseFloat(cantidad) * parseFloat(precioUnitario)).toFixed(2));
         }
     }
 
@@ -132,6 +192,15 @@ const Ventas = () => {
         }
     };
 
+    const resetForm = () => {
+        setDepartamentoSeleccionado('');
+        setCantidad("");
+        setProducto("");
+        setPrecioUnitario("");
+        setVentas([]);
+        setMontoRecibido("");
+    }
+
     return (
         <div className="registro">
             <MenuHamburguesa />
@@ -140,6 +209,18 @@ const Ventas = () => {
                 <label className="fecha">Fecha : {hoy.toDateString()}</label>
             </div>
             <br />
+            <select
+                className="select-producto"
+                value={departamentoSeleccionado}
+                onChange={(e) => setDepartamentoSeleccionado(e.target.value)}
+            >
+                <option value="">Selecciona un departamento</option>
+                {departamento.map((departamento) => (
+                    <option key={departamento.idDepartamento} value={departamento.idDepartamento}>
+                        {departamento.nombre}
+                    </option>
+                ))}
+            </select>
             <div className="input">
                 <input
                     className="cantidad"
@@ -159,7 +240,7 @@ const Ventas = () => {
                     value={precioUnitario}
                     onChange={handlePrecioUnitarioChange}
                 />
-                <button onClick={agregarProducto}>Agregar Producto</button>
+                <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
                 <div className="scroll-panel">
                     <table>
                         <thead className="ventas">
@@ -178,7 +259,7 @@ const Ventas = () => {
                                     <td className="ventas">{producto.producto}</td>
                                     <td className="ventas">{producto.nombre}</td>
                                     <td className="ventas">${producto.precioUnitario}</td>
-                                    <td className="ventas">${producto.subtotal}</td>
+                                    <td className="ventas">${parseFloat(producto.subtotal)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -193,7 +274,7 @@ const Ventas = () => {
                 />
                 <h4 className="total">Cambio: ${cambio()}</h4>
                 <div className="btns">
-                <button className="btn-finalizar">
+                <button className="btn-finalizar" onClick={handleCreateVenta}>
                 <PDFDownloadLink className="no-underline1"
                     document={<SalesReportPDF salesData={ventas} />}
                     fileName="sales_report.pdf"

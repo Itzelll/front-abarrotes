@@ -76,3 +76,27 @@
     width: 80%;
     text-align: right;
 }
+
+.agregar-prod {
+    margin-left: 10px;
+    background-color: #4caf50;
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 20%;
+    margin-bottom: 5px;
+    margin-top: 3px;
+}
+
+.btn-editar {
+    margin-right: 5px;
+    background-color: #4caf50;
+    color: white;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+}

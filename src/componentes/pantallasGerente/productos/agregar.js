@@ -278,7 +278,7 @@ const CreateProduct = () => {
                             <td>{producto.unidadMedida}</td>
                             <td className='btn-ventas'>
                                 <div className='botones'>
-                                    <button className='btn-finalizar' onClick={() => handleEdit(producto.codigo)}>Editar</button>
+                                    <button className='btn-editar' onClick={() => handleEdit(producto.codigo)}>Editar</button>
                                 </div>
                             </td>
                         </tr>
