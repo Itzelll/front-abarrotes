@@ -30,11 +30,13 @@ const CategoriaList = () => {
 
             const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias', nuevaCategoria);
             console.log('Categoría creada:', response.data);
+            alert('Categoría creada con éxito.');
             setIdCategoria('');
             setNombreCategoria('');
             fetchCategorias();
         } catch (error) {
             console.error('Error al crear categoría', error);
+            alert('Error al crear categoría.');
         }
     };
 
@@ -63,12 +65,14 @@ const CategoriaList = () => {
             );
 
             console.log('Categoría actualizada:', response.data);
+            alert('Categoría actualizada con éxito.');
             setNombreCategoria('');
             setCategoriaSeleccionada('');
             setModoEdicion(false);
             fetchCategorias();
         } catch (error) {
             console.error('Error al actualizar categoría', error);
+            alert('Error al actualizar categoría.');
         }
     };
 

@@ -30,11 +30,13 @@ const UnidadMedidaList = () => {
 
       const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida', nuevaUnidadMedida);
       console.log('Unidad de medida creada:', response.data);
+      alert('Unidad de medida creada con éxito.');
       setIdUnidadMedida('');
       setNombreUnidadMedida('');
       fetchUnidadesMedida();
     } catch (error) {
       console.error('Error al crear unidad de medida', error);
+      alert('Error al crear unidad de medida.');
     }
   };
 
@@ -47,6 +49,7 @@ const UnidadMedidaList = () => {
       setModoEdicion(true);
     } else {
       console.error(`No se encontró la unidad de medida con ID: ${idUnidadMed}`);
+
     }
   };
 
@@ -64,12 +67,14 @@ const UnidadMedidaList = () => {
       );
 
       console.log('Unidad de medida actualizada:', response.data);
+      alert('Unidad de medida actualizada con éxito.');
       setNombreUnidadMedida('');
       setUnidadMedidaSeleccionada('');
       setModoEdicion(false);
       fetchUnidadesMedida();
     } catch (error) {
       console.error('Error al actualizar unidad de medida', error);
+      alert('Error al actualizar unidad de medida.');
     }
   };
 

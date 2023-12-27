@@ -46,6 +46,7 @@ const CreateProduct = () => {
             resetForm();
         } catch (error) {
             console.error('Error al crear producto', error);
+            alert('Error al crear producto.');
         }
     };
 
@@ -105,6 +106,7 @@ const CreateProduct = () => {
             resetForm();
         } catch (error) {
             console.error('Error al actualizar producto', error);
+            alert('Error al actualizar producto.');
         }
     };
 

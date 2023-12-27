@@ -30,6 +30,7 @@ const MarcaList = () => {
 
       const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas', nuevaMarca);
       console.log('Marca creada:', response.data);
+      alert('Marca creada con éxito.');
       setIdMarca('');
       setNombreMarca('');
       fetchMarcas();
@@ -61,12 +62,14 @@ const MarcaList = () => {
         marcaActualizada
       );
       console.log('Marca actualizada:', response.data);
+      alert('Marca actualizada con éxito.');
       setNombreMarca('');
       setMarcaSeleccionada('');
       setModoEdicion(false);
       fetchMarcas();
     } catch (error) {
       console.error('Error al actualizar marca', error);
+      alert('Error al actualizar marca.');
     }
   };
 
