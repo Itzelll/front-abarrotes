@@ -111,8 +111,8 @@ const UnidadMedidaList = () => {
           </thead>
           <tbody>
             {unidadesMedida.map((unidadMedida) => (
-              <tr key={unidadMedida.id}>
-                <td>{unidadMedida.id}</td>
+              <tr key={unidadMedida.idUnidadMedida}>
+                <td>{unidadMedida.idUnidadMedida}</td>
                 <td>{unidadMedida.nombre}</td>
                 <td className='btn-ventas'>
                   {/* <button onClick={() => handleEliminarUnidadMedida(unidadMedida.id)}>Eliminar</button> */}

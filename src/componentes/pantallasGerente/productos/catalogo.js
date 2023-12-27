@@ -73,7 +73,7 @@ const Catalogo = () => {
                 </thead>
                 <tbody>
                     {productos.map((producto) => (
-                        <tr key={producto.id}>
+                        <tr key={producto.codigo}>
                             <td>{producto.codigo}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.existencia}</td>

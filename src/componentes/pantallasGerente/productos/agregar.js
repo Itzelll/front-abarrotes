@@ -26,9 +26,9 @@ const CreateProduct = () => {
                 codigo,
                 nombre: nombre.toLowerCase(),
                 existencia,
-                categoria: categoriaSeleccionada,  // Utilizar la categoría seleccionada
-                marca: marcaSeleccionada,  // Utilizar la marca seleccionada
-                unidadMedida: unidadMedidaSeleccionada,
+                categoria: categoriaSeleccionada.idCategoria,  // Utilizar la categoría seleccionada
+                marca: marcaSeleccionada.idMarca,  // Utilizar la marca seleccionada
+                unidadMedida: unidadMedidaSeleccionada.idUnidadMedida,
             });
             console.log('Producto creado:', response.data);
             // Puedes actualizar la lista de productos después de la creación
@@ -36,6 +36,7 @@ const CreateProduct = () => {
             console.log(productos)
         } catch (error) {
             console.error('Error al crear producto', error);
+            alert('Error al crear el producto. Por favor, inténtelo de nuevo.');
         }
     };
 
@@ -46,9 +47,9 @@ const CreateProduct = () => {
             setCodigo(productoAEditar.codigo);
             setNombre(productoAEditar.nombre);
             setexistencia(productoAEditar.existencia);
-            setCategoriaSeleccionada(productoAEditar.categoria);
-            setMarcaSeleccionada(productoAEditar.marca);
-            setUnidadMedidaSeleccionada(productoAEditar.unidadMedida);
+            setCategoriaSeleccionada(productoAEditar.categoria.idCategoria);
+            setMarcaSeleccionada(productoAEditar.marca.idMarca);
+            setUnidadMedidaSeleccionada(productoAEditar.unidadMedida.idUnidadMedida);
             setEditingId(id);
         }
     };
@@ -59,9 +60,9 @@ const CreateProduct = () => {
                 codigo,
                 nombre: nombre.toLowerCase(),
                 existencia,
-                categoria: categoriaSeleccionada,
-                marca: marcaSeleccionada,
-                unidadMedida: unidadMedidaSeleccionada,
+                categoria: categoriaSeleccionada.idCategoria,
+                marca: marcaSeleccionada.idMarca,
+                unidadMedida: unidadMedidaSeleccionada.idUnidadMedida,
             });
             console.log('Producto actualizado:', response.data);
             // Actualizar la lista de productos después de la edición
@@ -167,7 +168,7 @@ const CreateProduct = () => {
             >
                 <option value="">Selecciona una categoría</option>
                 {categorias.map((categoria) => (
-                    <option key={categoria.id} value={categoria.id}>
+                    <option key={categoria.idCategoria} value={categoria.idCategoria}>
                         {categoria.nombre}
                     </option>
                 ))}
@@ -178,7 +179,7 @@ const CreateProduct = () => {
             >
                 <option value="">Selecciona una marca</option>
                 {marcas.map((marca) => (
-                    <option key={marca.id} value={marca.id}>
+                    <option key={marca.idMarca} value={marca.idMarca}>
                         {marca.nombre}
                     </option>
                 ))}
@@ -189,7 +190,7 @@ const CreateProduct = () => {
             >
                 <option value="">Selecciona una unidad de medida</option>
                 {unidadMedidas.map((unidadMedida) => (
-                    <option key={unidadMedida.id} value={unidadMedida.id}>
+                    <option key={unidadMedida.idUnidadMedida} value={unidadMedida.idUnidadMedida}>
                         {unidadMedida.nombre}
                     </option>
                 ))}
@@ -218,7 +219,7 @@ const CreateProduct = () => {
                 </thead>
                 <tbody >
                     {productos.map((producto) => (
-                        <tr key={producto.id}>
+                        <tr key={producto.codigo}>
                             <td>{producto.codigo}</td>
                             <td>{producto.nombre}</td>
                             <td>{producto.existencia}</td>

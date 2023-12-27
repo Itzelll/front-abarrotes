@@ -93,8 +93,8 @@ const MarcaList = () => {
           </thead>
           <tbody>
             {marcas.map((marca) => (
-              <tr key={marca.id}>
-                <td>{marca.id}</td>
+              <tr key={marca.idMarca}>
+                <td>{marca.idMarca}</td>
                 <td>{marca.nombre}</td>
                 <td className='btn-ventas'>
                   <div className='botones'>

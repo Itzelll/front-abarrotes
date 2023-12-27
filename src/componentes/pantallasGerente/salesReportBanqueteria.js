@@ -1,5 +1,6 @@
 import React from 'react';
 import { PDFDownloadLink, Page, Text, View, Document } from '@react-pdf/renderer';
+import { Link } from 'react-router-dom';
 import MenuHamburguesa from '../MenuHamburguesa';
 
 const SalesReportBanqueteriaPDF = () => (
@@ -43,12 +44,10 @@ const SalesReportBanqueteria = () => {
     <div className='registro'>
       <MenuHamburguesa />
       <h1>Informe de Ventas Banquetería</h1>
+      <div className="btn-ventas">
+        <Link to="/ventasMensualesBanqueteria"><button className='ventas-mensuales'>Ventas Mensuales</button></Link>
+      </div>
       <h4>Ventas de la semana</h4>
-      <PDFDownloadLink document={<SalesReportBanqueteriaPDF />} fileName="sales_report_banqueteria.pdf">
-        {({ blob, url, loading, error }) =>
-          loading ? 'Generando PDF...' : 'Descargar PDF'
-        }
-      </PDFDownloadLink>
       <table>
         <thead>
           <tr>
@@ -83,6 +82,11 @@ const SalesReportBanqueteria = () => {
             <td>5000</td>
           </tr>
         </tbody>
+        <PDFDownloadLink document={<SalesReportBanqueteriaPDF />} fileName="sales_report_banqueteria.pdf">
+        {({ blob, url, loading, error }) =>
+          loading ? 'Generando PDF...' : 'Descargar PDF'
+        }
+      </PDFDownloadLink>
       </table>
     </div>
   );

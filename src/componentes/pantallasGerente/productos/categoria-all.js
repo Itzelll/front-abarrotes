@@ -13,7 +13,7 @@ const CategoriaList = () => {
 
     const fetchCategorias = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/categorias');
+            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias');
             setCategorias(response.data);
         } catch (error) {
             console.error('Error al obtener categorías', error);
@@ -26,7 +26,7 @@ const CategoriaList = () => {
                 nombre: nombreCategoria.toLowerCase(),
             };
 
-            const response = await axios.post('http://localhost:8080/api/categorias', nuevaCategoria);
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias', nuevaCategoria);
             console.log('Categoría creada:', response.data);
             setNombreCategoria('');
             fetchCategorias();
@@ -58,7 +58,7 @@ const CategoriaList = () => {
             };
 
             const response = await axios.put(
-                `http://localhost:8080/api/categorias/${categoriaSeleccionada}`,
+                `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias/${categoriaSeleccionada}`,
                 categoriaActualizada
             );
 
@@ -111,8 +111,8 @@ const CategoriaList = () => {
                     </thead>
                     <tbody>
                         {categorias.map((categoria) => (
-                            <tr key={categoria.id}>
-                                <td>{categoria.id}</td>
+                            <tr key={categoria.idCategoria}>
+                                <td>{categoria.idCategoria}</td>
                                 <td>{categoria.nombre}</td>
                                 <td className='btn-ventas'>
                                     {/* <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button> */}

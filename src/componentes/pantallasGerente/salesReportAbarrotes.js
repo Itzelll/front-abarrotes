@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, Page, Document } from '@react-pdf/renderer';
 import MenuHamburguesa from '../MenuHamburguesa';
+import { Link } from 'react-router-dom';
 import { SalesReportAbarrotesPDF } from './styleAbarrotesPDF';
 
 const SalesReportAbarrotes = () => {
@@ -12,7 +13,7 @@ const SalesReportAbarrotes = () => {
     const fetchData = async () => {
       try {
         // Replace this with your actual API endpoint to fetch sales data
-        const response = await fetch('/api/salesReportAbarrotes');
+        const response = await fetch('http://localhost:8080/api/notasventas');
         const data = await response.json();
         setSalesData(data);
       } catch (error) {
@@ -37,48 +38,71 @@ const SalesReportAbarrotes = () => {
     console.log(`Editar elemento con ID ${id}`);
   };
 
-
-  return (
-    <div className='registro'>
-      <MenuHamburguesa />
-      <h1>Informe de Ventas Abarrotes</h1>
-      <h4>Ventas de la semana</h4>
-      <PDFDownloadLink document={<SalesReportAbarrotesPDF salesData={salesData} />}
-        fileName="sales_report_abarrotes.pdf">
-        {({ blob, url, loading, error }) =>
-          loading ? 'Generando PDF...' : 'Descargar PDF'
-        }
-      </PDFDownloadLink>
-      {/* <table style={{ width: '90%', marginTop: '10px', borderCollapse: 'collapse' }}> */}
+  const SalesReportAbarrotesPDF = () => (
+    <Document>
+      <Page size="A4">
       <table>
         <thead>
           <tr>
             <th>ID</th>
             <th>Producto</th>
             <th>Cantidad</th>
-            <th>Precio Unitario</th>
+            <th>Total</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {salesData.map((sale) => (
+            <tr key={sale.id}>
+              <td>{sale.numeroNota}</td>
+              <td>{sale.producto}</td>
+              <td>{sale.cantidad}</td>
+              <td>{sale.total}</td>
+            </tr>
+          ))}
+        </tbody>
+        </table>
+      </Page>
+    </Document>
+  );
+
+  return (
+    <div className='registro'>
+      <MenuHamburguesa />
+      <h1>Informe de Ventas Abarrotes</h1>
+      <div className="btn-ventas">
+        <Link to="/ventasMensualesAbarrotes"><button className='ventas-mensuales'>Ventas Mensuales</button></Link>
+      </div>
+      {/* <table style={{ width: '90%', marginTop: '10px', borderCollapse: 'collapse' }}> */}
+      <h4>Ventas de la semana</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody>
           {salesData.map((sale) => (
             <tr key={sale.id}>
-              <td>{sale.id}</td>
+              <td>{sale.numeroNota}</td>
               <td>{sale.producto}</td>
               <td>{sale.cantidad}</td>
-              <td>{sale.precioUnitario}</td>
-              <td>{sale.cantidad * sale.precioUnitario}</td>
-              <td>
-                <button onClick={() => handleEdit(sale.id)}>Editar</button>
-              </td>
-
-              <td>
-                <button onClick={() => handleDelete(sale.id)}>Eliminar</button>
-              </td>
+              <td>{sale.total}</td>
             </tr>
           ))}
         </tbody>
+        <PDFDownloadLink document={<SalesReportAbarrotesPDF salesData={salesData} />}
+          fileName="sales_report_abarrotes.pdf">
+          {({ blob, url, loading, error }) =>
+            loading ? 'Generando PDF...' : 'Descargar PDF'
+          }
+        </PDFDownloadLink>
       </table>
+
     </div>
   );
 };
