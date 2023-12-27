@@ -10,10 +10,11 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/api/login', {
-        username: username,
-        password: password,
+      const response = await axios.post('http://localhost:8080/api/login', {
+        usuario: username,
+        contrasenia: password,
       });
+
       console.log('Respuesta del backend', response.data);
       if (response.data.success) {
         history.push('/salesReport');
@@ -21,9 +22,8 @@ const LoginForm = () => {
     } catch (error) {
       console.error('Error al iniciar sesión', error.message);
     }
-    console.log(`Usuario: ${username}, Contraseña: ${password}`);
+    console.log('Usuario: ${username}, Contraseña: ${password}');
   };
-
   return (
     <div className="form-container">
       <h2>Iniciar Sesión</h2>
