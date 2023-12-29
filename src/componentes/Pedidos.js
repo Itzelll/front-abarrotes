@@ -1,48 +1,50 @@
-import React, { useState, useEffect } from "react";
-import "./pantallasGerente/style/salesReport.css";
-import "./pantallasGerente/style/registroEmp.css";
-import "./Ventas.css";
+import React, { useState, useEffect, useRef } from "react";
+import MenuHamburguesa from './MenuHamburguesa';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
-import MenuHamburguesa from './MenuHamburguesa';
-import { PDFDownloadLink, Page, Document } from '@react-pdf/renderer';
-import { SalesReportPDF } from '../componentes/pantallasGerente/styleSalesReportPDF';
+import { CgAdd } from "react-icons/cg";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-// Componente para el informe de ventas en PDF
-const SalesReport = ({ salesData, fecha, total, montoRecibido, cambio }) => (
-    <Document>
-        <Page size="A4">
-            <label className="fecha">Fecha: {fecha}</label>
-            <table>
-                <thead className="ventas">
-                    <tr className="ventas">
-                        <th className="ventas">Cantidad</th>
-                        <th className="ventas">Código Producto</th>
-                        <th className="ventas">Producto</th>
-                        <th className="ventas">Precio Unitario</th>
-                        <th className="ventas">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody className="ventas">
-                    {salesData.map((producto, index) => (
-                        <tr key={index} className="ventas">
-                            <td className="ventas">{producto.cantidad}</td>
-                            <td className="ventas">{producto.producto}</td>
-                            <td className="ventas">{producto.nombre}</td>
-                            <td className="ventas">${producto.precioUnitario}</td>
-                            <td className="ventas">${parseFloat(producto.subtotal)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <h4>Total: ${total}</h4>
-            <h4>Monto Recibido: ${montoRecibido}</h4>
-            <h4>Cambio: ${cambio}</h4>
-        </Page>
-    </Document>
-);
+const Calendar = () => {
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-const Ventas = () => {
+    const handleDateChange = date => {
+        setSelectedDate(date);
+        closeCalendar();
+    };
+
+    const toggleCalendar = () => {
+        setIsCalendarOpen(!isCalendarOpen);
+    };
+
+    const closeCalendar = () => {
+        setIsCalendarOpen(false);
+    };
+
+    return (
+        <div>
+            <div onClick={toggleCalendar}>
+                <DatePicker
+                    className="fecha-entrega"
+                    placeholderText="Fecha de entrega"
+                    selected={selectedDate}
+                    dateFormat="yyyy-MM-dd"
+                    onChange={handleDateChange}
+                    onClickOutside={closeCalendar}
+                />
+            </div>
+        </div>
+    );
+};
+
+const Pedidos = () => {
+    const [cliente, setCliente] = useState([]);
+    const [clienteSeleccionado, setClienteSeleccionado] = useState("");
+    const [fechaEntrega, setFechaEntrega] = useState("");
+    const [horaEntrega, setHoraEntrega] = useState("");
     const [cantidad, setCantidad] = useState("");
     const [producto, setProducto] = useState("");
     const [precioUnitario, setPrecioUnitario] = useState("");
@@ -50,15 +52,15 @@ const Ventas = () => {
     const [montoRecibido, setMontoRecibido] = useState("");
     const [departamento, setDepartamento] = useState([]);
     const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
+    const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
 
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
-
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
 
-    const handleCreateVenta = async () => {
+    const handleCreatePedido = async () => {
         try {
-            const nuevaVenta = {
+            const nuevoPedido = {
                 fecha: fechaFormateada,
                 total: parseFloat(calcularTotal()),
                 anticipo: {
@@ -86,15 +88,16 @@ const Ventas = () => {
                     }
                 })),
             };
-            console.log('Nueva venta:', nuevaVenta);
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas/crearlimpio', nuevaVenta);
-            console.log('Venta creada:', response.data);
-            alert('Nota de venta creada con éxito');
+            console.log('Nueva venta:', nuevoPedido);
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido', nuevoPedido);
+            console.log('Pedido creado:', response.data);
+            alert('Pedido creado con éxito');
             resetForm();
         } catch (error) {
-            console.error('Error al crear la venta:', error);
-            alert('Error al crear la nota de venta');
+            console.error('Error al crear el pedido:', error);
+            alert('Error al crear el pedido');
         }
+
     }
 
     useEffect(() => {
@@ -107,6 +110,18 @@ const Ventas = () => {
             }
         };
         fetchDepartamento();
+    }, []);
+
+    useEffect(() => {
+        const fetchCliente = async () => {
+            try {
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes');
+                setCliente(response.data);
+            } catch (error) {
+                console.error('Error al obtener los clientes', error);
+            }
+        };
+        fetchCliente();
     }, []);
 
     useEffect(() => {
@@ -126,20 +141,41 @@ const Ventas = () => {
         }
     }, [producto]);
 
-    const handleCantidadChange = (e) => {
-        setCantidad(e.target.value);
-    };
+    const AddClientModal = ({ onClose }) => {
+        // Lógica y JSX para el formulario de agregar cliente
 
-    const handleProductoChange = (e) => {
-        setProducto(e.target.value);
-    };
+        return (
+            // JSX de la pantalla flotante
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <MenuHamburguesa />
+                    <h2>Nuevo Cliente</h2>
 
-    const handlePrecioUnitarioChange = (e) => {
-        setPrecioUnitario(e.target.value);
-    };
-
-    const handleMontoRecibidoChange = (e) => {
-        setMontoRecibido(e.target.value);
+                    <div className="input">
+                        <input
+                            className="cantidad"
+                            placeholder="Nombre"
+                        />
+                        <input
+                            className="cantidad"
+                            placeholder="Apellidos"
+                        />
+                        <input
+                            className="cantidad"
+                            placeholder="Teléfono"
+                        />
+                        <input
+                            className="cantidad"
+                            placeholder="Dirección"
+                        />
+                    </div>
+                    <div className="btns">                        
+                        <button className="btn-finalizar">Guardar</button>
+                        <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     const agregarProducto = async () => {
@@ -169,6 +205,34 @@ const Ventas = () => {
         }
     };
 
+    const handleHoraEntrega = (e) => {
+        setHoraEntrega(e.target.value);
+    }
+
+    const handleCantidadChange = (e) => {
+        setCantidad(e.target.value);
+    };
+
+    const handleProductoChange = (e) => {
+        setProducto(e.target.value);
+    };
+
+    const handlePrecioUnitarioChange = (e) => {
+        setPrecioUnitario(e.target.value);
+    };
+
+    const handleMontoRecibidoChange = (e) => {
+        setMontoRecibido(e.target.value);
+    };
+
+    const openAddClientModal = () => {
+        setIsAddClientModalOpen(true);
+    };
+
+    const closeAddClientModal = () => {
+        setIsAddClientModalOpen(false);
+    };
+
     const calcularSubtotal = (unidadDeMedida) => {
         console.log('unidad de medida: ', unidadDeMedida)
         if (unidadDeMedida === 'gramos') {
@@ -183,27 +247,16 @@ const Ventas = () => {
         return ventas.reduce((total, producto) => total + parseFloat(producto.subtotal), 0).toFixed(2);
     };
 
-    const cambio = () => {
-        const totalVenta = parseFloat(calcularTotal());
-        const montoRecibidoFloat = parseFloat(montoRecibido);
-
-        if (!isNaN(totalVenta) && !isNaN(montoRecibidoFloat)) {
-            return (montoRecibidoFloat - totalVenta).toFixed(2);
-        } else {
-            return "";
-        }
-    };
-
     const cancelarVenta = () => {
         if (window.confirm("¿Estás seguro de cancelar la venta?")) {
             resetForm();
             console.log("Venta cancelada");
         }
-    };
-
+    }
 
     const resetForm = () => {
         setDepartamentoSeleccionado('');
+        setClienteSeleccionado('');
         setCantidad("");
         setProducto("");
         setPrecioUnitario("");
@@ -214,36 +267,71 @@ const Ventas = () => {
     return (
         <div className="registro">
             <MenuHamburguesa />
-            <h1>Ventas</h1>
+            <h1>Nuevo pedido</h1>
             <div className="fecha">
                 <label className="fecha">Fecha : {hoy.toDateString()}</label>
             </div>
             <br />
-            <select
-                className="select-producto"
-                value={departamentoSeleccionado}
-                onChange={(e) => setDepartamentoSeleccionado(e.target.value)}
-            >
-                <option value="">Selecciona un departamento</option>
-                {departamento.map((departamento) => (
-                    <option key={departamento.idDepartamento} value={departamento.idDepartamento}>
-                        {departamento.nombre}
-                    </option>
-                ))}
-            </select>
+            <div className="pedidos">
+                <div className="departamentos">
+                    <select
+                        className="select-departamento"
+                        value={departamentoSeleccionado}
+                        onChange={(e) => setDepartamentoSeleccionado(e.target.value)}
+                    >
+                        <option value="">Selecciona un departamento</option>
+                        {departamento.map((departamento) => (
+                            <option key={departamento.idDepartamento} value={departamento.idDepartamento}>
+                                {departamento.nombre}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="clientes">
+                    <select
+                        className="select-cliente"
+                        value={clienteSeleccionado}
+                        onChange={(e) => setClienteSeleccionado(e.target.value)}
+                    >
+                        <option value="">Selecciona un cliente</option>
+                        {cliente.map((cliente) => (
+                            <option key={cliente.idCliente} value={cliente.idCliente}>
+                                {cliente.nombre + ' ' + cliente.apellidos}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="mas" onClick={openAddClientModal}>
+                        <Link className='no-underline'><CgAdd /></Link>
+                    </div>
+                    {isAddClientModalOpen && (
+                        <AddClientModal onClose={closeAddClientModal} />
+                    )}
+                </div>
+            </div>
             <div className="input">
-                <input
-                    className="cantidad"
-                    placeholder="Cantidad"
-                    value={cantidad}
-                    onChange={handleCantidadChange}
-                />
-                <input
-                    className="producto"
-                    placeholder="Producto"
-                    value={producto}
-                    onChange={handleProductoChange}
-                /> <br />
+                <div>
+                    <Calendar />
+                    <input
+                        className="hora"
+                        placeholder="Hora de entrega"
+                        value={horaEntrega}
+                        onChange={handleHoraEntrega}
+                    />
+                </div>
+                <div>
+                    <input
+                        className="cantidad"
+                        placeholder="Cantidad"
+                        value={cantidad}
+                        onChange={handleCantidadChange}
+                    />
+                    <input
+                        className="producto"
+                        placeholder="Producto"
+                        value={producto}
+                        onChange={handleProductoChange}
+                    />
+                </div>
                 <input
                     className="precio"
                     placeholder="Precio Unitario"
@@ -282,17 +370,11 @@ const Ventas = () => {
                     value={montoRecibido}
                     onChange={handleMontoRecibidoChange}
                 />
-                <h4 className="total">Cambio: ${cambio()}</h4>
+                <br /><br />
                 <div className="btns">
-                    <button className="btn-finalizar" onClick={handleCreateVenta}>
-                        <PDFDownloadLink className="no-underline1"
-                            document={<SalesReportPDF salesData={ventas} fecha={fechaFormateada} total={calcularTotal()} montoRecibido={montoRecibido} cambio={cambio()} />}
-                            fileName="sales_report.pdf"
-                        >
-                            {({ blob, url, loading, error }) =>
-                                loading ? 'Generando PDF...' : 'Finalizar Venta'
-                            }
-                        </PDFDownloadLink></button>
+                    <button className="btn-finalizar">
+                        Finalizar
+                    </button>
                     <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
                 </div>
             </div>
@@ -300,4 +382,4 @@ const Ventas = () => {
     );
 }
 
-export default Ventas;
+export default Pedidos;

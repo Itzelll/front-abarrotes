@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import MenuHamburguesa from '../MenuHamburguesa';
 import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
+import '../Calendar.js';
+import Calendar from '../Calendar.js';
 
 const NotasCanceladas = () => {
     const [notasVentaCanceladas, setNotasVentaCanceladas] = useState([]);
@@ -44,7 +46,7 @@ const NotasCanceladas = () => {
                 nota.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
             );
         });
-    };
+    };       
 
     return (
         <div className='registro'>
@@ -58,7 +60,9 @@ const NotasCanceladas = () => {
                 </div>
                 <div>
                     <label>Filtrar por Fecha:</label>
-                    <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
+                    {/* <Calendar> */}
+                        <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
+                    {/* </Calendar> */}
                 </div>
                 <div>
                     <label>Filtrar por Departamento:</label>

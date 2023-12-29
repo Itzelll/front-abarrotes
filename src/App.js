@@ -23,6 +23,7 @@ import UnidadMedidaList from './componentes/pantallasGerente/productos/unidadMed
 import NotasPagadas from './componentes/notas/notasPagadas';
 import NotasCanceladas from './componentes/notas/notasCanceladas';
 import NotasPendientes from './componentes/notas/notasPendientes';
+import Pedidos from './componentes/Pedidos';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         <Route path="/notasPagadas" element={<NotasPagadas />} />
         <Route path="/notasCanceladas" element={<NotasCanceladas />} />
         <Route path="/notasPendientes" element={<NotasPendientes />} />
+        <Route path="/pedidos" element={<Pedidos />} />
       </Routes>
     </Router>
     </div>
