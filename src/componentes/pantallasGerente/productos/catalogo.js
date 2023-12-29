@@ -1,4 +1,3 @@
-// Catalogo.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
@@ -8,7 +7,7 @@ import '../style/salesReport.css';
 const Catalogo = () => {
     const [productos, setProductos] = useState([]);
     const [nombreBusqueda, setNombreBusqueda] = useState('');
-    const [productoEncontrado, setProductoEncontrado] = useState(null);
+    const [productosEncontrados, setProductosEncontrados] = useState([]);
     const [errorBusqueda, setErrorBusqueda] = useState(null);
 
     useEffect(() => {
@@ -27,19 +26,16 @@ const Catalogo = () => {
     const handleBuscarProducto = async () => {
         try {
             const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/buscar?nombre=${nombreBusqueda.toLowerCase()}`);
-            setProductoEncontrado(response.data[0]);
+            setProductosEncontrados(response.data);
             setErrorBusqueda(null);
         } catch (error) {
             console.error('Error al buscar producto', error);
-            // alert('Error al buscar producto.');
-            setProductoEncontrado(null);
-            setErrorBusqueda('Producto no encontrado');
-            alert('Producto no encontrado.');
+            setProductosEncontrados([]);
+            setErrorBusqueda('Productos no encontrados');
         }
     };
 
     return (
-
         <div className='registro'>
             <MenuHamburguesa />
             <div className='btns'>
@@ -55,9 +51,9 @@ const Catalogo = () => {
                     <button onClick={handleBuscarProducto} className='btn-finalizar'>Buscar</button>
                 </div>
                 {errorBusqueda && <p className='error-message'>{errorBusqueda}</p>}
-                {productoEncontrado && (
+                {productosEncontrados.length > 0 && (
                     <div>
-                        <h3>Producto Encontrado:</h3>
+                        <h3>Productos Encontrados:</h3>
                         <table className='registroEmp'>
                             <thead>
                                 <tr>
@@ -71,22 +67,24 @@ const Catalogo = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr key={productoEncontrado.codigo}>
-                                    <td>{productoEncontrado.codigo}</td>
-                                    <td>{productoEncontrado.nombre}</td>
-                                    <td>{productoEncontrado.existencia}</td>
-                                    <td>{productoEncontrado.precio}</td>
-                                    <td>{productoEncontrado.categoria}</td>
-                                    <td>{productoEncontrado.marca}</td>
-                                    <td>{productoEncontrado.unidadMedida}</td>
-                                </tr>
+                                {productosEncontrados.map((producto) => (
+                                    <tr key={producto.codigo}>
+                                        <td>{producto.codigo}</td>
+                                        <td>{producto.nombre}</td>
+                                        <td>{producto.existencia}</td>
+                                        <td>{producto.precio}</td>
+                                        <td>{producto.categoria}</td>
+                                        <td>{producto.marca}</td>
+                                        <td>{producto.unidadMedida}</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>                        
                     </div>
                 )}
             </div>
 
-            <h2 className='titulos'>Catalogo de Productos</h2>
+            <h2 className='titulos'>Catálogo de Productos</h2>
             <table className='registroEmp'>
                 <thead>
                     <tr>
@@ -111,7 +109,6 @@ const Catalogo = () => {
                     ))}
                 </tbody>
             </table>
-
         </div>
     );
 };
