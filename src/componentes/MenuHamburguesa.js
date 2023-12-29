@@ -19,14 +19,12 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
             <div className={`menu ${menuOpen ? 'open' : ''}`}>
                 <ul className='opciones'>
                     <Link to='/ventas' className='no-underline'><li className='titulo'>Ventas</li></Link>
+                    <Link to='/pedidos' className='no-underline'><li className='titulo'>Pedidos</li></Link>
                     <Link to='/registroEmpleado' className='no-underline'><li className='titulo'>ResgitrarEmpleado</li></Link>
                     <li className='titulo'>Informe de Ventas</li>
                     <Link to='/salesReportAbarrotes' className='no-underline'><li className='opc'>Abarrotes</li></Link>
                     <Link to='/salesReportFerreteria' className='no-underline'><li className='opc'>Ferrtería</li></Link>
-                    <Link to='/salesReportBanqueteria' className='no-underline'><li className='opc'>Banquetería</li></Link> 
-                    
-                    <Link to='/crearNotaGastos' className='no-underline'><li className='titulo'>Crear nota de gastos</li></Link>
-
+                    <Link to='/salesReportBanqueteria' className='no-underline'><li className='opc'>Banquetería</li></Link>
                     <li className='titulo'>Productos</li>
                     <Link to='/catalogo' className='no-underline'><li className='opc'>Catalogo</li></Link>
                     <Link to='/agregarProducto' className='no-underline'><li className='opc'>Agregar</li></Link>
