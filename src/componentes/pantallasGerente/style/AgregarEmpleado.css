@@ -32,3 +32,12 @@ label {
     width: 107%;
     margin: auto;
 }
+
+.select-empleado {
+    border-radius: 10px;
+    border: 1px solid #afadad;
+    padding-left: 5px;
+    width: 107%;
+    margin: auto;
+    height: 30px;
+}
