@@ -3,6 +3,7 @@ import axios from 'axios';
 import MenuHamburguesa from '../MenuHamburguesa';
 import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
+import Calendar from '../Calendar';
 
 const NotasPagadas = () => {
     const [data, setData] = useState([]);
@@ -11,7 +12,6 @@ const NotasPagadas = () => {
     const [filtroDepartamento, setFiltroDepartamento] = useState('');
 
     useEffect(() => {
-        // Realizar la solicitud de datos según los filtros aplicados
         const fetchData = async () => {
             try {
                 const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pagada');
@@ -28,8 +28,8 @@ const NotasPagadas = () => {
         setFiltroCliente(e.target.value);
     };
 
-    const handleFiltroFechaChange = (e) => {
-        setFiltroFecha(e.target.value);
+    const handleFiltroFechaChange = (date) => {
+        setFiltroFecha(date);
     };
 
     const handleFiltroDepartamentoChange = (e) => {
@@ -37,11 +37,11 @@ const NotasPagadas = () => {
     };
 
     const filtrarDatos = () => {
-        // Filtrar los datos según los criterios de búsqueda
         return data.filter(item => {
+            const fechaNota = item.fechaNota || ''; // Manejar el caso en que fechaNota es null
             return (
                 item.nombreCompletoCliente.toLowerCase().includes(filtroCliente.toLowerCase()) &&
-                item.fechaNota.includes(filtroFecha) &&
+                ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) &&
                 item.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
             );
         });
@@ -60,7 +60,11 @@ const NotasPagadas = () => {
 
                 <div>
                     <label>Filtrar por Fecha Nota:</label>
-                    <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
+                    <Calendar
+                        selectedDate={filtroFecha}
+                        handleDateChange={handleFiltroFechaChange}
+                    />
+                    {/* <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} /> */}
                 </div>
 
                 <div>

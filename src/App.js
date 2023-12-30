@@ -24,6 +24,7 @@ import NotasPagadas from './componentes/notas/notasPagadas';
 import NotasCanceladas from './componentes/notas/notasCanceladas';
 import NotasPendientes from './componentes/notas/notasPendientes';
 import Pedidos from './componentes/Pedidos';
+import PedidoEnProcesoComponent from './componentes/pedidoProceso';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
         <Route path="/notasCanceladas" element={<NotasCanceladas />} />
         <Route path="/notasPendientes" element={<NotasPendientes />} />
         <Route path="/pedidos" element={<Pedidos />} />
+        <Route path="/pedidoProceso" element={<PedidoEnProcesoComponent />} />
       </Routes>
     </Router>
     </div>

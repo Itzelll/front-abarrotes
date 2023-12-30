@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
 import MenuHamburguesa from '../MenuHamburguesa';
 import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
@@ -30,9 +29,9 @@ const NotasCanceladas = () => {
         setFiltroCliente(e.target.value);
     };
 
-    const handleFiltroFechaChange = (e) => {
-        setFiltroFecha(e.target.value);
-    };
+    // const handleFiltroFechaChange = (e) => {
+    //     setFiltroFecha(e.target.value);
+    // };
 
     const handleFiltroDepartamentoChange = (e) => {
         setFiltroDepartamento(e.target.value);
@@ -40,13 +39,15 @@ const NotasCanceladas = () => {
 
     const filtrarDatos = () => {
         return notasVentaCanceladas.filter(nota => {
+            const fechaNota = nota.fechaNota || ''; 
+    
             return (
                 nota.nombreCompletoCliente.toLowerCase().includes(filtroCliente.toLowerCase()) &&
-                nota.fechaAnticipo.includes(filtroFecha) &&
+                ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) &&
                 nota.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
             );
         });
-    };       
+    };             
 
     return (
         <div className='registro'>
@@ -59,10 +60,12 @@ const NotasCanceladas = () => {
                     <input type="text" value={filtroCliente} onChange={handleFiltroClienteChange} />
                 </div>
                 <div>
-                    <label>Filtrar por Fecha:</label>
-                    {/* <Calendar> */}
-                        <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
-                    {/* </Calendar> */}
+                    <label>Filtrar por Fecha Nota:</label>
+                    <Calendar
+                        selectedDate={filtroFecha}
+                        handleDateChange={(date) => setFiltroFecha(date)}
+                        // <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
+                    />
                 </div>
                 <div>
                     <label>Filtrar por Departamento:</label>

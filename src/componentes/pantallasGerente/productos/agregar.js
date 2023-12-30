@@ -23,6 +23,11 @@ const CreateProduct = () => {
 
     const handleCreate = async () => {
         try {
+            if (codigo.length > 4) {
+                alert('El código debe ser de máximo 4 numeros.');
+                return;
+            }
+
             const nuevoProducto = {
                 codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
@@ -179,7 +184,13 @@ const CreateProduct = () => {
                     type="number"
                     placeholder="Código"
                     value={codigo}
-                    onChange={(e) => setCodigo(e.target.value)}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (/^[0-9]*$/.test(inputValue) && inputValue.length <= 4) {
+                            setCodigo(inputValue);
+                        }
+                    }}
+                    maxLength={4}
                 />
                 <input
                     className='input-producto'
