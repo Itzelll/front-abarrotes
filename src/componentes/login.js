@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './login.css'; 
+import './login.css';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/login', {
+      const response = await axios.post('http://localhost:8080/login', {
         usuario: username,
         contrasenia: password,
       });
-
+  
       console.log('Respuesta del backend', response.data);
-      if (response.data.success) {
-        history.push('/salesReport');
-      }            
+  
+      if (response.data.success && response.data.rol) {
+        const userRole = response.data; // Almacena todo el objeto de respuesta
+        localStorage.setItem('userRole', JSON.stringify(userRole));
+        navigate('/ventas', { state: { userRole } });
+      } else {
+        console.error('La respuesta del servidor no contiene un rol válido.', response.data);
+      }
     } catch (error) {
       console.error('Error al iniciar sesión', error.message);
     }
+  
     console.log('Usuario: ${username}, Contraseña: ${password}');
   };
+
   return (
     <div className="form-container">
       <h2>Iniciar Sesión</h2>
