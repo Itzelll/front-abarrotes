@@ -189,3 +189,8 @@
     border-radius: 10px;
     z-index: 1001; /* Asegúrate de que esté por encima del fondo oscuro */
 }
+
+.select-hora {
+    margin-bottom: 10px;
+    margin-top: 0;
+}
