@@ -54,6 +54,61 @@ const Ventas = () => {
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
 
+    const fechaFormateada = format(hoy, 'yyyy-MM-dd');
+
+    const handleCreateVenta = async () => {
+        try {
+            const nuevaVenta = {
+                fecha: fechaFormateada,
+                total: parseFloat(calcularTotal()),
+                anticipo: {
+                    monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
+                },
+                cliente: {
+                    idCliente: 2
+                },
+                empleado: {
+                    idEmpleado: 3
+                },
+                departamento: {
+                    idDepartamento: parseInt(departamentoSeleccionado)
+                },
+                detallePedido: {
+                    idDetallePedido: 3,
+                    fechaEntrega: "2023-12-18",
+                    horaEntrgea: "00:00"
+                },
+                detalleVenta: ventas.map((producto) => ({
+                    cantidad: parseFloat(producto.cantidad),
+                    subtotal: parseFloat(producto.subtotal),
+                    producto: {
+                        codigo: parseInt(producto.producto)
+                    }
+                })),
+            };
+            console.log('Nueva venta:', nuevaVenta);
+            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas/crearlimpio', nuevaVenta);
+            console.log('Venta creada:', response.data);
+            alert('Nota de venta creada con éxito');
+            resetForm();
+        } catch (error) {
+            console.error('Error al crear la venta:', error);
+            alert('Error al crear la nota de venta');
+        }
+    }
+
+    useEffect(() => {
+        const fetchDepartamento = async () => {
+            try {
+                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/departamento');
+                setDepartamento(response.data);
+            } catch (error) {
+                console.error('Error al obtener los departamentos', error);
+            }
+        };
+        fetchDepartamento();
+    }, []);
+
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
             try {
@@ -139,6 +194,23 @@ const Ventas = () => {
         }
     };
 
+    const cancelarVenta = () => {
+        if (window.confirm("¿Estás seguro de cancelar la venta?")) {
+            resetForm();
+            console.log("Venta cancelada");
+        }
+    };
+
+
+    const resetForm = () => {
+        setDepartamentoSeleccionado('');
+        setCantidad("");
+        setProducto("");
+        setPrecioUnitario("");
+        setVentas([]);
+        setMontoRecibido("");
+    }
+
     return (
         <div className="registro">
             <MenuHamburguesa />
@@ -212,17 +284,17 @@ const Ventas = () => {
                 />
                 <h4 className="total">Cambio: ${cambio()}</h4>
                 <div className="btns">
-                <button className="btn-finalizar">
-                <PDFDownloadLink className="no-underline1"
-                    document={<SalesReportPDF salesData={ventas} />}
-                    fileName="sales_report.pdf"
-                >
-                    {({ blob, url, loading, error }) =>
-                        loading ? 'Generando PDF...' : 'Finalizar Venta'
-                    }
-                </PDFDownloadLink></button>
-                <button className="btn-cancelar">Cancelar Venta</button>
-            </div>
+                    <button className="btn-finalizar" onClick={handleCreateVenta}>
+                        <PDFDownloadLink className="no-underline1"
+                            document={<SalesReportPDF salesData={ventas} fecha={fechaFormateada} total={calcularTotal()} montoRecibido={montoRecibido} cambio={cambio()} />}
+                            fileName="sales_report.pdf"
+                        >
+                            {({ blob, url, loading, error }) =>
+                                loading ? 'Generando PDF...' : 'Finalizar Venta'
+                            }
+                        </PDFDownloadLink></button>
+                    <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
+                </div>
             </div>
         </div>
     );
