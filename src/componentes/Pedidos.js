@@ -58,6 +58,12 @@ const Pedidos = () => {
     const hoy = new Date(tiempoTranscurrido);
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
 
+    // Verificar si localStorage tiene datos y asignar a userRole
+    const storedUserRole = localStorage.getItem('userRole');
+    console.log('Valor almacenado en localStorage:', storedUserRole);
+    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
+
     const handleCreatePedido = async () => {
         try {
             const nuevoPedido = {
@@ -308,6 +314,7 @@ const Pedidos = () => {
                     )}
                 </div>
             </div>
+            {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
             <div className="input">
                 <div>
                     <Calendar />
@@ -378,6 +385,9 @@ const Pedidos = () => {
                     <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
                 </div>
             </div>
+            ) : (
+                <p>No tienes permisos para acceder a este sitio.</p>
+            )}
         </div>
     );
 }

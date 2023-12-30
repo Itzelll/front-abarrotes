@@ -3,6 +3,15 @@ import MenuHamburguesa from '../MenuHamburguesa';
 import { Link } from 'react-router-dom';
 
 const VentasMensualesBanqueteria = () => {
+    // Verificar si localStorage tiene datos y asignar a userRole
+    const storedUserRole = localStorage.getItem('userRole');
+    console.log('Valor almacenado en localStorage:', storedUserRole);
+    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
+    console.log('userRole en RegistroEmp:', userRole);
+    console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
+    
+
     return (
         <div className="registro">
             <MenuHamburguesa />
@@ -12,6 +21,7 @@ const VentasMensualesBanqueteria = () => {
                 <Link to="/salesReportBanqueteria"><button className='ventas-mensuales'>Ventas Semanales</button></Link>
             </div>
             <br />
+            {userRole && userRole.rol && userRole.rol.includes("Encargado_Departamento") ? (
             <table>
                 <thead>
                     <tr>
@@ -28,6 +38,9 @@ const VentasMensualesBanqueteria = () => {
                     </tr>
                 </tbody>
             </table>
+            ) : (
+                <p>No tienes permisos para acceder a este sitio.</p>
+            )}
         </div>
     )
 }

@@ -5,6 +5,11 @@ import MenuHamburguesa from '../../MenuHamburguesa';
 
 const UpdateProduct = ({ productId }) => {
   const [nuevoNombre, setNuevoNombre] = useState('');
+  // Verificar si localStorage tiene datos y asignar a userRole
+  const storedUserRole = localStorage.getItem('userRole');
+  console.log('Valor almacenado en localStorage:', storedUserRole);
+  const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
 
   const handleUpdate = async () => {
     try {
@@ -18,9 +23,12 @@ const UpdateProduct = ({ productId }) => {
     }
   };
 
+  console.log('userRole en RegistroEmp:', userRole);
+  console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
+
   return (
     <div>
-        <MenuHamburguesa />
+      <MenuHamburguesa />
       <h2>Actualizar Producto</h2>
       <input
         type="text"
@@ -28,7 +36,11 @@ const UpdateProduct = ({ productId }) => {
         value={nuevoNombre}
         onChange={(e) => setNuevoNombre(e.target.value)}
       />
-      <button onClick={handleUpdate}>Actualizar</button>
+      {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento") ? (
+        <button onClick={handleUpdate}>Actualizar</button>
+      ) : (
+        <p>No tienes permisos para acceder a este sitio.</p>
+      )}
     </div>
   );
 };

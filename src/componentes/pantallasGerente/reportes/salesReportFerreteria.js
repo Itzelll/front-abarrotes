@@ -40,54 +40,67 @@ const SalesReportFerreteriaPDF = () => (
 );
 
 const SalesReportFerreteria = () => {
+  // Verificar si localStorage tiene datos y asignar a userRole
+  const storedUserRole = localStorage.getItem('userRole');
+  console.log('Valor almacenado en localStorage:', storedUserRole);
+  const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
+  console.log('userRole en RegistroEmp:', userRole);
+  console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
+
+
   return (
     <div className='registro'>
       <MenuHamburguesa />
       <h1>Informe de Ventas Ferreteria</h1>
       <div className="btn-ventas">
-                <Link to="/ventasMensualesFerreteria"><button className='ventas-mensuales'>Ventas Mensuales</button></Link>
-            </div>
+        <Link to="/ventasMensualesFerreteria"><button className='ventas-mensuales'>Ventas Mensuales</button></Link>
+      </div>
       <h4>Ventas de la semana</h4>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Static data for the sales report (replace with dynamic data) */}
-          <tr>
-            <td>1</td>
-            <td>Empanada</td>
-            <td>2</td>
-            <td>1000</td>
-            <td>2000</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Completo</td>
-            <td>1</td>
-            <td>1500</td>
-            <td>1500</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Chorrillana</td>
-            <td>1</td>
-            <td>5000</td>
-            <td>5000</td>
-          </tr>
-        </tbody>
-        <PDFDownloadLink document={<SalesReportFerreteriaPDF />} fileName="sales_report_ferreteria.pdf">
-        {({ blob, url, loading, error }) =>
-          loading ? 'Generando PDF...' : 'Descargar PDF'
-        }
-      </PDFDownloadLink>
-      </table>
+      {userRole && userRole.rol && userRole.rol.includes("Encargado_Departamento") ? (
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Static data for the sales report (replace with dynamic data) */}
+            <tr>
+              <td>1</td>
+              <td>Empanada</td>
+              <td>2</td>
+              <td>1000</td>
+              <td>2000</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Completo</td>
+              <td>1</td>
+              <td>1500</td>
+              <td>1500</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Chorrillana</td>
+              <td>1</td>
+              <td>5000</td>
+              <td>5000</td>
+            </tr>
+          </tbody>
+          <PDFDownloadLink document={<SalesReportFerreteriaPDF />} fileName="sales_report_ferreteria.pdf">
+            {({ blob, url, loading, error }) =>
+              loading ? 'Generando PDF...' : 'Descargar PDF'
+            }
+          </PDFDownloadLink>
+        </table>
+      ) : (
+        <p>No tienes permisos para acceder a este sitio</p>
+      )}
     </div>
   );
 };
