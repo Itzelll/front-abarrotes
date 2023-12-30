@@ -53,28 +53,23 @@ const CreateProduct = () => {
     const handleEdit = async (codigo) => {
         console.log('Editar producto con código:', codigo);
         const productoAEditar = productos.find((producto) => producto.codigo === codigo);
+        
         if (productoAEditar) {
+            console.log('Producto a editar:', productoAEditar);
             setProductoSeleccionado(productoAEditar);
             setCodigo(productoAEditar.codigo.toString());
             setNombre(productoAEditar.nombre);
             setExistencia(productoAEditar.existencia.toString());
             setPrecio(productoAEditar.precio.toString());
-    
-            // Obtener los objetos completos de las listas usando los IDs del producto
-            const categoriaSeleccionadaObj = categorias.find((categoria) => categoria.idCategoria === productoAEditar.categoria);
-            const marcaSeleccionadaObj = marcas.find((marca) => marca.idMarca === productoAEditar.marca);
-            const unidadMedidaSeleccionadaObj = unidadMedidas.find((unidadMedida) => unidadMedida.idUnidadMed === productoAEditar.unidadMedida);
-    
-            // Configurar los estados con los objetos completos
-            setCategoriaSeleccionada(categoriaSeleccionadaObj ? categoriaSeleccionadaObj.idCategoria.toString() : '');
-            setMarcaSeleccionada(marcaSeleccionadaObj ? marcaSeleccionadaObj.idMarca.toString() : '');
-            setUnidadMedidaSeleccionada(unidadMedidaSeleccionadaObj ? unidadMedidaSeleccionadaObj.idUnidadMed.toString() : '');
-    
+            setCategoriaSeleccionada(productoAEditar.idCategoria.toString()); // Cambié a idCategoria
+            setMarcaSeleccionada(productoAEditar.idMarca.toString()); // Cambié a idMarca
+            setUnidadMedidaSeleccionada(productoAEditar.idUnidadMedida.toString()); // Cambié a idUnidadMedida
             setModoEdicion(true);
         } else {
             console.error(`No se encontró el producto con código: ${codigo}`);
         }
-    };    
+    };
+            
 
     const handleUpdate = async () => {
         console.log('productoSeleccionado:', productoSeleccionado);
