@@ -8,6 +8,7 @@ const AgregarEmpleado = () => {
         nombre: '',
         apellidos: '',
         contrasenia: '',
+        correoElectronico: '',
         idRol: ''
     });
 
@@ -23,7 +24,7 @@ const AgregarEmpleado = () => {
 
         try {
             console.log('Antes de la llamada a fetch:', empleado);
-            const response = await fetch('http://localhost:8080/api/empleados/crearConDTO', {
+            const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados/crearConDTO', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -84,7 +85,18 @@ const AgregarEmpleado = () => {
                     </label>
                     <br />
                     <label>
-                        Contraseña
+                        Correo Electrónico:
+                        <input
+                            type="email"
+                            className="datos"
+                            name="correoElectronico"
+                            value={empleado.correoElectronico}
+                            onChange={handleInputChange}
+                        />
+                    </label>
+                    <br />
+                    <label>
+                        Contraseña:
                         <input
                             type="password"
                             className="datos"
@@ -105,6 +117,7 @@ const AgregarEmpleado = () => {
                             <option value="">Selecciona un rol</option>
                             <option value="1">Encargado Caja</option>
                             <option value="2">Gerente Departamento</option>
+                            <option value="3">Encargado Departamento</option>
                         </select>
                     </label>
                     <br />
