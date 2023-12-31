@@ -174,7 +174,7 @@ const Pedidos = () => {
             }
         };
         fetchCliente();
-    }, []);    
+    }, []);
 
     useEffect(() => {
         const fetchClienteDetalle = async (idCliente) => {
@@ -227,7 +227,7 @@ const Pedidos = () => {
                     telefono: parseInt(telefono),
                     direccion: direccion,
                 };
-            
+
                 const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes', nuevoCliente);
                 await fetchClientes();
                 console.log('Cliente creado:', response.data);
@@ -324,6 +324,12 @@ const Pedidos = () => {
                 console.error("Error al obtener la información del producto:", error);
             }
         }
+    };
+
+    const quitarProducto = (index) => {
+        const nuevasVentas = [...ventas];
+        nuevasVentas.splice(index, 1);
+        setVentas(nuevasVentas);
     };
 
     const handleFechaEntregaChange = (date) => {
@@ -471,7 +477,7 @@ const Pedidos = () => {
             )}
             <div className="input">
                 <div>
-                    <Calendar 
+                    <Calendar
                         value={fechaEntrega}
                         onChange={handleFechaEntregaChange}
                     />
@@ -519,6 +525,7 @@ const Pedidos = () => {
                                 <th className="ventas">Producto</th>
                                 <th className="ventas">Precio Unitario</th>
                                 <th className="ventas">Subtotal</th>
+                                <th className="ventas">Quitar</th>
                             </tr>
                         </thead>
                         <tbody className="ventas">
@@ -529,6 +536,9 @@ const Pedidos = () => {
                                     <td className="ventas">{producto.nombre}</td>
                                     <td className="ventas">${producto.precioUnitario}</td>
                                     <td className="ventas">${parseFloat(producto.subtotal)}</td>
+                                    <td className="ventas">
+                                        <button className="btn-editar" onClick={() => quitarProducto(index)}>Quitar</button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

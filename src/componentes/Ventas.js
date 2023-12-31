@@ -174,6 +174,12 @@ const Ventas = () => {
         }
     };
 
+    const quitarProducto = (index) => {
+        const nuevasVentas = [...ventas];
+        nuevasVentas.splice(index, 1);
+        setVentas(nuevasVentas);
+    };
+
     const calcularSubtotal = (unidadDeMedida) => {
         console.log('unidad de medida: ', unidadDeMedida)
         if (unidadDeMedida === 'gramos') {
@@ -271,6 +277,7 @@ const Ventas = () => {
                                     <th className="ventas">Producto</th>
                                     <th className="ventas">Precio Unitario</th>
                                     <th className="ventas">Subtotal</th>
+                                    <th className="ventas">Quitar</th>
                                 </tr>
                             </thead>
                             <tbody className="ventas">
@@ -281,6 +288,9 @@ const Ventas = () => {
                                         <td className="ventas">{producto.nombre}</td>
                                         <td className="ventas">${producto.precioUnitario}</td>
                                         <td className="ventas">${parseFloat(producto.subtotal)}</td>
+                                        <td className="ventas">
+                                            <button className="btn-editar" onClick={() => quitarProducto(index)}>Quitar</button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
