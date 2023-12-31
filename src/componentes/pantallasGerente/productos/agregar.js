@@ -21,6 +21,12 @@ const CreateProduct = () => {
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     const [modoEdicion, setModoEdicion] = useState(false);
 
+    // Verificar si localStorage tiene datos y asignar a userRole
+    const storedUserRole = localStorage.getItem('userRole');
+    console.log('Valor almacenado en localStorage:', storedUserRole);
+    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
+
     const handleCreate = async () => {
         try {
             if (codigo.length > 4) {
@@ -58,7 +64,7 @@ const CreateProduct = () => {
     const handleEdit = async (codigo) => {
         console.log('Editar producto con código:', codigo);
         const productoAEditar = productos.find((producto) => producto.codigo === codigo);
-        
+
         if (productoAEditar) {
             console.log('Producto a editar:', productoAEditar);
             setProductoSeleccionado(productoAEditar);
@@ -74,7 +80,7 @@ const CreateProduct = () => {
             console.error(`No se encontró el producto con código: ${codigo}`);
         }
     };
-            
+
 
     const handleUpdate = async () => {
         console.log('productoSeleccionado:', productoSeleccionado);
@@ -173,124 +179,129 @@ const CreateProduct = () => {
         fetchUnidadMedidas();
     }, []);
 
+    console.log('userRole en RegistroEmp:', userRole);
+    console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
+
     return (
         <div className='registro'>
             <MenuHamburguesa />
             <h1>Crear Producto</h1>
-            <div>
-                <h4>{modoEdicion ? 'Editar' : 'Agregar'} Producto</h4>
-                <input
-                    className='input-producto'
-                    type="number"
-                    placeholder="Código"
-                    value={codigo}
-                    onChange={(e) => {
-                        const inputValue = e.target.value;
-                        if (/^[0-9]*$/.test(inputValue) && inputValue.length <= 4) {
-                            setCodigo(inputValue);
-                        }
-                    }}
-                    maxLength={4}
-                />
-                <input
-                    className='input-producto'
-                    type="text"
-                    placeholder="Nombre"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value.toLowerCase())}
-                />
-                <input
-                    className='input-producto'
-                    type="number"
-                    placeholder="Existencia"
-                    value={existencia}
-                    onChange={(e) => setExistencia(e.target.value)}
-                />
-                <input
-                    className='input-producto'
-                    type="number"
-                    placeholder="Precio"
-                    value={precio}
-                    onChange={(e) => setPrecio(e.target.value)}
-                />
-                <select
-                    className='select-producto'
-                    value={categoriaSeleccionada}
-                    onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-                >
-                    <option value="">Selecciona una categoría</option>
-                    {categorias.map((categoria) => (
-                        <option key={categoria.idCategoria} value={categoria.idCategoria}>
-                            {categoria.nombre}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className='select-producto'
-                    value={marcaSeleccionada}
-                    onChange={(e) => setMarcaSeleccionada(e.target.value)}
-                >
-                    <option value="">Selecciona una marca</option>
-                    {marcas.map((marca) => (
-                        <option key={marca.idMarca} value={marca.idMarca}>
-                            {marca.nombre}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className='select-producto'
-                    value={unidadMedidaSeleccionada}
-                    onChange={(e) => setUnidadMedidaSeleccionada(e.target.value)}
-                >
-                    <option value="">Selecciona una unidad de medida</option>
-                    {unidadMedidas.map((unidadMedida) => (
-                        <option key={unidadMedida.idUnidadMedida} value={unidadMedida.idUnidadMedida}>
-                            {unidadMedida.nombre}
-                        </option>
-                    ))}
-                </select>
-                <div className='botones'>
-                    {modoEdicion ? (
-                        <button className='btn-finalizar' onClick={handleUpdate}>Actualizar</button>
-                    ) : (
-                        <button className='btn-finalizar' onClick={handleCreate}>Crear</button>
-                    )}
+            {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento") ? (
+                <div>
+                    <h4>{modoEdicion ? 'Editar' : 'Agregar'} Producto</h4>
+                    <input
+                        className='input-producto'
+                        type="number"
+                        placeholder="Código"
+                        value={codigo}
+                        onChange={(e) => setCodigo(e.target.value)}
+                    />
+                    <input
+                        className='input-producto'
+                        type="text"
+                        placeholder="Nombre"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value.toLowerCase())}
+                    />
+                    <input
+                        className='input-producto'
+                        type="number"
+                        placeholder="Existencia"
+                        value={existencia}
+                        onChange={(e) => setExistencia(e.target.value)}
+                    />
+                    <input
+                        className='input-producto'
+                        type="number"
+                        placeholder="Precio"
+                        value={precio}
+                        onChange={(e) => setPrecio(e.target.value)}
+                    />
+                    <select
+                        className='select-producto'
+                        value={categoriaSeleccionada}
+                        onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+                    >
+                        <option value="">Selecciona una categoría</option>
+                        {categorias.map((categoria) => (
+                            <option key={categoria.idCategoria} value={categoria.idCategoria}>
+                                {categoria.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        className='select-producto'
+                        value={marcaSeleccionada}
+                        onChange={(e) => setMarcaSeleccionada(e.target.value)}
+                    >
+                        <option value="">Selecciona una marca</option>
+                        {marcas.map((marca) => (
+                            <option key={marca.idMarca} value={marca.idMarca}>
+                                {marca.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        className='select-producto'
+                        value={unidadMedidaSeleccionada}
+                        onChange={(e) => setUnidadMedidaSeleccionada(e.target.value)}
+                    >
+                        <option value="">Selecciona una unidad de medida</option>
+                        {unidadMedidas.map((unidadMedida) => (
+                            <option key={unidadMedida.idUnidadMedida} value={unidadMedida.idUnidadMedida}>
+                                {unidadMedida.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <div className='botones'>
+                        {modoEdicion ? (
+                            <button className='btn-finalizar' onClick={handleUpdate}>Actualizar</button>
+                        ) : (
+                            <button className='btn-finalizar' onClick={handleCreate}>Crear</button>
+                        )}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <p>No tienes permisos para acceder a este sitio.</p>
+            )}
             <h4>Lista de Productos</h4>
-            <table className="registroEmp">
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Existencia</th>
-                        <th>Precio</th>
-                        <th>Categoría</th>
-                        <th>Marca</th>
-                        <th>Unidad de Medida</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {productos.map((producto) => (
-                        // console.log(producto),
-                        <tr key={producto.codigo}>
-                            <td>{producto.codigo}</td>
-                            <td>{producto.nombre}</td>
-                            <td>{producto.existencia}</td>
-                            <td>{producto.precio}</td>
-                            <td>{producto.categoria}</td>
-                            <td>{producto.marca}</td>
-                            <td>{producto.unidadMedida}</td>
-                            <td className='btn-ventas'>
-                                <div className='botones'>
-                                    <button className='btn-editar' onClick={() => handleEdit(producto.codigo)}>Editar</button>
-                                </div>
-                            </td>
+            {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento") ? (
+                <table className="registroEmp">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Existencia</th>
+                            <th>Precio</th>
+                            <th>Categoría</th>
+                            <th>Marca</th>
+                            <th>Unidad de Medida</th>
+                            <th>Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {productos.map((producto) => (
+                            // console.log(producto),
+                            <tr key={producto.codigo}>
+                                <td>{producto.codigo}</td>
+                                <td>{producto.nombre}</td>
+                                <td>{producto.existencia}</td>
+                                <td>{producto.precio}</td>
+                                <td>{producto.categoria}</td>
+                                <td>{producto.marca}</td>
+                                <td>{producto.unidadMedida}</td>
+                                <td className='btn-ventas'>
+                                    <div className='botones'>
+                                        <button className='btn-editar' onClick={() => handleEdit(producto.codigo)}>Editar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <p>No tienes permisos para agregar empleados.</p>
+            )}
         </div>
     );
 };

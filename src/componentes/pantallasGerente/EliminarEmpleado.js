@@ -1,17 +1,18 @@
 import './style/AgregarEmpleado.css';
 import './style/EliminarEmpleado.css';
 import MenuHamburguesa from '../MenuHamburguesa';
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 
 const EliminarEmpleado = () => {
-    const [nombre, setNombre] = useState('');
+  const [nombre, setNombre] = useState('');
   const [apellidos, setApellidos] = useState('');
   const [resultados, setResultados] = useState([]);
   const [empleadoId, setEmpleadoId] = useState('');
+  const [userRole, setUserRole] = useState({});
 
   const buscarEmpleado = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/empleados/buscar?nombre=${nombre}&apellidos=${apellidos}`);
+      const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados/buscar?nombre=${nombre}&apellidos=${apellidos}`);
       if (response.ok) {
         const data = await response.json();
         setResultados(data);
@@ -45,36 +46,50 @@ const EliminarEmpleado = () => {
       console.error('Error:', error);
     }
   };
+  useEffect(() => {
+    // Modificación 2: Parsear el rol al cargar el componente
+    const storedRole = localStorage.getItem('userRole');
+    console.log('Stored Role:', storedRole);
+
+    const parsedRole = storedRole ? JSON.parse(storedRole) : null;
+    console.log('Parsed Role:', parsedRole);
+
+    setUserRole(parsedRole);
+  }, []);
 
   return (
     <div className='contenedor'>
       <h1>Eliminar Empleado</h1>
       <MenuHamburguesa />
-      <form>
-        <div>
-          <label>Nombre:</label>
-          <input
-            type='text'
-            className='datos'
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            placeholder='Ingrese el nombre'
-          />
-        </div>
-        <div>
-          <label>Apellidos:</label>
-          <input
-            type='text'
-            className='datos'
-            value={apellidos}
-            onChange={(e) => setApellidos(e.target.value)}
-            placeholder='Ingrese los apellidos'
-          />
-        </div>
-        <button type='button' onClick={buscarEmpleado} className='buscador'>
-          Buscar Empleado
-        </button>
-      </form>
+      {userRole && userRole.rol && userRole.rol === "Encargado_Departamento" ? (
+        <form>
+          <div>
+            <label>Nombre:</label>
+            <input
+              type='text'
+              className='datos'
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              placeholder='Ingrese el nombre'
+            />
+          </div>
+          <div>
+            <label>Apellidos:</label>
+            <input
+              type='text'
+              className='datos'
+              value={apellidos}
+              onChange={(e) => setApellidos(e.target.value)}
+              placeholder='Ingrese los apellidos'
+            />
+          </div>
+          <button type='button' onClick={buscarEmpleado} className='buscador'>
+            Buscar Empleado
+          </button>
+        </form>
+      ) : (
+        <p>No tienes permisos para acceder a este sitio.</p>
+      )}
 
       {resultados.length > 0 && (
         <div className='resultados'>

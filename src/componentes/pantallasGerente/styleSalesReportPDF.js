@@ -1,11 +1,11 @@
 import { StyleSheet, pdf, Font } from '@react-pdf/renderer';
 import { Page, Text, View, Document } from '@react-pdf/renderer';
-// import Fuente from './arial.ttf';
+import Fuente from './arial.ttf';
 
-// Font.register({
-//     family: 'Arial',
-//     src: Fuente, // Reemplaza con la ruta correcta o URL de tu archivo Arial.ttf
-// });
+ Font.register({
+     family: 'Arial',
+     src: Fuente, // Reemplaza con la ruta correcta o URL de tu archivo Arial.ttf
+ });
 
 const pdfStyles = StyleSheet.create({
     page: {
