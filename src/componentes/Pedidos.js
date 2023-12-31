@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import { CgAdd } from "react-icons/cg";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
 
 const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -40,11 +42,47 @@ const Calendar = () => {
     );
 };
 
+const TimePickerModal = ({ isOpen, onClose, onSelectTime }) => {
+    const [selectedTime, setSelectedTime] = useState(null);
+
+    useEffect(() => {
+    }, [isOpen]);
+
+    const handleTimeChange = (value) => {
+        setSelectedTime(value);
+    };
+
+    const handleSelectTime = () => {
+        onSelectTime(selectedTime.format('HH:mm:ss'));
+        onClose();
+    };
+
+    return (
+        isOpen && (
+            <div className="select-hora">
+                <div className="time-picker-modal">
+                    <TimePicker
+                        placeholder="seleccionar hora"
+                        showSecond={false}
+                        defaultValue={selectedTime}
+                        onChange={handleTimeChange}
+                    />
+
+                    <button className="btn-seleccionar" onClick={handleSelectTime}>Seleccionar</button>
+                    <button className="btn-cancel" onClick={onClose}>Cancelar</button>
+
+                </div>
+            </div>
+        )
+    );
+};
+
 const Pedidos = () => {
     const [cliente, setCliente] = useState([]);
     const [clienteSeleccionado, setClienteSeleccionado] = useState("");
     const [fechaEntrega, setFechaEntrega] = useState("");
     const [horaEntrega, setHoraEntrega] = useState("");
+    const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
     const [cantidad, setCantidad] = useState("");
     const [producto, setProducto] = useState("");
     const [precioUnitario, setPrecioUnitario] = useState("");
@@ -53,16 +91,20 @@ const Pedidos = () => {
     const [departamento, setDepartamento] = useState([]);
     const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
     const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
+    const [clienteInfo, setClienteInfo] = useState(null);
 
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
 
-    // Verificar si localStorage tiene datos y asignar a userRole
-    const storedUserRole = localStorage.getItem('userRole');
-    console.log('Valor almacenado en localStorage:', storedUserRole);
-    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
-
+    const fetchClientes = async () => {
+        try {
+            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes');
+            setCliente(response.data);
+        } catch (error) {
+            console.error('Error al obtener los clientes', error);
+        }
+    };
 
     const handleCreatePedido = async () => {
         try {
@@ -128,7 +170,24 @@ const Pedidos = () => {
             }
         };
         fetchCliente();
-    }, []);
+    }, []);    
+
+    useEffect(() => {
+        const fetchClienteDetalle = async (idCliente) => {
+            try {
+                const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes/${idCliente}`);
+                setClienteInfo(response.data);
+            } catch (error) {
+                console.error('Error al obtener la información del cliente', error);
+            }
+        };
+
+        if (clienteSeleccionado) {
+            fetchClienteDetalle(clienteSeleccionado);
+        } else {
+            setClienteInfo(null);
+        }
+    }, [clienteSeleccionado]);
 
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
@@ -148,7 +207,46 @@ const Pedidos = () => {
     }, [producto]);
 
     const AddClientModal = ({ onClose }) => {
-        // Lógica y JSX para el formulario de agregar cliente
+        const [nombre, setNombre] = useState("");
+        const [apellidos, setApellidos] = useState("");
+        const [telefono, setTelefono] = useState("");
+        const [direccion, setDireccion] = useState("");
+
+        const handleCreateClient = async () => {
+            try {
+                const nuevoCliente = {
+                    nombre: nombre,
+                    apellidos: apellidos,
+                    telefono: parseInt(telefono),
+                    direccion: direccion,
+                };
+            
+                const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes', nuevoCliente);
+                await fetchClientes();
+                console.log('Cliente creado:', response.data);
+                alert('Cliente creado con éxito');
+                onClose();
+            } catch (error) {
+                console.error('Error al crear el cliente:', error);
+                alert('Error al crear el cliente');
+            }
+        }
+
+        const handleNombreChange = (e) => {
+            setNombre(e.target.value);
+        }
+
+        const handleApellidosChange = (e) => {
+            setApellidos(e.target.value);
+        }
+
+        const handleTelefonoChange = (e) => {
+            setTelefono(e.target.value);
+        }
+
+        const handleDireccionChange = (e) => {
+            setDireccion(e.target.value);
+        }
 
         return (
             // JSX de la pantalla flotante
@@ -161,22 +259,30 @@ const Pedidos = () => {
                         <input
                             className="cantidad"
                             placeholder="Nombre"
+                            value={nombre}
+                            onChange={handleNombreChange}
                         />
                         <input
                             className="cantidad"
                             placeholder="Apellidos"
+                            value={apellidos}
+                            onChange={handleApellidosChange}
                         />
                         <input
                             className="cantidad"
                             placeholder="Teléfono"
+                            value={telefono}
+                            onChange={handleTelefonoChange}
                         />
                         <input
                             className="cantidad"
                             placeholder="Dirección"
+                            value={direccion}
+                            onChange={handleDireccionChange}
                         />
                     </div>
-                    <div className="btns">                        
-                        <button className="btn-finalizar">Guardar</button>
+                    <div className="btns">
+                        <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
                         <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
                     </div>
                 </div>
@@ -211,9 +317,17 @@ const Pedidos = () => {
         }
     };
 
-    const handleHoraEntrega = (e) => {
-        setHoraEntrega(e.target.value);
-    }
+    const handleHoraEntrega = () => {
+        setIsTimePickerOpen(true);
+    };
+
+    const handleCloseTimePicker = () => {
+        setIsTimePickerOpen(false);
+    };
+
+    const handleSelectTime = (selectedTime) => {
+        setHoraEntrega(selectedTime);
+    };
 
     const handleCantidadChange = (e) => {
         setCantidad(e.target.value);
@@ -314,15 +428,47 @@ const Pedidos = () => {
                     )}
                 </div>
             </div>
-            {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+            {clienteInfo && (
+                <div className="detalles-cliente">
+                    <h4>Información del Cliente seleccionado</h4>
+                    <table>
+                        <thead className="ventas">
+                            <tr className="ventas">
+                                <th className="ventas">ID</th>
+                                <th className="ventas">Nombre</th>
+                                <th className="ventas">Apellidos</th>
+                                <th className="ventas">Teléfono</th>
+                                <th className="ventas">Dirección</th>
+                            </tr>
+                        </thead>
+                        <tbody className="ventas">
+                            <tr className="ventas">
+                                <td className="ventas">{clienteInfo.idCliente}</td>
+                                <td className="ventas">{clienteInfo.nombre}</td>
+                                <td className="ventas">{clienteInfo.apellidos}</td>
+                                <td className="ventas">{clienteInfo.telefono}</td>
+                                <td className="ventas">{clienteInfo.direccion}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                </div>
+            )}
             <div className="input">
                 <div>
                     <Calendar />
                     <input
                         className="hora"
-                        placeholder="Hora de entrega"
+                        placeholder="Hora de entrega (HH:mm)"
+                        format="HH:mm:ss"
                         value={horaEntrega}
-                        onChange={handleHoraEntrega}
+                        onChange={() => { }}
+                        onClick={handleHoraEntrega}
+                    />
+                    <TimePickerModal
+                        isOpen={isTimePickerOpen}
+                        onClose={handleCloseTimePicker}
+                        onSelectTime={handleSelectTime}
                     />
                 </div>
                 <div>
@@ -385,9 +531,6 @@ const Pedidos = () => {
                     <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
                 </div>
             </div>
-            ) : (
-                <p>No tienes permisos para acceder a este sitio.</p>
-            )}
         </div>
     );
 }
