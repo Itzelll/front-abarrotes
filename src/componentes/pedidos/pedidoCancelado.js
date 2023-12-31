@@ -10,6 +10,7 @@ const PedidoCancelado = () => {
     const [filtroCliente, setFiltroCliente] = useState('');
     const [filtroFecha, setFiltroFecha] = useState('');
     // const [filtroDepartamento, setFiltroDepartamento] = useState('');
+    const [filtroEstadoPago, setFiltroEstadoPago] = useState('');
 
     useEffect(() => {
         const fetchNotasVentaCanceladas = async () => {
@@ -23,7 +24,7 @@ const PedidoCancelado = () => {
         };
 
         fetchNotasVentaCanceladas();
-    }, [filtroCliente, filtroFecha, 
+    }, [filtroCliente, filtroFecha, filtroEstadoPago
         // filtroDepartamento
     ]);
 
@@ -33,6 +34,10 @@ const PedidoCancelado = () => {
 
     const handleFiltroFechaChange = (date) => {
         setFiltroFecha(date);
+    };
+
+    const handleFiltroEstadoPagoChange = (e) => {
+        setFiltroEstadoPago(e.target.value);
     };
 
     // const handleFiltroDepartamentoChange = (e) => {
@@ -46,7 +51,8 @@ const PedidoCancelado = () => {
             return (
                 nota.nombreCompletoCliente.toLowerCase().includes(filtroCliente.toLowerCase()) &&
                 ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) 
-                // &&
+                &&
+                (filtroEstadoPago === '' || nota.estadoPago.toLowerCase().includes(filtroEstadoPago.toLowerCase()))
                 // nota.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
             );
         });
@@ -68,6 +74,10 @@ const PedidoCancelado = () => {
                         selectedDate={filtroFecha}
                         handleDateChange={handleFiltroFechaChange}
                     />
+                </div>
+                <div>
+                    <label>Filtrar por Estado de Pago:</label>
+                    <input type="text" value={filtroEstadoPago} onChange={handleFiltroEstadoPagoChange} />
                 </div>
                 {/* <div>
                     <label>Filtrar por Departamento:</label>
