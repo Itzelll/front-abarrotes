@@ -43,10 +43,6 @@ const NotasPendientes = () => {
         setShowModal(false);
     };
 
-    const handleAbonoAmountChange = (e) => {
-        setAbonoAmount((e.target.value));
-    };
-
     const handleConfirmAbono = async () => {
         try {
             if (!selectedNota) {
@@ -115,7 +111,7 @@ const NotasPendientes = () => {
                         <div className="rectangulo-header" style={{ backgroundColor: '#ddd' }}>
                             <div className='r-1'>
                                 <p><b>Total: </b>{nota.total}</p>
-                                <p><b>Abono: </b>{nota.monto}</p>
+                                <p><b>Abonado: </b>{nota.monto}</p>
                                 <p><b>Debe: </b>{nota.resto}</p>
                             </div>
                             <div className='r-2'>
@@ -146,7 +142,12 @@ const NotasPendientes = () => {
                             className='input-producto'
                             type="number"
                             value={abonoAmount}
-                            onChange={handleAbonoAmountChange}
+                            onChange={(e) => {
+                                const inputValue = e.target.value;
+                                if (/^[0-9]*$/.test(inputValue)) {
+                                    setAbonoAmount(inputValue);
+                                }
+                            }}
                         />
                         <div className='botones'>
                             <button className='btn-finalizar' onClick={handleConfirmAbono}>Confirmar Abono</button>

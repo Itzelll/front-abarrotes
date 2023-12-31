@@ -18,9 +18,18 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
 
             <div className={`menu ${menuOpen ? 'open' : ''}`}>
                 <ul className='opciones'>
-                    <Link to='/ventas' className='no-underline'><li className='titulo'>Ventas</li></Link>
-                    <Link to='/pedidos' className='no-underline'><li className='titulo'>Pedidos</li></Link>
-                    <Link to='/registroEmpleado' className='no-underline'><li className='titulo'>ResgitrarEmpleado</li></Link>
+                    <li className='titulo'>Ventas</li>
+                    <Link to='/ventas' className='no-underline'><li className='opc'>Ventas</li></Link>
+
+                    <li className='titulo'>Empleados</li>
+                    <Link to='/registroEmpleado' className='no-underline'><li className='opc'>Resgitrar Empleado</li></Link>
+
+                    <li className='titulo'>Pedidos</li>
+                    <Link to='/pedidos' className='no-underline'><li className='opc'>Crear Pedidos</li></Link>
+                    <Link to='/pedidoProceso' className='no-underline'><li className='opc'>Estado Pedidos</li></Link>
+                    <Link to='/pedidoEntregado' className='no-underline'><li className='opc'>Pedidos Entregados</li></Link>
+                    <Link to='/pedidoCancelado' className='no-underline'><li className='opc'>Pedidos Cancelados</li></Link>                    
+                    
                     <li className='titulo'>Informe de Ventas</li>
                     <Link to='/salesReportAbarrotes' className='no-underline'><li className='opc'>Abarrotes</li></Link>
                     <Link to='/salesReportFerreteria' className='no-underline'><li className='opc'>Ferretería</li></Link>                    
@@ -33,7 +42,7 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
 
                     <li className='titulo'>Productos</li>
                     <Link to='/catalogo' className='no-underline'><li className='opc'>Catalogo</li></Link>
-                    <Link to='/agregarProducto' className='no-underline'><li className='opc'>Agregar</li></Link>
+                    <Link to='/agregarProducto' className='no-underline'><li className='opc'>Agregar nuevo</li></Link>
                     <li className='titulo'>Otros</li>
                     <Link to='/marcas' className='no-underline'><li className='opc'>Listado marcas</li></Link>
                     <Link to='/categoria' className='no-underline'><li className='opc'>Categoria</li></Link>
