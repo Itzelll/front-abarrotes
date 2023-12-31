@@ -143,3 +143,33 @@
     /* border: none; */
     cursor: pointer;
   }
+
+.rh {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.icon {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 0px;
+    cursor: pointer;
+    font-size: 150%;
+}
+
+.c {
+    background-color: #af4c4c;
+    color: white;
+}
+
+.e {
+    background-color: #4c4eaf;
+    color: white;
+}
+
+.d {
+    display: flex;
+    align-items: center;
+}

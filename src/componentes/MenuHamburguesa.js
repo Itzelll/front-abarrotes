@@ -20,8 +20,10 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                 <ul className='opciones'>
                     <Link to='/ventas' className='no-underline'><li className='titulo'>Ventas</li></Link>
                     <li className='titulo'>Pedidos</li>
-                    <Link to='/pedidos' className='no-underline'><li className='opc'>Pedidos</li></Link>
+                    <Link to='/pedidos' className='no-underline'><li className='opc'>Crear Pedidos</li></Link>
                     <Link to='/pedidoProceso' className='no-underline'><li className='opc'>Estado Pedidos</li></Link>
+                    <Link to='/pedidoCancelado' className='no-underline'><li className='opc'>Pedidos Cancelados</li></Link>
+                    <Link to='/pedidoEntregado' className='no-underline'><li className='opc'>Pedidos Entregados</li></Link>
 
                     <Link to='/registroEmpleado' className='no-underline'><li className='titulo'>ResgitrarEmpleado</li></Link>
                     <li className='titulo'>Informe de Ventas</li>

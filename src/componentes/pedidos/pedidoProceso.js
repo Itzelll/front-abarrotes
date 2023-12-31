@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import MenuHamburguesa from './MenuHamburguesa';
-import './pantallasGerente/style/catalogo.css'; 
-import './pantallasGerente/style/salesReport.css'; 
+import MenuHamburguesa from '../MenuHamburguesa';
+import '../pantallasGerente/style/catalogo.css';
+import '../pantallasGerente/style/salesReport.css';
 import { IoSearchCircleOutline } from "react-icons/io5";
+import { IoMdArrowDropdownCircle } from "react-icons/io";
+import DetallesVentaModal from './DetallesVentaModal';
 
 const VistaNotaVentaPedidoEnProcesoComponent = () => {
   const [notasVentaEnProceso, setNotasVentaEnProceso] = useState([]);
   const [filtroNombreCliente, setFiltroNombreCliente] = useState('');
   const [notasFiltradas, setNotasFiltradas] = useState([]);
+  const [showDetalles, setShowDetalles] = useState(false);
+  const [selectedNota, setSelectedNota] = useState(null);
 
   useEffect(() => {
     fetchNotasVentaEnProceso();
@@ -16,7 +20,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
 
   const fetchNotasVentaEnProceso = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/vista-nota-venta-pedido-en-proceso');
+      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pedido-en-proceso');
       setNotasVentaEnProceso(response.data);
       setNotasFiltradas(response.data);
     } catch (error) {
@@ -31,10 +35,15 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
     setNotasFiltradas(notasFiltradas);
   };
 
+  const handleVerDetalles = (nota) => {
+    setSelectedNota(nota);
+    setShowDetalles(true);
+  };
+
   return (
     <div className='registro'>
       <MenuHamburguesa />
-      <h1 className='titulos'>Estados de Notas de Venta</h1>
+      <h1 className='titulos'>Estados de Pedidos de Notas de Venta</h1>
       <div className='btns'>
         <h4>Buscar nota:</h4>
         <input
@@ -52,10 +61,14 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
       </div>
       <div className="rectangulos-container">
         {notasFiltradas.map((nota) => (
+          // console.log(nota),
           <div key={nota.idAnticipo} className="rectangulo">
-            <div className="rectangulo-header" style={{ backgroundColor: '#dddd' }}>
+            <div className="botones">
+              <h4>Acciones del pedido:</h4>
               <div className='r-1'>
-                <button className='btn-finalizar'>Detalles</button>
+                <button className='btn-finalizar rh c'>Cancelar Pedido</button>
+                <button className='btn-finalizar rh e'>Entregar</button>
+                <button className='btn-finalizar rh'>Pagar y entregar</button>
               </div>
             </div>
             <div className="rectangulo-header" style={{ backgroundColor: '#f6f6f6' }}>
@@ -86,6 +99,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
             <div className="rectangulo-header" style={{ backgroundColor: '#ddd' }}>
               <div className='r-1'>
                 <p><b>Fecha Anticipo: </b>{nota.fechaAnticipo}</p>
+                <p><b>Departamento: </b>{nota.departamento}</p>
               </div>
               <div className='r-1'>
                 <p><b>Total: </b>{nota.total}</p>
@@ -93,15 +107,23 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
                 <p><b>Debe: </b>{nota.resto}</p>
               </div>
             </div>
-            <div className="rectangulo-header" style={{ backgroundColor: '#c4c4c4' }}>
+            <div className="rectangulo-header" style={{ backgroundColor: '#c6c6c6' }}>
               <div className='r-1'>
-                <button  className='btn-finalizar'>Cancelar</button>
-                <button  className='btn-finalizar'>Entregar</button>
-                <button  className='btn-finalizar'>Pagar y entregar</button>
+                <button className='btn-finalizar rh' onClick={() => handleVerDetalles(nota)}>
+                  Ver Detalles
+                  <IoMdArrowDropdownCircle className='icon' />
+                </button>
               </div>
             </div>
           </div>
         ))}
+        {/* Ventana emergente para los detalles de la venta */}
+        {showDetalles && selectedNota && (
+          <DetallesVentaModal
+            numeroNota={selectedNota.numeroNota}
+            onClose={() => setShowDetalles(false)}
+          />
+        )}
       </div>
     </div>
   );

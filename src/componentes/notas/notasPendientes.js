@@ -43,10 +43,6 @@ const NotasPendientes = () => {
         setShowModal(false);
     };
 
-    const handleAbonoAmountChange = (e) => {
-        setAbonoAmount((e.target.value));
-    };
-
     const handleConfirmAbono = async () => {
         try {
             if (!selectedNota) {

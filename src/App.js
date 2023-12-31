@@ -24,7 +24,9 @@ import NotasPagadas from './componentes/notas/notasPagadas';
 import NotasCanceladas from './componentes/notas/notasCanceladas';
 import NotasPendientes from './componentes/notas/notasPendientes';
 import Pedidos from './componentes/Pedidos';
-import PedidoEnProcesoComponent from './componentes/pedidoProceso';
+import PedidoEnProcesoComponent from './componentes/pedidos/pedidoProceso';
+import PedidoCancelado from './componentes/pedidos/pedidoCancelado';
+import PedidoEntregado from './componentes/pedidos/pedidoEntregado';
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
         <Route path="/notasPendientes" element={<NotasPendientes />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/pedidoProceso" element={<PedidoEnProcesoComponent />} />
+        <Route path="/pedidoCancelado" element={<PedidoCancelado />} />
+        <Route path="/pedidoEntregado" element={<PedidoEntregado />} />
       </Routes>
     </Router>
     </div>
