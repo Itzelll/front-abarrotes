@@ -56,6 +56,11 @@ const Ventas = () => {
 
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
 
+    // Verificar si localStorage tiene datos y asignar a userRole
+    const storedUserRole = localStorage.getItem('userRole');
+    console.log('Valor almacenado en localStorage:', storedUserRole);
+    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
     const handleCreateVenta = async () => {
         try {
             const nuevaVenta = {
@@ -211,6 +216,11 @@ const Ventas = () => {
         setMontoRecibido("");
     }
 
+    console.log('userRole en RegistroEmp:', userRole);
+    console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
+    console.log('¿Es Jefe?', userRole && userRole.rol && userRole.rol.includes("Jefe"));
+
+
     return (
         <div className="registro">
             <MenuHamburguesa />
@@ -231,71 +241,75 @@ const Ventas = () => {
                     </option>
                 ))}
             </select>
-            <div className="input">
-                <input
-                    className="cantidad"
-                    placeholder="Cantidad"
-                    value={cantidad}
-                    onChange={handleCantidadChange}
-                />
-                <input
-                    className="producto"
-                    placeholder="Producto"
-                    value={producto}
-                    onChange={handleProductoChange}
-                /> <br />
-                <input
-                    className="precio"
-                    placeholder="Precio Unitario"
-                    value={precioUnitario}
-                    onChange={handlePrecioUnitarioChange}
-                />
-                <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
-                <div className="scroll-panel">
-                    <table>
-                        <thead className="ventas">
-                            <tr className="ventas">
-                                <th className="ventas">Cantidad</th>
-                                <th className="ventas">Código Producto</th>
-                                <th className="ventas">Producto</th>
-                                <th className="ventas">Precio Unitario</th>
-                                <th className="ventas">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody className="ventas">
-                            {ventas.map((producto, index) => (
-                                <tr key={index} className="ventas">
-                                    <td className="ventas">{producto.cantidad}</td>
-                                    <td className="ventas">{producto.producto}</td>
-                                    <td className="ventas">{producto.nombre}</td>
-                                    <td className="ventas">${producto.precioUnitario}</td>
-                                    <td className="ventas">${parseFloat(producto.subtotal)}</td>
+            {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                <div className="input">
+                    <input
+                        className="cantidad"
+                        placeholder="Cantidad"
+                        value={cantidad}
+                        onChange={handleCantidadChange}
+                    />
+                    <input
+                        className="producto"
+                        placeholder="Producto"
+                        value={producto}
+                        onChange={handleProductoChange}
+                    /> <br />
+                    <input
+                        className="precio"
+                        placeholder="Precio Unitario"
+                        value={precioUnitario}
+                        onChange={handlePrecioUnitarioChange}
+                    />
+                    <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                    <div className="scroll-panel">
+                        <table>
+                            <thead className="ventas">
+                                <tr className="ventas">
+                                    <th className="ventas">Cantidad</th>
+                                    <th className="ventas">Código Producto</th>
+                                    <th className="ventas">Producto</th>
+                                    <th className="ventas">Precio Unitario</th>
+                                    <th className="ventas">Subtotal</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="ventas">
+                                {ventas.map((producto, index) => (
+                                    <tr key={index} className="ventas">
+                                        <td className="ventas">{producto.cantidad}</td>
+                                        <td className="ventas">{producto.producto}</td>
+                                        <td className="ventas">{producto.nombre}</td>
+                                        <td className="ventas">${producto.precioUnitario}</td>
+                                        <td className="ventas">${parseFloat(producto.subtotal)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <h3 className="total">Total: ${calcularTotal()}</h3>
+                    <input
+                        className="producto"
+                        placeholder="Monto Recibido"
+                        value={montoRecibido}
+                        onChange={handleMontoRecibidoChange}
+                    />
+                    <h4 className="total">Cambio: ${cambio()}</h4>
+                    <div className="btns">
+                        <button className="btn-finalizar" onClick={handleCreateVenta}>
+                            <PDFDownloadLink className="no-underline1"
+                                document={<SalesReportPDF salesData={ventas} fecha={fechaFormateada} total={calcularTotal()} montoRecibido={montoRecibido} cambio={cambio()} />}
+                                fileName="sales_report.pdf"
+                            >
+                                {({ blob, url, loading, error }) =>
+                                    loading ? 'Generando PDF...' : 'Finalizar Venta'
+                                }
+                            </PDFDownloadLink></button>
+                        <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
+                    </div>
                 </div>
-                <h3 className="total">Total: ${calcularTotal()}</h3>
-                <input
-                    className="producto"
-                    placeholder="Monto Recibido"
-                    value={montoRecibido}
-                    onChange={handleMontoRecibidoChange}
-                />
-                <h4 className="total">Cambio: ${cambio()}</h4>
-                <div className="btns">
-                    <button className="btn-finalizar" onClick={handleCreateVenta}>
-                        <PDFDownloadLink className="no-underline1"
-                            document={<SalesReportPDF salesData={ventas} fecha={fechaFormateada} total={calcularTotal()} montoRecibido={montoRecibido} cambio={cambio()} />}
-                            fileName="sales_report.pdf"
-                        >
-                            {({ blob, url, loading, error }) =>
-                                loading ? 'Generando PDF...' : 'Finalizar Venta'
-                            }
-                        </PDFDownloadLink></button>
-                    <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
-                </div>
-            </div>
+            ) : (
+                <p>No tienes permisos para acceder a este sitio.</p>
+            )}
         </div>
     );
 }

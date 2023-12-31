@@ -46,7 +46,6 @@ const TimePickerModal = ({ isOpen, onClose, onSelectTime }) => {
     const [selectedTime, setSelectedTime] = useState(null);
 
     useEffect(() => {
-        // Puedes realizar alguna lógica adicional al abrir o cerrar el modal aquí
     }, [isOpen]);
 
     const handleTimeChange = (value) => {
