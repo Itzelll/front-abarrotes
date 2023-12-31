@@ -65,7 +65,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
           <div key={nota.idAnticipo} className="rectangulo">
             <div className="botones">
               <h4>Acciones del pedido:</h4>
-              <div className='r-1'>
+              <div className='r-1'> 
                 <button className='btn-finalizar rh c'>Cancelar Pedido</button>
                 <button className='btn-finalizar rh e'>Entregar</button>
                 <button className='btn-finalizar rh'>Pagar y entregar</button>
