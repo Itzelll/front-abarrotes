@@ -88,7 +88,7 @@ const PedidoCancelado = () => {
                         <th>Nombre Empleado</th>
                         <th>Fecha de Nota</th>
                         <th>Total</th>
-                        <th>Estado</th>
+                        {/* <th>Estado</th> */}
                         {/* <th>Nombre Departamento</th> */}
                     </tr>
                 </thead>
@@ -106,7 +106,7 @@ const PedidoCancelado = () => {
                             <td>{nota.nombreCompletoEmpleado}</td>
                             <td>{nota.fechaNota}</td>
                             <td>{nota.total}</td>
-                            <td>{nota.estado}</td>
+                            {/* <td>{nota.estado}</td> */}
                         </tr>
                     ))}
                 </tbody>

@@ -88,7 +88,7 @@ const PedidoEntregado = () => {
                         <th>Nombre Empleado</th>
                         <th>Fecha de Nota</th>
                         <th>Total</th>
-                        <th>Estado</th>
+                        {/* <th>Estado</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -105,7 +105,7 @@ const PedidoEntregado = () => {
                             <td>{nota.nombreCompletoEmpleado}</td>
                             <td>{nota.fechaNota}</td>
                             <td>{nota.total}</td>
-                            <td>{nota.estado}</td>
+                            {/* <td>{nota.estado}</td> */}
                         </tr>
                     ))}
                 </tbody>

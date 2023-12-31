@@ -79,7 +79,7 @@ const NotasCanceladas = () => {
                         <th>Fecha de Anticipo</th>
                         <th>Monto</th>
                         <th>Resto</th>
-                        <th>Estado de Pago</th>
+                        {/* <th>Estado de Pago</th> */}
                         <th>Nombre Cliente</th>
                         <th>Teléfono Cliente</th>
                         <th>Dirección Cliente</th>
@@ -96,7 +96,7 @@ const NotasCanceladas = () => {
                             <td>{nota.fechaAnticipo}</td>
                             <td>{nota.monto}</td>
                             <td>{nota.resto}</td>
-                            <td>{nota.estadoPago}</td>
+                            {/* <td>{nota.estadoPago}</td> */}
                             <td>{nota.nombreCompletoCliente}</td>
                             <td>{nota.telefonoCliente}</td>
                             <td>{nota.direccionCliente}</td>

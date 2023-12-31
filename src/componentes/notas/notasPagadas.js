@@ -85,7 +85,7 @@ const NotasPagadas = () => {
                         <th>Monto</th>
                         <th>Resto</th>
                         <th>Total</th>
-                        <th>Estado</th>
+                        {/* <th>Estado</th> */}
                         <th>Departamento</th>
                     </tr>
                 </thead>
@@ -102,7 +102,7 @@ const NotasPagadas = () => {
                             <td>{item.monto}</td>
                             <td>{item.resto}</td>
                             <td>{item.total}</td>
-                            <td>{item.estadoPago}</td>
+                            {/* <td>{item.estadoPago}</td> */}
                             <td>{item.nombreDepartamento}</td>
                         </tr>
                     ))}

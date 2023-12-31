@@ -13,6 +13,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
   const [notasFiltradas, setNotasFiltradas] = useState([]);
   const [showDetalles, setShowDetalles] = useState(false);
   const [selectedNota, setSelectedNota] = useState(null);
+  // const [pedidoEstado, setPedidoEstado] = useState('');
 
   useEffect(() => {
     fetchNotasVentaEnProceso();
@@ -40,6 +41,71 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
     setShowDetalles(true);
   };
 
+  const handleCancelarPedido = async (nota) => {
+    try {
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido/modificarpedido', {
+        nNota: nota.numeroNota,
+        idEstadoPedido: 3, // 3 representa el estado de pedido "Cancelado"
+      });
+      await fetchNotasVentaEnProceso();
+
+      if (response.status === 201) {
+        console.log('Pedido cancelado con éxito', response.data);
+        alert('Pedido cancelado con éxito');
+      } else {
+        console.error('Error al cancelar el pedido:', response.data);
+        alert('Error al cancelar el pedido');
+      }
+    } catch (error) {
+      console.error('Error al cancelar el pedido:', error);
+      alert('Error al cancelar el pedido');
+    }
+  };
+
+  const handleEntregarPedido = async (nota) => {
+    try {
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido/modificarpedido', {
+        nNota: nota.numeroNota,
+        idEstadoPedido: 2, // 2 representa el estado de pedido "Entregado"
+      });
+      await fetchNotasVentaEnProceso();
+
+      if (response.status === 201) {
+        console.log('Pedido entregado con éxito', response.data);
+        alert('Pedido entregado con éxito');
+      } else {
+        console.error('Error al entregar el pedido:', response.data);
+        alert('Error al entregar el pedido');
+      }
+    } catch (error) {
+      console.error('Error al entregar el pedido:', error);
+      alert('Error al entregar el pedido', error);
+    }
+  };
+
+  const handlePagarYEntregarPedido = async (nota) => {
+    console.log('Clic para Pagar y entregar pedido:', nota);
+    try {
+      // Calcular el monto que falta pagar
+      const restoAPagar = nota.resto;
+
+      // Realizar la solicitud al servidor para pagar y entregar el pedido
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido/pagarentregarpedido', {
+        idPedido: 2,
+        nNota: nota.numeroNota,
+        pago: restoAPagar,
+        // Otros datos necesarios para la solicitud, si los hay
+      });
+
+      // Después de la acción, actualizar los datos
+      await fetchNotasVentaEnProceso();
+      alert('Pagado y entregado con éxito', response.data);
+    } catch (error) {
+      console.error('Error en la solicitud', error);
+      // Manejar el error según tus necesidades
+    }
+  };  
+
   return (
     <div className='registro'>
       <MenuHamburguesa />
@@ -65,10 +131,10 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
           <div key={nota.idAnticipo} className="rectangulo">
             <div className="botones">
               <h4>Acciones del pedido:</h4>
-              <div className='r-1'> 
-                <button className='btn-finalizar rh c'>Cancelar Pedido</button>
-                <button className='btn-finalizar rh e'>Entregar</button>
-                <button className='btn-finalizar rh'>Pagar y entregar</button>
+              <div className='r-1'>
+                <button className='btn-finalizar rh c' onClick={() => handleCancelarPedido(nota)}>Cancelar Pedido</button>
+                <button className='btn-finalizar rh e' onClick={() => handleEntregarPedido(nota)}>Entregar Pedido</button>
+                <button className='btn-finalizar rh' onClick={() => handlePagarYEntregarPedido(nota)}>Pagar y entregar</button>
               </div>
             </div>
             <div className="rectangulo-header" style={{ backgroundColor: '#f6f6f6' }}>
@@ -79,7 +145,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
               </div>
               <div className='r-1'>
                 <p><b>Empleado: </b>{nota.nombreCompletoEmpleado}</p>
-                <p><b>Estado: </b>{nota.estado}</p>
+                {/* <p><b>Estado: </b>{nota.estado}</p> */}
               </div>
             </div>
 
