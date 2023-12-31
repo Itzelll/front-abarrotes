@@ -5,16 +5,17 @@ import '../pantallasGerente/style/salesReport.css';
 import '../Calendar.js';
 import Calendar from '../Calendar.js';
 
-const NotasCanceladas = () => {
+const PedidoCancelado = () => {
     const [notasVentaCanceladas, setNotasVentaCanceladas] = useState([]);
     const [filtroCliente, setFiltroCliente] = useState('');
     const [filtroFecha, setFiltroFecha] = useState('');
-    const [filtroDepartamento, setFiltroDepartamento] = useState('');
+    // const [filtroDepartamento, setFiltroDepartamento] = useState('');
+    const [filtroEstadoPago, setFiltroEstadoPago] = useState('');
 
     useEffect(() => {
         const fetchNotasVentaCanceladas = async () => {
             try {
-                const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-cancelada');
+                const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pedido-cancelado');
                 const data = await response.json();
                 setNotasVentaCanceladas(data);
             } catch (error) {
@@ -23,36 +24,44 @@ const NotasCanceladas = () => {
         };
 
         fetchNotasVentaCanceladas();
-    }, [filtroCliente, filtroFecha, filtroDepartamento]);
+    }, [filtroCliente, filtroFecha, filtroEstadoPago
+        // filtroDepartamento
+    ]);
 
     const handleFiltroClienteChange = (e) => {
         setFiltroCliente(e.target.value);
     };
 
-    // const handleFiltroFechaChange = (e) => {
-    //     setFiltroFecha(e.target.value);
-    // };
-
-    const handleFiltroDepartamentoChange = (e) => {
-        setFiltroDepartamento(e.target.value);
+    const handleFiltroFechaChange = (date) => {
+        setFiltroFecha(date);
     };
+
+    const handleFiltroEstadoPagoChange = (e) => {
+        setFiltroEstadoPago(e.target.value);
+    };
+
+    // const handleFiltroDepartamentoChange = (e) => {
+    //     setFiltroDepartamento(e.target.value);
+    // };
 
     const filtrarDatos = () => {
         return notasVentaCanceladas.filter(nota => {
-            const fechaNota = nota.fechaNota || ''; 
-    
+            const fechaNota = nota.fechaNota || '';
+
             return (
                 nota.nombreCompletoCliente.toLowerCase().includes(filtroCliente.toLowerCase()) &&
-                ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) &&
-                nota.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
+                ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) 
+                &&
+                (filtroEstadoPago === '' || nota.estadoPago.toLowerCase().includes(filtroEstadoPago.toLowerCase()))
+                // nota.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
             );
         });
-    };             
+    };
 
     return (
         <div className='registro'>
             <MenuHamburguesa />
-            <h1>Notas de Venta Canceladas</h1>
+            <h1>Pedidos Cancelados</h1>
             <h4>Filtros:</h4>
             <div className='r-1'>
                 <div>
@@ -63,14 +72,17 @@ const NotasCanceladas = () => {
                     <label>Filtrar por Fecha Nota:</label>
                     <Calendar
                         selectedDate={filtroFecha}
-                        handleDateChange={(date) => setFiltroFecha(date)}
-                        // <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
+                        handleDateChange={handleFiltroFechaChange}
                     />
                 </div>
                 <div>
+                    <label>Filtrar por Estado de Pago:</label>
+                    <input type="text" value={filtroEstadoPago} onChange={handleFiltroEstadoPagoChange} />
+                </div>
+                {/* <div>
                     <label>Filtrar por Departamento:</label>
                     <input type="text" value={filtroDepartamento} onChange={handleFiltroDepartamentoChange} />
-                </div>
+                </div> */}
             </div>
             <table>
                 <thead>
@@ -79,14 +91,15 @@ const NotasCanceladas = () => {
                         <th>Fecha de Anticipo</th>
                         <th>Monto</th>
                         <th>Resto</th>
-                        {/* <th>Estado de Pago</th> */}
+                        <th>Estado de Pago</th>
                         <th>Nombre Cliente</th>
                         <th>Teléfono Cliente</th>
                         <th>Dirección Cliente</th>
                         <th>Nombre Empleado</th>
                         <th>Fecha de Nota</th>
                         <th>Total</th>
-                        <th>Nombre Departamento</th>
+                        {/* <th>Estado</th> */}
+                        {/* <th>Nombre Departamento</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -96,14 +109,14 @@ const NotasCanceladas = () => {
                             <td>{nota.fechaAnticipo}</td>
                             <td>{nota.monto}</td>
                             <td>{nota.resto}</td>
-                            {/* <td>{nota.estadoPago}</td> */}
+                            <td>{nota.estadoPago}</td>
                             <td>{nota.nombreCompletoCliente}</td>
-                            <td>{nota.telefonoCliente}</td>
-                            <td>{nota.direccionCliente}</td>
+                            <td>{nota.telefono}</td>
+                            <td>{nota.direccion}</td>
                             <td>{nota.nombreCompletoEmpleado}</td>
                             <td>{nota.fechaNota}</td>
                             <td>{nota.total}</td>
-                            <td>{nota.nombreDepartamento}</td>
+                            {/* <td>{nota.estado}</td> */}
                         </tr>
                     ))}
                 </tbody>
@@ -112,4 +125,4 @@ const NotasCanceladas = () => {
     );
 };
 
-export default NotasCanceladas;
+export default PedidoCancelado;
