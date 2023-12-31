@@ -12,7 +12,7 @@ const EliminarEmpleado = () => {
 
   const buscarEmpleado = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/empleados/buscar?nombre=${nombre}&apellidos=${apellidos}`);
+      const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados/buscar?nombre=${nombre}&apellidos=${apellidos}`);
       if (response.ok) {
         const data = await response.json();
         setResultados(data);

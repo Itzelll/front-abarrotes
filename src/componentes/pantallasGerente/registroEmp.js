@@ -16,7 +16,7 @@ const RegistroEmp = () => {
     useEffect(() => {
         const obtenerEmpleados = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/empleados", {
+                const response = await fetch("https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados", {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -58,7 +58,8 @@ const RegistroEmp = () => {
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Apellidos</th>
-                            <th>ID Rol</th>
+                            <th>Correo Electrónico</th>
+                            <th>Roles</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,7 +68,8 @@ const RegistroEmp = () => {
                                 <td>{empleado.idEmpleado}</td>
                                 <td>{empleado.nombre}</td>
                                 <td>{empleado.apellidos}</td>
-                                <td>{empleado.idRol}</td>
+                                <td>{empleado.correoElectronico}</td>
+                                <td>{empleado.roles}</td>
                             </tr>
                         ))}
                     </tbody>
