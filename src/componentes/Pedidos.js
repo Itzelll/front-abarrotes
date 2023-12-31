@@ -9,12 +9,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
 
-const Calendar = () => {
+const Calendar = ({ onChange }) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const handleDateChange = date => {
         setSelectedDate(date);
+        onChange(date);
         closeCalendar();
     };
 
@@ -44,8 +45,11 @@ const Calendar = () => {
 
 const TimePickerModal = ({ isOpen, onClose, onSelectTime }) => {
     const [selectedTime, setSelectedTime] = useState(null);
+    const timePickerRef = useRef(null);
 
     useEffect(() => {
+        return () => {
+        };
     }, [isOpen]);
 
     const handleTimeChange = (value) => {
@@ -60,7 +64,7 @@ const TimePickerModal = ({ isOpen, onClose, onSelectTime }) => {
     return (
         isOpen && (
             <div className="select-hora">
-                <div className="time-picker-modal">
+                <div className="time-picker-modal" ref={timePickerRef}>
                     <TimePicker
                         placeholder="seleccionar hora"
                         showSecond={false}
@@ -92,6 +96,7 @@ const Pedidos = () => {
     const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
     const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
     const [clienteInfo, setClienteInfo] = useState(null);
+    const [clienteCreado, setClienteCreado] = useState(false);
 
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
@@ -115,7 +120,7 @@ const Pedidos = () => {
                     monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
                 },
                 cliente: {
-                    idCliente: 2
+                    idCliente: parseInt(clienteSeleccionado)
                 },
                 empleado: {
                     idEmpleado: 3
@@ -124,9 +129,8 @@ const Pedidos = () => {
                     idDepartamento: parseInt(departamentoSeleccionado)
                 },
                 detallePedido: {
-                    idDetallePedido: 3,
-                    fechaEntrega: "2023-12-18",
-                    horaEntrgea: "00:00"
+                    fechaEntrega: fechaEntrega,
+                    horaEntrega: horaEntrega
                 },
                 detalleVenta: ventas.map((producto) => ({
                     cantidad: parseFloat(producto.cantidad),
@@ -177,6 +181,9 @@ const Pedidos = () => {
             try {
                 const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes/${idCliente}`);
                 setClienteInfo(response.data);
+                if (clienteCreado) {
+                    setClienteCreado(false); // Reiniciar el estado después de mostrar la información
+                }
             } catch (error) {
                 console.error('Error al obtener la información del cliente', error);
             }
@@ -187,7 +194,7 @@ const Pedidos = () => {
         } else {
             setClienteInfo(null);
         }
-    }, [clienteSeleccionado]);
+    }, [clienteSeleccionado, clienteCreado]);
 
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
@@ -224,7 +231,9 @@ const Pedidos = () => {
                 const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes', nuevoCliente);
                 await fetchClientes();
                 console.log('Cliente creado:', response.data);
+                setClienteSeleccionado(response.data.idCliente);
                 alert('Cliente creado con éxito');
+                setClienteCreado(true);
                 onClose();
             } catch (error) {
                 console.error('Error al crear el cliente:', error);
@@ -317,6 +326,10 @@ const Pedidos = () => {
         }
     };
 
+    const handleFechaEntregaChange = (date) => {
+        setFechaEntrega(date ? format(date, 'yyyy-MM-dd') : ''); // Formatear la fecha y establecer en fechaEntrega
+    };
+
     const handleHoraEntrega = () => {
         setIsTimePickerOpen(true);
     };
@@ -367,16 +380,18 @@ const Pedidos = () => {
         return ventas.reduce((total, producto) => total + parseFloat(producto.subtotal), 0).toFixed(2);
     };
 
-    const cancelarVenta = () => {
-        if (window.confirm("¿Estás seguro de cancelar la venta?")) {
+    const cancelarPedido = () => {
+        if (window.confirm("¿Estás seguro de cancelar el pedido?")) {
             resetForm();
-            console.log("Venta cancelada");
+            console.log("Pedido cancelado");
         }
     }
 
     const resetForm = () => {
         setDepartamentoSeleccionado('');
         setClienteSeleccionado('');
+        setFechaEntrega('');
+        setHoraEntrega('');
         setCantidad("");
         setProducto("");
         setPrecioUnitario("");
@@ -456,7 +471,10 @@ const Pedidos = () => {
             )}
             <div className="input">
                 <div>
-                    <Calendar />
+                    <Calendar 
+                        value={fechaEntrega}
+                        onChange={handleFechaEntregaChange}
+                    />
                     <input
                         className="hora"
                         placeholder="Hora de entrega (HH:mm)"
@@ -525,10 +543,10 @@ const Pedidos = () => {
                 />
                 <br /><br />
                 <div className="btns">
-                    <button className="btn-finalizar">
-                        Finalizar
+                    <button className="btn-finalizar" onClick={handleCreatePedido}>
+                        Guardar Pedido
                     </button>
-                    <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
+                    <button className="btn-cancelar" onClick={cancelarPedido}>Cancelar Pedido</button>
                 </div>
             </div>
         </div>
