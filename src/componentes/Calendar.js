@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Calendar = () => {
-    const [selectedDate, setSelectedDate] = useState(null);
+const Calendar = ({ selectedDate, handleDateChange }) => {
+    const [internalSelectedDate, setInternalSelectedDate] = useState(null);
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
-    const handleDateChange = date => {
-        setSelectedDate(date);
-        closeCalendar();
-    };
 
     const toggleCalendar = () => {
         setIsCalendarOpen(!isCalendarOpen);
@@ -25,9 +20,13 @@ const Calendar = () => {
                 <DatePicker
                     className="fecha-entrega"
                     placeholderText="Fecha de entrega"
-                    selected={selectedDate}
+                    selected={internalSelectedDate || (selectedDate && new Date(selectedDate))}
                     dateFormat="yyyy-MM-dd"
-                    onChange={handleDateChange}
+                    onChange={(date) => {
+                        setInternalSelectedDate(date);
+                        handleDateChange(date);
+                        closeCalendar();
+                    }}
                     onClickOutside={closeCalendar}
                 />
             </div>

@@ -29,6 +29,11 @@ const CreateProduct = () => {
 
     const handleCreate = async () => {
         try {
+            if (codigo.length > 4) {
+                alert('El código debe ser de máximo 4 numeros.');
+                return;
+            }
+
             const nuevoProducto = {
                 codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
@@ -255,7 +260,6 @@ const CreateProduct = () => {
                             <button className='btn-finalizar' onClick={handleCreate}>Crear</button>
                         )}
                     </div>
-
                 </div>
             ) : (
                 <p>No tienes permisos para acceder a este sitio.</p>

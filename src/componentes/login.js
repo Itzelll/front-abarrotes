@@ -16,7 +16,7 @@ const LoginForm = () => {
   const init = async () => {
     try {
       // Lógica para inicializar con una solicitud GET
-      const responseGet = await axios.get('http://localhost:8080/initEmpleados');
+      const responseGet = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/initEmpleados');
       console.log('Respuesta de inicialización con GET', responseGet.data);
     } catch (error) {
       console.error('Error en la inicialización', error.message);
@@ -25,7 +25,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/login', {
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/login', {
         usuario: username,
         contrasenia: password,
       });
@@ -33,8 +33,16 @@ const LoginForm = () => {
       console.log('Respuesta del backend', response.data);
 
       if (response.data.success && response.data.rol) {
+        // Extraer nombre y id_empleado de la respuesta
+        const { nombre, id_empleado } = response.data;
+
+        // Almacenar el nombre y el id_empleado en localStorage
+        localStorage.setItem('nombreEmpleado', nombre);
+        localStorage.setItem('idEmpleado', id_empleado);
+
         const userRole = response.data; // Almacena todo el objeto de respuesta
         localStorage.setItem('userRole', JSON.stringify(userRole));
+
         navigate('/ventas', { state: { userRole } });
       } else {
         console.error('La respuesta del servidor no contiene un rol válido.', response.data);
@@ -43,7 +51,6 @@ const LoginForm = () => {
       console.error('Error al iniciar sesión', error.message);
     }
 
-    console.log(`Usuario: ${username}, Contraseña: ${password}`);
   };
 
   return (
