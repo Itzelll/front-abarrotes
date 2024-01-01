@@ -30,7 +30,8 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <Link to='/pedidoEntregado' className='no-underline'><li className='opc'>Pedidos Entregados</li></Link>
                     <Link to='/pedidoCancelado' className='no-underline'><li className='opc'>Pedidos Cancelados</li></Link>                    
                     
-                    <li className='titulo'>Informe de Ventas</li>
+                    <li className='titulo'>Informe</li>
+                    <Link to='/informeVentas' className='no-underline'><li className='opc'>Informe de Ventas</li></Link>
                     <Link to='/salesReportAbarrotes' className='no-underline'><li className='opc'>Abarrotes</li></Link>
                     <Link to='/salesReportFerreteria' className='no-underline'><li className='opc'>Ferretería</li></Link>                    
                     <Link to='/salesReportBanqueteria' className='no-underline'><li className='opc'>Banquetería</li></Link>

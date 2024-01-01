@@ -27,6 +27,8 @@ import Pedidos from './componentes/Pedidos';
 import PedidoEnProcesoComponent from './componentes/pedidos/pedidoProceso';
 import PedidoCancelado from './componentes/pedidos/pedidoCancelado';
 import PedidoEntregado from './componentes/pedidos/pedidoEntregado';
+import InformeVentas from './componentes/pantallasGerente/informeVentas';
+import DetalleReporte from './componentes/pantallasGerente/detalleVentas';
 
 function App() {
   return (
@@ -61,6 +63,8 @@ function App() {
         <Route path="/pedidoProceso" element={<PedidoEnProcesoComponent />} />
         <Route path="/pedidoCancelado" element={<PedidoCancelado />} />
         <Route path="/pedidoEntregado" element={<PedidoEntregado />} />
+        <Route path="/informeVentas" element={<InformeVentas />} />
+        <Route path="/detalleVentas" element={<DetalleReporte />} />
       </Routes>
     </Router>
     </div>

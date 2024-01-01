@@ -25,7 +25,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/login', {
+      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/login', {
         usuario: username,
         contrasenia: password,
       });
