@@ -5,6 +5,8 @@ import MenuHamburguesa from '../../MenuHamburguesa';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const UnidadMedidaList = () => {
   const [unidadesMedida, setUnidadesMedida] = useState([]);
   const [nombreUnidadMedida, setNombreUnidadMedida] = useState('');
@@ -14,7 +16,7 @@ const UnidadMedidaList = () => {
 
   const fetchUnidadesMedida = async () => {
     try {
-      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida');
+      const response = await axios.get(`${API_URL}/api/unidadesMedida`);
       setUnidadesMedida(response.data);
     } catch (error) {
       console.error('Error al obtener unidades de medida', error);
@@ -23,12 +25,23 @@ const UnidadMedidaList = () => {
 
   const handleCrearUnidadMedida = async () => {
     try {
+
+      if (nombreUnidadMedida.length < 1) {
+        alert('El campo no debe estar vacío.');
+        return;
+      }
+
+      if (unidadesMedida.some(unidadMedida => unidadMedida.nombre.toLowerCase() === nombreUnidadMedida.toLowerCase())) {
+        alert('Ya existe una unidad de medida con ese nombre.');
+        return;
+      }
+
       const nuevaUnidadMedida = {
         idUnidadMed: idUnidadMedida,
         nombre: nombreUnidadMedida.toLowerCase(),
       };
 
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida', nuevaUnidadMedida);
+      const response = await axios.post(`${API_URL}/api/unidadesMedida`, nuevaUnidadMedida);
       console.log('Unidad de medida creada:', response.data);
       alert('Unidad de medida creada con éxito.');
       setIdUnidadMedida('');
@@ -56,13 +69,18 @@ const UnidadMedidaList = () => {
   const handleActualizarUnidadMedida = async () => {
     console.log('unidadMedidaSeleccionada:', unidadMedidaSeleccionada);
     try {
+      if (nombreUnidadMedida.length < 1) {
+        alert('El campo no debe estar vacío.');
+        return;
+      }
+      
       const unidadMedidaActualizada = {
         nombre: nombreUnidadMedida.toLowerCase(),
       };
       console.log(unidadMedidaActualizada);
 
       const response = await axios.put(
-        `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida/${unidadMedidaSeleccionada.idUnidadMedida}`,
+        `${API_URL}/api/unidadesMedida/${unidadMedidaSeleccionada.idUnidadMedida}`,
         unidadMedidaActualizada
       );
 

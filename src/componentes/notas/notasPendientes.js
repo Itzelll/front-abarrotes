@@ -4,6 +4,8 @@ import MenuHamburguesa from '../MenuHamburguesa';
 import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const NotasPendientes = () => {
     const [notasVentaPendientes, setNotasVentaPendientes] = useState([]);
     const [filtroNombreCliente, setFiltroNombreCliente] = useState('');
@@ -18,7 +20,7 @@ const NotasPendientes = () => {
 
     const fetchNotasVentaPendientes = async () => {
         try {
-            const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pendiente');
+            const response = await fetch(`${API_URL}/api/vista-nota-venta-pendiente`);
             const data = await response.json();
             setNotasVentaPendientes(data);
             setNotasFiltradas(data);
@@ -35,6 +37,11 @@ const NotasPendientes = () => {
     };
 
     const handleAbonar = (nota) => {
+        if (nota.resto <= 0) {
+            console.error('La nota ya se encuentra pagada.');
+            alert('La nota ya se encuentra pagada.');
+            return;
+        }
         setSelectedNota(nota);
         setShowModal(true);
     };
@@ -46,7 +53,12 @@ const NotasPendientes = () => {
     const handleConfirmAbono = async () => {
         try {
             if (!selectedNota) {
-                console.error('No se ha seleccionado una nota para abonar.');
+                alert('No se ha seleccionado una nota para abonar.');
+                return;
+            }
+
+            if (!abonoAmount || abonoAmount <= 0) {
+                alert('La cantidad de abono debe ser un número positivo.');
                 return;
             }
 
@@ -55,11 +67,13 @@ const NotasPendientes = () => {
                 pago: parseFloat(abonoAmount),
             };
 
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas/pagarnota', abonarNota);
+            const response = await axios.post(`${API_URL}/api/notasventas/pagarnota`, abonarNota);
             console.log(response.data);
             console.log(`Abono de: ${abonoAmount}`);
+            alert(`Abono de: ${abonoAmount}`);
             setShowModal(false);
             fetchNotasVentaPendientes();
+
         } catch (error) {
             console.error('Error en la solicitud:', error);
         }

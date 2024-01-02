@@ -16,7 +16,6 @@ import VentasMensualesBanqueteria from './componentes/pantallasGerente/VentasMen
 import VentasMensualesFerreteria from './componentes/pantallasGerente/VentasMensualesFerreteria';
 import Catalogo from './componentes/pantallasGerente/productos/catalogo';
 import CreateProduct from './componentes/pantallasGerente/productos/agregar';
-import UpdateProduct from './componentes/pantallasGerente/productos/modificar';
 import MarcaList from './componentes/pantallasGerente/productos/marcas-all';
 import CategoriaList from './componentes/pantallasGerente/productos/categoria-all';
 import UnidadMedidaList from './componentes/pantallasGerente/productos/unidadMedida';
@@ -50,7 +49,6 @@ function App() {
         <Route path='/ventasMensualesFerreteria' element={<VentasMensualesFerreteria />}></Route>
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/agregarProducto" element={<CreateProduct />} />
-        <Route path="/modificarProducto" element={<UpdateProduct />} />
         <Route path="/marcas" element={<MarcaList />} />
         <Route path="/categoria" element={<CategoriaList />} />
         <Route path="/unidadMedida" element={<UnidadMedidaList />} />
