@@ -5,6 +5,8 @@ import '../pantallasGerente/style/salesReport.css';
 import '../Calendar.js';
 import Calendar from '../Calendar.js';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const PedidoCancelado = () => {
     const [notasVentaCanceladas, setNotasVentaCanceladas] = useState([]);
     const [filtroCliente, setFiltroCliente] = useState('');
@@ -15,7 +17,7 @@ const PedidoCancelado = () => {
     useEffect(() => {
         const fetchNotasVentaCanceladas = async () => {
             try {
-                const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pedido-cancelado');
+                const response = await fetch(`${API_URL}/api/vista-nota-venta-pedido-cancelado`);
                 const data = await response.json();
                 setNotasVentaCanceladas(data);
             } catch (error) {
@@ -40,10 +42,6 @@ const PedidoCancelado = () => {
         setFiltroEstadoPago(e.target.value);
     };
 
-    // const handleFiltroDepartamentoChange = (e) => {
-    //     setFiltroDepartamento(e.target.value);
-    // };
-
     const filtrarDatos = () => {
         return notasVentaCanceladas.filter(nota => {
             const fechaNota = nota.fechaNota || '';
@@ -53,7 +51,6 @@ const PedidoCancelado = () => {
                 ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) 
                 &&
                 (filtroEstadoPago === '' || nota.estadoPago.toLowerCase().includes(filtroEstadoPago.toLowerCase()))
-                // nota.nombreDepartamento.toLowerCase().includes(filtroDepartamento.toLowerCase())
             );
         });
     };
@@ -79,10 +76,6 @@ const PedidoCancelado = () => {
                     <label>Filtrar por Estado de Pago:</label>
                     <input type="text" value={filtroEstadoPago} onChange={handleFiltroEstadoPagoChange} />
                 </div>
-                {/* <div>
-                    <label>Filtrar por Departamento:</label>
-                    <input type="text" value={filtroDepartamento} onChange={handleFiltroDepartamentoChange} />
-                </div> */}
             </div>
             <table>
                 <thead>
@@ -98,8 +91,6 @@ const PedidoCancelado = () => {
                         <th>Nombre Empleado</th>
                         <th>Fecha de Nota</th>
                         <th>Total</th>
-                        {/* <th>Estado</th> */}
-                        {/* <th>Nombre Departamento</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -116,7 +107,6 @@ const PedidoCancelado = () => {
                             <td>{nota.nombreCompletoEmpleado}</td>
                             <td>{nota.fechaNota}</td>
                             <td>{nota.total}</td>
-                            {/* <td>{nota.estado}</td> */}
                         </tr>
                     ))}
                 </tbody>

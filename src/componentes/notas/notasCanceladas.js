@@ -5,6 +5,8 @@ import '../pantallasGerente/style/salesReport.css';
 import '../Calendar.js';
 import Calendar from '../Calendar.js';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const NotasCanceladas = () => {
     const [notasVentaCanceladas, setNotasVentaCanceladas] = useState([]);
     const [filtroCliente, setFiltroCliente] = useState('');
@@ -14,7 +16,7 @@ const NotasCanceladas = () => {
     useEffect(() => {
         const fetchNotasVentaCanceladas = async () => {
             try {
-                const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-cancelada');
+                const response = await fetch(`${API_URL}/api/vista-nota-venta-cancelada`);
                 const data = await response.json();
                 setNotasVentaCanceladas(data);
             } catch (error) {
@@ -28,10 +30,6 @@ const NotasCanceladas = () => {
     const handleFiltroClienteChange = (e) => {
         setFiltroCliente(e.target.value);
     };
-
-    // const handleFiltroFechaChange = (e) => {
-    //     setFiltroFecha(e.target.value);
-    // };
 
     const handleFiltroDepartamentoChange = (e) => {
         setFiltroDepartamento(e.target.value);
@@ -64,7 +62,6 @@ const NotasCanceladas = () => {
                     <Calendar
                         selectedDate={filtroFecha}
                         handleDateChange={(date) => setFiltroFecha(date)}
-                        // <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} />
                     />
                 </div>
                 <div>
@@ -79,7 +76,6 @@ const NotasCanceladas = () => {
                         <th>Fecha de Anticipo</th>
                         <th>Monto</th>
                         <th>Resto</th>
-                        {/* <th>Estado de Pago</th> */}
                         <th>Nombre Cliente</th>
                         <th>Teléfono Cliente</th>
                         <th>Dirección Cliente</th>
@@ -96,7 +92,6 @@ const NotasCanceladas = () => {
                             <td>{nota.fechaAnticipo}</td>
                             <td>{nota.monto}</td>
                             <td>{nota.resto}</td>
-                            {/* <td>{nota.estadoPago}</td> */}
                             <td>{nota.nombreCompletoCliente}</td>
                             <td>{nota.telefonoCliente}</td>
                             <td>{nota.direccionCliente}</td>

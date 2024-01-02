@@ -7,6 +7,8 @@ import { IoSearchCircleOutline } from "react-icons/io5";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import DetallesVentaModal from './DetallesVentaModal';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const VistaNotaVentaPedidoEnProcesoComponent = () => {
   const [notasVentaEnProceso, setNotasVentaEnProceso] = useState([]);
   const [filtroNombreCliente, setFiltroNombreCliente] = useState('');
@@ -21,7 +23,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
 
   const fetchNotasVentaEnProceso = async () => {
     try {
-      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pedido-en-proceso');
+      const response = await axios.get(`${API_URL}/api/vista-nota-venta-pedido-en-proceso`);
       setNotasVentaEnProceso(response.data);
       setNotasFiltradas(response.data);
     } catch (error) {
@@ -30,6 +32,11 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
   };
 
   const handleBuscar = () => {
+    if (filtroNombreCliente.length < 1) {
+      alert('El campo no debe estar vacío.');
+      return;
+    }
+    
     const notasFiltradas = notasVentaEnProceso.filter(
       (nota) => nota.nombreCompletoCliente.toLowerCase().includes(filtroNombreCliente.toLowerCase())
     );
@@ -43,7 +50,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
 
   const handleCancelarPedido = async (nota) => {
     try {
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido/modificarpedido', {
+      const response = await axios.post(`${API_URL}/api/pedido/modificarpedido`, {
         nNota: nota.numeroNota,
         idEstadoPedido: 3, // 3 representa el estado de pedido "Cancelado"
       });
@@ -64,7 +71,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
 
   const handleEntregarPedido = async (nota) => {
     try {
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido/modificarpedido', {
+      const response = await axios.post(`${API_URL}/api/pedido/modificarpedido`, {
         nNota: nota.numeroNota,
         idEstadoPedido: 2, // 2 representa el estado de pedido "Entregado"
       });
@@ -90,7 +97,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
       const restoAPagar = nota.resto;
 
       // Realizar la solicitud al servidor para pagar y entregar el pedido
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido/pagarentregarpedido', {
+      const response = await axios.post(`${API_URL}/api/pedido/pagarentregarpedido`, {
         idPedido: 2,
         nNota: nota.numeroNota,
         pago: restoAPagar,

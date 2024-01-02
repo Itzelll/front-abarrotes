@@ -5,6 +5,8 @@ import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
 import Calendar from '../Calendar';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const NotasPagadas = () => {
     const [data, setData] = useState([]);
     const [filtroCliente, setFiltroCliente] = useState('');
@@ -14,7 +16,7 @@ const NotasPagadas = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pagada');
+                const response = await axios.get(`${API_URL}/api/vista-nota-venta-pagada`);
                 setData(response.data);
             } catch (error) {
                 console.error('Error al obtener datos:', error);
@@ -64,7 +66,6 @@ const NotasPagadas = () => {
                         selectedDate={filtroFecha}
                         handleDateChange={handleFiltroFechaChange}
                     />
-                    {/* <input type="text" value={filtroFecha} onChange={handleFiltroFechaChange} /> */}
                 </div>
 
                 <div>
@@ -85,7 +86,6 @@ const NotasPagadas = () => {
                         <th>Monto</th>
                         <th>Resto</th>
                         <th>Total</th>
-                        {/* <th>Estado</th> */}
                         <th>Departamento</th>
                     </tr>
                 </thead>
@@ -102,7 +102,6 @@ const NotasPagadas = () => {
                             <td>{item.monto}</td>
                             <td>{item.resto}</td>
                             <td>{item.total}</td>
-                            {/* <td>{item.estadoPago}</td> */}
                             <td>{item.nombreDepartamento}</td>
                         </tr>
                     ))}
