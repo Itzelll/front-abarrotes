@@ -100,12 +100,18 @@ const Ventas = () => {
         }
     }, [producto]);
 
+    const isNumber = (value) => /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
+
     const handleCantidadChange = (e) => {
-        setCantidad(e.target.value);
+        if (isNumber(e.target.value) || e.target.value === "") {
+            setCantidad(e.target.value);
+        }
     };
 
     const handleProductoChange = (e) => {
-        setProducto(e.target.value);
+        if (/^[0-9]{0,4}$/.test(e.target.value)) {
+            setProducto(e.target.value);
+        }
     };
 
     const handlePrecioUnitarioChange = (e) => {
