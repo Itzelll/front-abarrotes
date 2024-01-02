@@ -19,11 +19,31 @@ const InformeReportes = () => {
 
         fetchReportes();
     }, []);
+    const fetchReporteByCve = async (cve) => {
+        try {
+            const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/reportes/byCve/${cve}`);
+            setReportes(response.data);
+        } catch (error) {
+            console.error(`Error al obtener el detalle del reporte con CVE ${cve}:`, error);
+        }
+    };
+
+    const handleCveInputChange = (event) => {
+        const cve = event.target.value;
+        fetchReporteByCve(cve);
+    };
+
 
     return (
         <div className="registro">
             <MenuHamburguesa />
             <h1>Reportes</h1>
+            <div style={{ textAlign: 'center' }}>
+                <label htmlFor="cveInput">Buscar por CVE:</label>
+                <input type="text" id="cveInput" onChange={handleCveInputChange} />
+            </div>
+ 
+            <br />
             <table>
                 <thead>
                     <tr>
