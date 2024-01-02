@@ -124,7 +124,6 @@ const Pedidos = () => {
         } else if (montoRecibido <= calcularTotal()) {
             return montoRecibido;
         }
-
     }
     const handleCreatePedido = async () => {
         try {
@@ -132,7 +131,7 @@ const Pedidos = () => {
                 fecha: fechaFormateada,
                 total: parseFloat(calcularTotal()),
                 anticipo: {
-                    monto: parseFloat(monto()), // Asume que el anticipo es el total de la venta                
+                    monto: parseFloat(monto()),             
                 },
                 cliente: {
                     idCliente: parseInt(clienteSeleccionado)
@@ -189,7 +188,7 @@ const Pedidos = () => {
             }
         };
         fetchCliente();
-    }, []);
+    }, []);    
 
     useEffect(() => {
         const fetchClienteDetalle = async (idCliente) => {
@@ -242,7 +241,7 @@ const Pedidos = () => {
                     telefono: parseInt(telefono),
                     direccion: direccion,
                 };
-
+            
                 const response = await axios.post(URL_API + 'api/clientes', nuevoCliente);
                 await fetchClientes();
                 console.log('Cliente creado:', response.data);
@@ -275,41 +274,45 @@ const Pedidos = () => {
         return (
             // JSX de la pantalla flotante
             <div className="modal-overlay">
-                <div className="modal-content">
-                    <MenuHamburguesa />
-                    <h2>Nuevo Cliente</h2>
+               {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <div className="modal-content">
+                        <MenuHamburguesa />
+                        <h2>Nuevo Cliente</h2>
 
-                    <div className="input">
-                        <input
-                            className="cantidad"
-                            placeholder="Nombre"
-                            value={nombre}
-                            onChange={handleNombreChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Apellidos"
-                            value={apellidos}
-                            onChange={handleApellidosChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Teléfono"
-                            value={telefono}
-                            onChange={handleTelefonoChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Dirección"
-                            value={direccion}
-                            onChange={handleDireccionChange}
-                        />
+                        <div className="input">
+                            <input
+                                className="cantidad"
+                                placeholder="Nombre"
+                                value={nombre}
+                                onChange={handleNombreChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Apellidos"
+                                value={apellidos}
+                                onChange={handleApellidosChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Teléfono"
+                                value={telefono}
+                                onChange={handleTelefonoChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Dirección"
+                                value={direccion}
+                                onChange={handleDireccionChange}
+                            />
+                        </div>
+                        <div className="btns">
+                            <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
+                            <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
+                        </div>
                     </div>
-                    <div className="btns">
-                        <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
-                        <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
-                    </div>
-                </div>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
             </div>
         );
     };
@@ -342,7 +345,7 @@ const Pedidos = () => {
                     // Mostrar alerta
                     alert("La cantidad que está ingresando es superior a la cantidad de productos en stock");
 
-                    setCantidad(stockDisponible);
+                    setCantidad(stockDisponible); // Establecer la cantidad máxima disponible
                 }
             } catch (error) {
                 console.error("Error al obtener la información del producto:", error);
@@ -420,9 +423,7 @@ const Pedidos = () => {
             return (montoRecibidoFloat - totalVenta).toFixed(2);
         } else {
             return "";
-        }
-
-        
+        }        
     };
 
     const cancelarPedido = () => {
@@ -443,7 +444,6 @@ const Pedidos = () => {
         setVentas([]);
         setMontoRecibido("");
     }
-
     const estadoPago = () => {
         if (montoRecibido < calcularTotal()) {
             return "Pendiente";
@@ -466,7 +466,7 @@ const Pedidos = () => {
         const nombreClienteSeleccionado = clienteSeleccionadoData ? `${clienteSeleccionadoData.nombre} ${clienteSeleccionadoData.apellidos}` : '';
 
         const pdf = new jsPDF();
-        pdf.text('Nota de venta', 20, 20);
+        pdf.text('Pedido', 20, 20);
         pdf.text('Fecha: ' + hoy.toDateString(), 20, 30);
         pdf.text('Empleado: ' + nombre, 20, 40);
         pdf.text('Departamento: ' + nombreDepartamentoSeleccionado, 20, 50);
@@ -506,6 +506,20 @@ const Pedidos = () => {
         pdf.save('Pedido_' + fechaFormateada + '.pdf');
     };
 
+
+    const [userRole, setUserRole] = useState({});
+
+    useEffect(() => {
+        // Modificación 2: Parsear el rol al cargar el componente
+        const storedRole = localStorage.getItem('userRole');
+        console.log('Stored Role:', storedRole);
+
+        const parsedRole = storedRole ? JSON.parse(storedRole) : null;
+        console.log('Parsed Role:', parsedRole);
+
+        setUserRole(parsedRole);
+    }, []);
+    
     return (
         <div className="registro">
             <MenuHamburguesa />
@@ -617,7 +631,11 @@ const Pedidos = () => {
                     value={precioUnitario}
                     onChange={handlePrecioUnitarioChange}
                 />
-                <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                ) : (
+                    <p>No tienes permisos para acceder a este sitio.</p>
+                )}
                 <div className="scroll-panel">
                     <table>
                         <thead className="ventas">
@@ -653,13 +671,17 @@ const Pedidos = () => {
                     value={montoRecibido}
                     onChange={handleMontoRecibidoChange}
                 />
-                <h4 className="total">Cambio: ${cambio()}</h4>
+                <br /><br />
+                {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
                 <div className="btns">
                     <button className="btn-finalizar" onClick={() => { handleCreatePedido(); downloadPDF(); }}>
                         Guardar Pedido
                     </button>
                     <button className="btn-cancelar" onClick={cancelarPedido}>Cancelar Pedido</button>
                 </div>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
             </div>
         </div>
     );
