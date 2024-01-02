@@ -170,7 +170,7 @@ const Pedidos = () => {
             }
         };
         fetchCliente();
-    }, []);    
+    }, []);
 
     useEffect(() => {
         const fetchClienteDetalle = async (idCliente) => {
@@ -220,7 +220,7 @@ const Pedidos = () => {
                     telefono: parseInt(telefono),
                     direccion: direccion,
                 };
-            
+
                 const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes', nuevoCliente);
                 await fetchClientes();
                 console.log('Cliente creado:', response.data);
@@ -251,41 +251,45 @@ const Pedidos = () => {
         return (
             // JSX de la pantalla flotante
             <div className="modal-overlay">
-                <div className="modal-content">
-                    <MenuHamburguesa />
-                    <h2>Nuevo Cliente</h2>
+               {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <div className="modal-content">
+                        <MenuHamburguesa />
+                        <h2>Nuevo Cliente</h2>
 
-                    <div className="input">
-                        <input
-                            className="cantidad"
-                            placeholder="Nombre"
-                            value={nombre}
-                            onChange={handleNombreChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Apellidos"
-                            value={apellidos}
-                            onChange={handleApellidosChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Teléfono"
-                            value={telefono}
-                            onChange={handleTelefonoChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Dirección"
-                            value={direccion}
-                            onChange={handleDireccionChange}
-                        />
+                        <div className="input">
+                            <input
+                                className="cantidad"
+                                placeholder="Nombre"
+                                value={nombre}
+                                onChange={handleNombreChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Apellidos"
+                                value={apellidos}
+                                onChange={handleApellidosChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Teléfono"
+                                value={telefono}
+                                onChange={handleTelefonoChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Dirección"
+                                value={direccion}
+                                onChange={handleDireccionChange}
+                            />
+                        </div>
+                        <div className="btns">
+                            <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
+                            <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
+                        </div>
                     </div>
-                    <div className="btns">
-                        <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
-                        <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
-                    </div>
-                </div>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
             </div>
         );
     };
@@ -383,6 +387,19 @@ const Pedidos = () => {
         setVentas([]);
         setMontoRecibido("");
     }
+
+    const [userRole, setUserRole] = useState({});
+
+    useEffect(() => {
+        // Modificación 2: Parsear el rol al cargar el componente
+        const storedRole = localStorage.getItem('userRole');
+        console.log('Stored Role:', storedRole);
+
+        const parsedRole = storedRole ? JSON.parse(storedRole) : null;
+        console.log('Parsed Role:', parsedRole);
+
+        setUserRole(parsedRole);
+    }, []);
 
     return (
         <div className="registro">
@@ -491,7 +508,11 @@ const Pedidos = () => {
                     value={precioUnitario}
                     onChange={handlePrecioUnitarioChange}
                 />
-                <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
                 <div className="scroll-panel">
                     <table>
                         <thead className="ventas">
@@ -524,12 +545,16 @@ const Pedidos = () => {
                     onChange={handleMontoRecibidoChange}
                 />
                 <br /><br />
-                <div className="btns">
-                    <button className="btn-finalizar">
-                        Finalizar
-                    </button>
-                    <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
-                </div>
+                {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <div className="btns">
+                        <button className="btn-finalizar">
+                            Finalizar
+                        </button>
+                        <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
+                    </div>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
             </div>
         </div>
     );
