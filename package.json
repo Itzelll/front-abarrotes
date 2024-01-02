@@ -15,6 +15,7 @@
     "file-saver": "^2.0.5",
     "fontkit": "^2.0.2",
     "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.1",
     "pg": "^8.11.3",
     "rc-time-picker": "^3.7.3",
     "react": "^18.2.0",

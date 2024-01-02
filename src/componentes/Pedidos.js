@@ -8,6 +8,11 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+const id_empleado = localStorage.getItem('idEmpleado');
+const nombre = localStorage.getItem('nombreEmpleado');
 
 const Calendar = ({ onChange }) => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -123,7 +128,7 @@ const Pedidos = () => {
                     idCliente: parseInt(clienteSeleccionado)
                 },
                 empleado: {
-                    idEmpleado: 3
+                    idEmpleado: parseInt(id_empleado)
                 },
                 departamento: {
                     idDepartamento: parseInt(departamentoSeleccionado)
@@ -314,12 +319,23 @@ const Pedidos = () => {
                     subtotal: parseFloat(calcularSubtotal(unidadDeMedida)).toFixed(2),
                 };
 
-                setVentas([...ventas, nuevoProducto]);
+                const stockDisponible = data.existencia;
 
-                // Limpiar los campos después de agregar el producto
-                setCantidad("");
-                setProducto("");
-                setPrecioUnitario("");
+                if (nuevoProducto.cantidad <= stockDisponible) {
+                    setVentas([...ventas, nuevoProducto]);
+
+                    // Limpiar los campos después de agregar el producto
+                    setCantidad("");
+                    setProducto("");
+                    setPrecioUnitario("");
+                } else {
+                    // Mostrar alerta
+                    alert("La cantidad que está ingresando es superior a la cantidad de productos en stock");
+
+                    setCantidad("");
+                    setProducto("");
+                    setPrecioUnitario("");
+                }
             } catch (error) {
                 console.error("Error al obtener la información del producto:", error);
             }
@@ -386,6 +402,17 @@ const Pedidos = () => {
         return ventas.reduce((total, producto) => total + parseFloat(producto.subtotal), 0).toFixed(2);
     };
 
+    const cambio = () => {
+        const totalVenta = parseFloat(calcularTotal());
+        const montoRecibidoFloat = parseFloat(montoRecibido);
+
+        if (!isNaN(totalVenta) && !isNaN(montoRecibidoFloat)) {
+            return (montoRecibidoFloat - totalVenta).toFixed(2);
+        } else {
+            return "";
+        }
+    };
+
     const cancelarPedido = () => {
         if (window.confirm("¿Estás seguro de cancelar el pedido?")) {
             resetForm();
@@ -405,12 +432,61 @@ const Pedidos = () => {
         setMontoRecibido("");
     }
 
+    // Componente para la nota de venta en PDF
+    const downloadPDF = () => {
+        // Obtener el nombre del departamento seleccionado
+        const nombreDepartamentoSeleccionado = departamento.find(dep => dep.idDepartamento === parseInt(departamentoSeleccionado))?.nombre || '';
+
+        // Obtener el nombre y apellidos del cliente seleccionado
+        const clienteSeleccionadoData = cliente.find(cli => cli.idCliente === parseInt(clienteSeleccionado));
+        const nombreClienteSeleccionado = clienteSeleccionadoData ? `${clienteSeleccionadoData.nombre} ${clienteSeleccionadoData.apellidos}` : '';
+
+        const pdf = new jsPDF();
+        pdf.text('Nota de venta', 20, 20);
+        pdf.text('Fecha: ' + hoy.toDateString(), 20, 30);
+        pdf.text('Empleado: ' + nombre, 20, 40);
+        pdf.text('Departamento: ' + nombreDepartamentoSeleccionado, 20, 50);
+        pdf.text('Cliente: ' + nombreClienteSeleccionado, 20, 60);
+        pdf.text('Fecha de entrega: ' + fechaEntrega, 20, 70);
+        pdf.text('Hora de entrega: ' + horaEntrega, 20, 80);
+
+        // Detalles del Reporte
+        pdf.text('Productos:', 20, 90);
+        pdf.autoTable({
+            startY: 100,
+            head: [['Cantidad', 'Código del producto', 'Nombre Producto', 'Precio Unitario', 'Subtotal']],
+            body: ventas.map((producto) => [
+                producto.cantidad,
+                producto.producto,
+                producto.nombre,
+                producto.precioUnitario,
+                producto.subtotal,
+            ]),
+        });
+
+        // Total
+        const totalY = pdf.autoTable.previous.finalY + 10;
+        pdf.text('Total: $' + calcularTotal(), 20, totalY);
+
+        // Monto
+        const montoY = totalY + 10; // Ajusta el espaciado aquí
+        pdf.text('Monto recibido: $' + montoRecibido, 20, montoY);
+
+        // Cambio
+        const cambioY = montoY + 10; // Ajusta el espaciado aquí
+        pdf.text('Cambio: $' + cambio(), 20, cambioY);
+
+        // Descargar el PDF
+        pdf.save('Pedido_' + fechaFormateada + '.pdf');
+    };
+
     return (
         <div className="registro">
             <MenuHamburguesa />
             <h1>Nuevo pedido</h1>
             <div className="fecha">
-                <label className="fecha">Fecha : {hoy.toDateString()}</label>
+                <label className="fecha"><b>Fecha: </b>{hoy.toDateString()}</label> <br />
+                <label className="fecha"><b>Empleado: </b>{nombre}</label>
             </div>
             <br />
             <div className="pedidos">
@@ -551,9 +627,9 @@ const Pedidos = () => {
                     value={montoRecibido}
                     onChange={handleMontoRecibidoChange}
                 />
-                <br /><br />
+                <h4 className="total">Cambio: ${cambio()}</h4>
                 <div className="btns">
-                    <button className="btn-finalizar" onClick={handleCreatePedido}>
+                    <button className="btn-finalizar" onClick={() => { handleCreatePedido(); downloadPDF(); }}>
                         Guardar Pedido
                     </button>
                     <button className="btn-cancelar" onClick={cancelarPedido}>Cancelar Pedido</button>
