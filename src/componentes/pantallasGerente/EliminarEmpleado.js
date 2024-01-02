@@ -9,10 +9,11 @@ const EliminarEmpleado = () => {
   const [resultados, setResultados] = useState([]);
   const [empleadoId, setEmpleadoId] = useState('');
   const [userRole, setUserRole] = useState({});
+  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
   const buscarEmpleado = async () => {
     try {
-      const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados/buscar?nombre=${nombre}&apellidos=${apellidos}`);
+      const response = await fetch(URL_API + `api/empleados/buscar?nombre=${nombre}&apellidos=${apellidos}`);
       if (response.ok) {
         const data = await response.json();
         setResultados(data);
@@ -26,7 +27,7 @@ const EliminarEmpleado = () => {
 
   const handleEliminar = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/empleados/${empleadoId}`, {
+      const response = await fetch(URL_API + `api/empleados/${empleadoId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
