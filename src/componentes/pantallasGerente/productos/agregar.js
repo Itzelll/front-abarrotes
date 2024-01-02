@@ -6,6 +6,8 @@ import '../style/catalogo.css';
 import '../style/salesReport.css';
 import '../style/registroEmp.css';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);
     const [codigo, setCodigo] = useState('');
@@ -24,13 +26,25 @@ const CreateProduct = () => {
     // Verificar si localStorage tiene datos y asignar a userRole
     const storedUserRole = localStorage.getItem('userRole');
     console.log('Valor almacenado en localStorage:', storedUserRole);
-    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
-
+    const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;    
 
     const handleCreate = async () => {
         try {
+            if (!codigo || !nombre || !existencia || !precio || !categoriaSeleccionada || !marcaSeleccionada || !unidadMedidaSeleccionada) {
+                alert('Todos los campos son obligatorios.');
+                return;
+            }
+
             if (codigo.length > 4) {
-                alert('El código debe ser de máximo 4 numeros.');
+                alert('El código debe tener máximo 4 números.');
+                return;
+            }
+
+            const existenciaNumber = parseInt(existencia);
+            const precioNumber = parseFloat(precio);
+
+            if (isNaN(existenciaNumber) || isNaN(precioNumber) || existenciaNumber < 0 || precioNumber < 0) {
+                alert('La existencia y el precio deben ser números positivos.');
                 return;
             }
 
@@ -50,19 +64,20 @@ const CreateProduct = () => {
                 },
             };
 
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos', nuevoProducto);
+            const response = await axios.post(`${API_URL}/api/productos`, nuevoProducto);
             console.log('Producto creado:', response.data);
             alert('Producto creado con éxito.');
             fetchProductos();
             resetForm();
+
         } catch (error) {
-            console.error('Error al crear producto', error);
+            // console.error('Error al crear producto', error);
             alert('Error al crear producto.');
         }
     };
 
     const handleEdit = async (codigo) => {
-        console.log('Editar producto con código:', codigo);
+        // console.log('Editar producto con código:', codigo);
         const productoAEditar = productos.find((producto) => producto.codigo === codigo);
 
         if (productoAEditar) {
@@ -76,15 +91,35 @@ const CreateProduct = () => {
             setMarcaSeleccionada(productoAEditar.idMarca.toString()); // Cambié a idMarca
             setUnidadMedidaSeleccionada(productoAEditar.idUnidadMedida.toString()); // Cambié a idUnidadMedida
             setModoEdicion(true);
+
         } else {
-            console.error(`No se encontró el producto con código: ${codigo}`);
+            // console.error(`No se encontró el producto con código: ${codigo}`);
+            alert(`No se encontró el producto con código: ${codigo}`);
         }
     };
 
 
     const handleUpdate = async () => {
-        console.log('productoSeleccionado:', productoSeleccionado);
+        // console.log('productoSeleccionado:', productoSeleccionado);
         try {
+            if (!codigo || !nombre || !existencia || !precio || !categoriaSeleccionada || !marcaSeleccionada || !unidadMedidaSeleccionada) {
+                alert('Todos los campos son obligatorios.');
+                return;
+            }
+
+            if (codigo.length > 4) {
+                alert('El código debe tener máximo 4 números.');
+                return;
+            }
+
+            const existenciaNumber = parseInt(existencia);
+            const precioNumber = parseFloat(precio);
+
+            if (isNaN(existenciaNumber) || isNaN(precioNumber) || existenciaNumber < 0 || precioNumber < 0) {
+                alert('La existencia y el precio deben ser números positivos.');
+                return;
+            }
+
             const productoActualizado = {
                 codigo: parseInt(codigo),
                 nombre: nombre.toLowerCase(),
@@ -102,7 +137,7 @@ const CreateProduct = () => {
             };
 
             const response = await axios.put(
-                `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${productoSeleccionado.codigo}`,
+                `${API_URL}/api/productos/${productoSeleccionado.codigo}`,
                 productoActualizado
             );
             console.log('Producto actualizado:', response.data);
@@ -110,8 +145,9 @@ const CreateProduct = () => {
             setModoEdicion(false);
             fetchProductos();
             resetForm();
+
         } catch (error) {
-            console.error('Error al actualizar producto', error);
+            // console.error('Error al actualizar producto', error);
             alert('Error al actualizar producto.');
         }
     };
@@ -128,7 +164,7 @@ const CreateProduct = () => {
 
     const fetchProductos = async () => {
         try {
-            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos');
+            const response = await axios.get(`${API_URL}/api/productos`);
             // console.log('Productos obtenidos:', response.data);
             setProductos(response.data);
         } catch (error) {
@@ -143,7 +179,7 @@ const CreateProduct = () => {
     useEffect(() => {
         const fetchMarcas = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas');
+                const response = await axios.get(`${API_URL}/api/marcas`);
                 setMarcas(response.data);
             } catch (error) {
                 console.error('Error al obtener marcas', error);
@@ -156,7 +192,7 @@ const CreateProduct = () => {
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias');
+                const response = await axios.get(`${API_URL}/api/categorias`);
                 setCategorias(response.data);
             } catch (error) {
                 console.error('Error al obtener categorías', error);
@@ -169,7 +205,7 @@ const CreateProduct = () => {
     useEffect(() => {
         const fetchUnidadMedidas = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/unidadesMedida');
+                const response = await axios.get(`${API_URL}/api/unidadesMedida`);
                 setUnidadMedidas(response.data);
             } catch (error) {
                 console.error('Error al obtener unidades de medida', error);
@@ -194,7 +230,13 @@ const CreateProduct = () => {
                         type="number"
                         placeholder="Código"
                         value={codigo}
-                        onChange={(e) => setCodigo(e.target.value)}
+                        onChange={(e) => {
+                            const inputCodigo = e.target.value.replace(/\D/g, '');
+                            if (inputCodigo.length <= 4) {
+                                setCodigo(inputCodigo);
+                            }
+                        }
+                        }
                     />
                     <input
                         className='input-producto'
@@ -208,14 +250,20 @@ const CreateProduct = () => {
                         type="number"
                         placeholder="Existencia"
                         value={existencia}
-                        onChange={(e) => setExistencia(e.target.value)}
+                        onChange={(e) => {
+                            const inputExistencia = e.target.value.replace(/\D/g, '');
+                            setExistencia(inputExistencia);
+                        }}
                     />
                     <input
                         className='input-producto'
                         type="number"
                         placeholder="Precio"
                         value={precio}
-                        onChange={(e) => setPrecio(e.target.value)}
+                        onChange={(e) => {
+                            const inputPrecio = e.target.value.replace(/[^\d.]/g, '');
+                            setPrecio(inputPrecio);
+                        }}
                     />
                     <select
                         className='select-producto'

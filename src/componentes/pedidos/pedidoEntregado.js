@@ -5,6 +5,8 @@ import '../pantallasGerente/style/salesReport.css';
 import '../Calendar.js'; // Asegúrate de importar el componente Calendar si es necesario
 import Calendar from '../Calendar.js';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const PedidoEntregado = () => {
     const [notasVentaPedidoEntregado, setNotasVentaPedidoEntregado] = useState([]);
     const [filtroCliente, setFiltroCliente] = useState('');
@@ -15,7 +17,7 @@ const PedidoEntregado = () => {
     useEffect(() => {
         const fetchNotasVentaPedidoEntregado = async () => {
             try {
-                const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/vista-nota-venta-pedido-entregado');
+                const response = await fetch(`${API_URL}/api/vista-nota-venta-pedido-entregado`);
                 const data = await response.json();
                 setNotasVentaPedidoEntregado(data);
             } catch (error) {
@@ -39,10 +41,6 @@ const PedidoEntregado = () => {
     const handleFiltroEstadoPagoChange = (e) => {
         setFiltroEstadoPago(e.target.value);
     };
-
-    // const handleFiltroDepartamentoChange = (e) => {
-    //     setFiltroDepartamento(e.target.value);
-    // };
 
     const filtrarDatos = () => {
         return notasVentaPedidoEntregado.filter(nota => {
@@ -79,10 +77,6 @@ const PedidoEntregado = () => {
                     <label>Filtrar por Estado de Pago:</label>
                     <input type="text" value={filtroEstadoPago} onChange={handleFiltroEstadoPagoChange} />
                 </div>
-                {/* <div>
-                    <label>Filtrar por Departamento:</label>
-                    <input type="text" value={filtroDepartamento} onChange={handleFiltroDepartamentoChange} />
-                </div> */}
             </div>
             <table>
                 <thead>
@@ -98,7 +92,6 @@ const PedidoEntregado = () => {
                         <th>Nombre Empleado</th>
                         <th>Fecha de Nota</th>
                         <th>Total</th>
-                        {/* <th>Estado</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -115,7 +108,6 @@ const PedidoEntregado = () => {
                             <td>{nota.nombreCompletoEmpleado}</td>
                             <td>{nota.fechaNota}</td>
                             <td>{nota.total}</td>
-                            {/* <td>{nota.estado}</td> */}
                         </tr>
                     ))}
                 </tbody>
