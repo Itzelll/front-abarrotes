@@ -5,6 +5,8 @@ import MenuHamburguesa from '../../MenuHamburguesa';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const CategoriaList = () => {
     const [categorias, setCategorias] = useState([]);
     const [nombreCategoria, setNombreCategoria] = useState('');
@@ -14,7 +16,7 @@ const CategoriaList = () => {
 
     const fetchCategorias = async () => {
         try {
-            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias');
+            const response = await axios.get(`${API_URL}/api/categorias`);
             setCategorias(response.data);
         } catch (error) {
             console.error('Error al obtener categorías', error);
@@ -23,12 +25,23 @@ const CategoriaList = () => {
 
     const handleCrearCategoria = async () => {
         try {
+
+            if (nombreCategoria.length < 1) {
+                alert('El campo no debe estar vacío.');
+                return;
+            }
+
+            if (categorias.some(categoria => categoria.nombre.toLowerCase() === nombreCategoria.toLowerCase())) {
+                alert('Ya existe una categoría con ese nombre.');
+                return;
+            }
+
             const nuevaCategoria = {
                 idCategoria: idCategoria,
                 nombre: nombreCategoria.toLowerCase(),
             };
 
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias', nuevaCategoria);
+            const response = await axios.post(`${API_URL}/api/categorias`, nuevaCategoria);
             console.log('Categoría creada:', response.data);
             alert('Categoría creada con éxito.');
             setIdCategoria('');
@@ -49,18 +62,24 @@ const CategoriaList = () => {
             setModoEdicion(true);
         } else {
             console.error(`No se encontró la categoría con ID: ${idCategoria}`);
+            alert('Error al editar categoría.');
         };
     };
 
     const handleActualizarCategoria = async () => {
-        console.log('categoriaSeleccionada:', categoriaSeleccionada);
+        // console.log('categoriaSeleccionada:', categoriaSeleccionada);
         try {
+            if (nombreCategoria.length < 1) {
+                alert('El campo no debe estar vacío.');
+                return;
+            }
+
             const categoriaActualizada = {
                 nombre: nombreCategoria.toLowerCase(),
             };
 
             const response = await axios.put(
-                `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/categorias/${categoriaSeleccionada.idCategoria}`,
+                `${API_URL}/api/categorias/${categoriaSeleccionada.idCategoria}`,
                 categoriaActualizada
             );
 
@@ -71,7 +90,7 @@ const CategoriaList = () => {
             setModoEdicion(false);
             fetchCategorias();
         } catch (error) {
-            console.error('Error al actualizar categoría', error);
+            // console.error('Error al actualizar categoría', error);
             alert('Error al actualizar categoría.');
         }
     };
@@ -119,7 +138,6 @@ const CategoriaList = () => {
                                 <td>{categoria.idCategoria}</td>
                                 <td>{categoria.nombre}</td>
                                 <td className='btn-ventas'>
-                                    {/* <button onClick={() => handleEliminarCategoria(categoria.id)}>Eliminar</button> */}
                                     <button className='btn-finalizar' onClick={() => handleEditarCategoria(categoria.idCategoria)}>Editar</button>
                                 </td>
                             </tr>

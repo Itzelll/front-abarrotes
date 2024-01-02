@@ -1,0 +1,118 @@
+import React, { useState, useEffect } from 'react';
+import MenuHamburguesa from '../MenuHamburguesa';
+import '../pantallasGerente/style/catalogo.css';
+import '../pantallasGerente/style/salesReport.css';
+import '../Calendar.js';
+import Calendar from '../Calendar.js';
+
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
+const PedidoCancelado = () => {
+    const [notasVentaCanceladas, setNotasVentaCanceladas] = useState([]);
+    const [filtroCliente, setFiltroCliente] = useState('');
+    const [filtroFecha, setFiltroFecha] = useState('');
+    // const [filtroDepartamento, setFiltroDepartamento] = useState('');
+    const [filtroEstadoPago, setFiltroEstadoPago] = useState('');
+
+    useEffect(() => {
+        const fetchNotasVentaCanceladas = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/vista-nota-venta-pedido-cancelado`);
+                const data = await response.json();
+                setNotasVentaCanceladas(data);
+            } catch (error) {
+                console.error('Error al obtener las notas de venta canceladas:', error);
+            }
+        };
+
+        fetchNotasVentaCanceladas();
+    }, [filtroCliente, filtroFecha, filtroEstadoPago
+        // filtroDepartamento
+    ]);
+
+    const handleFiltroClienteChange = (e) => {
+        setFiltroCliente(e.target.value);
+    };
+
+    const handleFiltroFechaChange = (date) => {
+        setFiltroFecha(date);
+    };
+
+    const handleFiltroEstadoPagoChange = (e) => {
+        setFiltroEstadoPago(e.target.value);
+    };
+
+    const filtrarDatos = () => {
+        return notasVentaCanceladas.filter(nota => {
+            const fechaNota = nota.fechaNota || '';
+
+            return (
+                nota.nombreCompletoCliente.toLowerCase().includes(filtroCliente.toLowerCase()) &&
+                ((filtroFecha === null) || (filtroFecha === '' || fechaNota.includes(filtroFecha.toISOString().slice(0, 10)))) 
+                &&
+                (filtroEstadoPago === '' || nota.estadoPago.toLowerCase().includes(filtroEstadoPago.toLowerCase()))
+            );
+        });
+    };
+
+    return (
+        <div className='registro'>
+            <MenuHamburguesa />
+            <h1>Pedidos Cancelados</h1>
+            <h4>Filtros:</h4>
+            <div className='r-1'>
+                <div>
+                    <label>Filtrar por Cliente:</label>
+                    <input type="text" value={filtroCliente} onChange={handleFiltroClienteChange} />
+                </div>
+                <div>
+                    <label>Filtrar por Fecha Nota:</label>
+                    <Calendar
+                        selectedDate={filtroFecha}
+                        handleDateChange={handleFiltroFechaChange}
+                    />
+                </div>
+                <div>
+                    <label>Filtrar por Estado de Pago:</label>
+                    <input type="text" value={filtroEstadoPago} onChange={handleFiltroEstadoPagoChange} />
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Número de Nota</th>
+                        <th>Fecha de Anticipo</th>
+                        <th>Monto</th>
+                        <th>Resto</th>
+                        <th>Estado de Pago</th>
+                        <th>Nombre Cliente</th>
+                        <th>Teléfono Cliente</th>
+                        <th>Dirección Cliente</th>
+                        <th>Nombre Empleado</th>
+                        <th>Fecha de Nota</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filtrarDatos().map((nota) => (
+                        <tr key={nota.numeroNota}>
+                            <td>{nota.numeroNota}</td>
+                            <td>{nota.fechaAnticipo}</td>
+                            <td>{nota.monto}</td>
+                            <td>{nota.resto}</td>
+                            <td>{nota.estadoPago}</td>
+                            <td>{nota.nombreCompletoCliente}</td>
+                            <td>{nota.telefono}</td>
+                            <td>{nota.direccion}</td>
+                            <td>{nota.nombreCompletoEmpleado}</td>
+                            <td>{nota.fechaNota}</td>
+                            <td>{nota.total}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+export default PedidoCancelado;

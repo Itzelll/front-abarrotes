@@ -7,6 +7,11 @@ import { SalesReportAbarrotesPDF } from './styleAbarrotesPDF';
 const SalesReportAbarrotes = () => {
   const [salesData, setSalesData] = useState([]);
   const [editingSale, setEditingSale] = useState(null);
+  // Verificar si localStorage tiene datos y asignar a userRole
+  const storedUserRole = localStorage.getItem('userRole');
+  console.log('Valor almacenado en localStorage:', storedUserRole);
+  const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+
 
   useEffect(() => {
     // Simulated API call to fetch sales data
@@ -41,31 +46,35 @@ const SalesReportAbarrotes = () => {
   const SalesReportAbarrotesPDF = () => (
     <Document>
       <Page size="A4">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-            <th>Editar</th>
-            <th>Eliminar</th>
-          </tr>
-        </thead>
-        <tbody>
-          {salesData.map((sale) => (
-            <tr key={sale.id}>
-              <td>{sale.numeroNota}</td>
-              <td>{sale.producto}</td>
-              <td>{sale.cantidad}</td>
-              <td>{sale.total}</td>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Total</th>
+              <th>Editar</th>
+              <th>Eliminar</th>
             </tr>
-          ))}
-        </tbody>
+          </thead>
+          <tbody>
+            {salesData.map((sale) => (
+              <tr key={sale.id}>
+                <td>{sale.numeroNota}</td>
+                <td>{sale.producto}</td>
+                <td>{sale.cantidad}</td>
+                <td>{sale.total}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </Page>
     </Document>
   );
+
+  console.log('userRole en RegistroEmp:', userRole);
+  console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
+
 
   return (
     <div className='registro'>
@@ -76,33 +85,36 @@ const SalesReportAbarrotes = () => {
       </div>
       {/* <table style={{ width: '90%', marginTop: '10px', borderCollapse: 'collapse' }}> */}
       <h4>Ventas de la semana</h4>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {salesData.map((sale) => (
-            <tr key={sale.id}>
-              <td>{sale.numeroNota}</td>
-              <td>{sale.producto}</td>
-              <td>{sale.cantidad}</td>
-              <td>{sale.total}</td>
+      {userRole && userRole.rol && userRole.rol.includes("Encargado_Departamento") ? (
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Total</th>
             </tr>
-          ))}
-        </tbody>
-        <PDFDownloadLink document={<SalesReportAbarrotesPDF salesData={salesData} />}
-          fileName="sales_report_abarrotes.pdf">
-          {({ blob, url, loading, error }) =>
-            loading ? 'Generando PDF...' : 'Descargar PDF'
-          }
-        </PDFDownloadLink>
-      </table>
-
+          </thead>
+          <tbody>
+            {salesData.map((sale) => (
+              <tr key={sale.id}>
+                <td>{sale.numeroNota}</td>
+                <td>{sale.producto}</td>
+                <td>{sale.cantidad}</td>
+                <td>{sale.total}</td>
+              </tr>
+            ))}
+          </tbody>
+          <PDFDownloadLink document={<SalesReportAbarrotesPDF salesData={salesData} />}
+            fileName="sales_report_abarrotes.pdf">
+            {({ blob, url, loading, error }) =>
+              loading ? 'Generando PDF...' : 'Descargar PDF'
+            }
+          </PDFDownloadLink>
+        </table>
+      ) : (
+        <p>No tienes permisos para acceder a este sitio.</p>
+      )}
     </div>
   );
 };

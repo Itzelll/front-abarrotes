@@ -5,6 +5,8 @@ import MenuHamburguesa from '../../MenuHamburguesa';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 
+const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+
 const MarcaList = () => {
   const [marcas, setMarcas] = useState([]);
   const [nombreMarca, setNombreMarca] = useState('');
@@ -14,7 +16,7 @@ const MarcaList = () => {
 
   const fetchMarcas = async () => {
     try {
-      const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas');
+      const response = await axios.get(`${API_URL}/api/marcas`);
       setMarcas(response.data);
     } catch (error) {
       console.error('Error al obtener marcas', error);
@@ -23,12 +25,23 @@ const MarcaList = () => {
 
   const handleCrearMarca = async () => {
     try {
+
+      if (nombreMarca.length < 1) {
+        alert('El campo no debe estar vacío.');
+        return;
+      }
+
+      if (marcas.some(marca => marca.nombre.toLowerCase() === nombreMarca.toLowerCase())) {
+        alert('Ya existe una marca con ese nombre.');
+        return;
+      }
+
       const nuevaMarca = {
         idMarca: idMarca,
         nombre: nombreMarca.toLowerCase(),
       };
 
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas', nuevaMarca);
+      const response = await axios.post(`${API_URL}/api/marcas`, nuevaMarca);
       console.log('Marca creada:', response.data);
       alert('Marca creada con éxito.');
       setIdMarca('');
@@ -36,11 +49,12 @@ const MarcaList = () => {
       fetchMarcas();
     } catch (error) {
       console.error('Error al crear marca', error);
+      alert('Error al crear marca.');
     }
   };
 
   const handleEditarMarca = (idMarca) => {
-    console.log('Editar marca con ID:', idMarca);
+    // console.log('Editar marca con ID:', idMarca);
     const marca = marcas.find((m) => m.idMarca === idMarca);
     if (marca) {
       setMarcaSeleccionada(marca);
@@ -48,17 +62,28 @@ const MarcaList = () => {
       setModoEdicion(true);
     } else {
       console.error(`No se encontró la marca con ID: ${idMarca}`);
+      alert('Error al editar marca.');
     }
   };
 
   const handleActualizarMarca = async () => {
-    console.log('marcaSeleccionada:', marcaSeleccionada);
+    // console.log('marcaSeleccionada:', marcaSeleccionada);
     try {
+      if (nombreMarca.length < 1) {
+        alert('El campo no debe estar vacío.');
+        return;
+      }
+
+      if (marcas.some(marca => marca.nombre.toLowerCase() === nombreMarca.toLowerCase())) {
+        alert('Ya existe una marca con ese nombre.');
+        return;
+      }
+      
       const marcaActualizada = {
         nombre: nombreMarca.toLowerCase(),
       }
       const response = await axios.put(
-        `https://abarrotesapi-service-yacruz.cloud.okteto.net/api/marcas/${marcaSeleccionada.idMarca}`,
+        `${API_URL}/api/marcas/${marcaSeleccionada.idMarca}`,
         marcaActualizada
       );
       console.log('Marca actualizada:', response.data);

@@ -1,5 +1,11 @@
-import { StyleSheet } from '@react-pdf/renderer';
+import { StyleSheet, pdf, Font } from '@react-pdf/renderer';
 import { Page, Text, View, Document } from '@react-pdf/renderer';
+import Fuente from './arial.ttf';
+
+ Font.register({
+     family: 'Arial',
+     src: Fuente, // Reemplaza con la ruta correcta o URL de tu archivo Arial.ttf
+ });
 
 const pdfStyles = StyleSheet.create({
     page: {
@@ -44,9 +50,10 @@ const pdfStyles = StyleSheet.create({
 
 //  import { pdfStyles } from './styleAbarrotes';
 
-export const SalesReportPDF = ({ salesData }) => (
+export const SalesReportPDF = ({ salesData, fecha, total, montoRecibido, cambio }) => (
     <Document>
         <Page size="A4" style={pdfStyles.page}>
+            <Text style={pdfStyles.text}>Fecha: {fecha}</Text>
             <View style={pdfStyles.section}>
                 <View style={pdfStyles.table}>
                     <View style={pdfStyles.tableRow}>
@@ -87,6 +94,9 @@ export const SalesReportPDF = ({ salesData }) => (
                     ))}
                 </View>
             </View>
+            <Text style={pdfStyles.text}>Total: ${total}</Text>
+            <Text style={pdfStyles.text}>Monto Recibido: ${montoRecibido}</Text>
+            <Text style={pdfStyles.text}>Cambio: ${cambio}</Text>
         </Page>
     </Document>
 );
