@@ -173,3 +173,33 @@
     display: flex;
     align-items: center;
 }
+
+.filtro {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.filter-container {
+    flex: 1;
+    margin: 0 30px; /* Ajusta el margen según sea necesario */
+}
+
+/* Estilos adicionales para los elementos de filtro si es necesario */
+.filter-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.filter-container input,
+.filter-container select {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.encabezado {
+    background-color: #3498db;
+    color: #ffffff;
+}
