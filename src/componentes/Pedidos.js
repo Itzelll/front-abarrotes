@@ -8,13 +8,21 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
-const Calendar = () => {
+const id_empleado = localStorage.getItem('idEmpleado');
+const nombre = localStorage.getItem('nombreEmpleado');
+
+const URL_API = 'https://abarrotesapi-service-yacruz.cloud.okteto.net/';
+
+const Calendar = ({ onChange }) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const handleDateChange = date => {
         setSelectedDate(date);
+        onChange(date);
         closeCalendar();
     };
 
@@ -44,8 +52,11 @@ const Calendar = () => {
 
 const TimePickerModal = ({ isOpen, onClose, onSelectTime }) => {
     const [selectedTime, setSelectedTime] = useState(null);
+    const timePickerRef = useRef(null);
 
     useEffect(() => {
+        return () => {
+        };
     }, [isOpen]);
 
     const handleTimeChange = (value) => {
@@ -60,7 +71,7 @@ const TimePickerModal = ({ isOpen, onClose, onSelectTime }) => {
     return (
         isOpen && (
             <div className="select-hora">
-                <div className="time-picker-modal">
+                <div className="time-picker-modal" ref={timePickerRef}>
                     <TimePicker
                         placeholder="seleccionar hora"
                         showSecond={false}
@@ -92,6 +103,7 @@ const Pedidos = () => {
     const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
     const [isAddClientModalOpen, setIsAddClientModalOpen] = useState(false);
     const [clienteInfo, setClienteInfo] = useState(null);
+    const [clienteCreado, setClienteCreado] = useState(false);
 
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
@@ -99,34 +111,40 @@ const Pedidos = () => {
 
     const fetchClientes = async () => {
         try {
-            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes');
+            const response = await axios.get(URL_API + 'api/clientes');
             setCliente(response.data);
         } catch (error) {
             console.error('Error al obtener los clientes', error);
         }
     };
 
+    const monto = () => {
+        if (montoRecibido > calcularTotal()) {
+            return calcularTotal();
+        } else if (montoRecibido <= calcularTotal()) {
+            return montoRecibido;
+        }
+    }
     const handleCreatePedido = async () => {
         try {
             const nuevoPedido = {
                 fecha: fechaFormateada,
                 total: parseFloat(calcularTotal()),
                 anticipo: {
-                    monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
+                    monto: parseFloat(monto()),             
                 },
                 cliente: {
-                    idCliente: 2
+                    idCliente: parseInt(clienteSeleccionado)
                 },
                 empleado: {
-                    idEmpleado: 3
+                    idEmpleado: parseInt(id_empleado)
                 },
                 departamento: {
                     idDepartamento: parseInt(departamentoSeleccionado)
                 },
                 detallePedido: {
-                    idDetallePedido: 3,
-                    fechaEntrega: "2023-12-18",
-                    horaEntrgea: "00:00"
+                    fechaEntrega: fechaEntrega,
+                    horaEntrega: horaEntrega
                 },
                 detalleVenta: ventas.map((producto) => ({
                     cantidad: parseFloat(producto.cantidad),
@@ -137,7 +155,7 @@ const Pedidos = () => {
                 })),
             };
             console.log('Nueva venta:', nuevoPedido);
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido', nuevoPedido);
+            const response = await axios.post(URL_API + 'api/pedido', nuevoPedido);
             console.log('Pedido creado:', response.data);
             alert('Pedido creado con éxito');
             resetForm();
@@ -151,7 +169,7 @@ const Pedidos = () => {
     useEffect(() => {
         const fetchDepartamento = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/departamento');
+                const response = await axios.get(URL_API + 'api/departamento');
                 setDepartamento(response.data);
             } catch (error) {
                 console.error('Error al obtener los departamentos', error);
@@ -163,7 +181,7 @@ const Pedidos = () => {
     useEffect(() => {
         const fetchCliente = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes');
+                const response = await axios.get(URL_API + 'api/clientes');
                 setCliente(response.data);
             } catch (error) {
                 console.error('Error al obtener los clientes', error);
@@ -175,8 +193,11 @@ const Pedidos = () => {
     useEffect(() => {
         const fetchClienteDetalle = async (idCliente) => {
             try {
-                const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes/${idCliente}`);
+                const response = await axios.get(URL_API + `api/clientes/${idCliente}`);
                 setClienteInfo(response.data);
+                if (clienteCreado) {
+                    setClienteCreado(false); // Reiniciar el estado después de mostrar la información
+                }
             } catch (error) {
                 console.error('Error al obtener la información del cliente', error);
             }
@@ -187,12 +208,12 @@ const Pedidos = () => {
         } else {
             setClienteInfo(null);
         }
-    }, [clienteSeleccionado]);
+    }, [clienteSeleccionado, clienteCreado]);
 
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${codigo}`);
+                const response = await fetch(URL_API + `api/productos/${codigo}`);
                 const data = await response.json();
                 console.log(data);
                 setPrecioUnitario(data.precio); // Asume que la API devuelve un objeto con la propiedad 'precio'
@@ -221,10 +242,12 @@ const Pedidos = () => {
                     direccion: direccion,
                 };
             
-                const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes', nuevoCliente);
+                const response = await axios.post(URL_API + 'api/clientes', nuevoCliente);
                 await fetchClientes();
                 console.log('Cliente creado:', response.data);
+                setClienteSeleccionado(response.data.idCliente);
                 alert('Cliente creado con éxito');
+                setClienteCreado(true);
                 onClose();
             } catch (error) {
                 console.error('Error al crear el cliente:', error);
@@ -251,41 +274,45 @@ const Pedidos = () => {
         return (
             // JSX de la pantalla flotante
             <div className="modal-overlay">
-                <div className="modal-content">
-                    <MenuHamburguesa />
-                    <h2>Nuevo Cliente</h2>
+               {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <div className="modal-content">
+                        <MenuHamburguesa />
+                        <h2>Nuevo Cliente</h2>
 
-                    <div className="input">
-                        <input
-                            className="cantidad"
-                            placeholder="Nombre"
-                            value={nombre}
-                            onChange={handleNombreChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Apellidos"
-                            value={apellidos}
-                            onChange={handleApellidosChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Teléfono"
-                            value={telefono}
-                            onChange={handleTelefonoChange}
-                        />
-                        <input
-                            className="cantidad"
-                            placeholder="Dirección"
-                            value={direccion}
-                            onChange={handleDireccionChange}
-                        />
+                        <div className="input">
+                            <input
+                                className="cantidad"
+                                placeholder="Nombre"
+                                value={nombre}
+                                onChange={handleNombreChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Apellidos"
+                                value={apellidos}
+                                onChange={handleApellidosChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Teléfono"
+                                value={telefono}
+                                onChange={handleTelefonoChange}
+                            />
+                            <input
+                                className="cantidad"
+                                placeholder="Dirección"
+                                value={direccion}
+                                onChange={handleDireccionChange}
+                            />
+                        </div>
+                        <div className="btns">
+                            <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
+                            <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
+                        </div>
                     </div>
-                    <div className="btns">
-                        <button className="btn-finalizar" onClick={handleCreateClient}>Guardar</button>
-                        <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
-                    </div>
-                </div>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
             </div>
         );
     };
@@ -293,7 +320,7 @@ const Pedidos = () => {
     const agregarProducto = async () => {
         if (cantidad && producto && precioUnitario) {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${producto}`);
+                const response = await fetch(URL_API + `api/productos/${producto}`);
                 const data = await response.json();
                 const unidadDeMedida = data.unidadMedida;
 
@@ -305,16 +332,35 @@ const Pedidos = () => {
                     subtotal: parseFloat(calcularSubtotal(unidadDeMedida)).toFixed(2),
                 };
 
-                setVentas([...ventas, nuevoProducto]);
+                const stockDisponible = data.existencia;
 
-                // Limpiar los campos después de agregar el producto
-                setCantidad("");
-                setProducto("");
-                setPrecioUnitario("");
+                if (nuevoProducto.cantidad <= stockDisponible) {
+                    setVentas([...ventas, nuevoProducto]);
+
+                    // Limpiar los campos después de agregar el producto
+                    setCantidad("");
+                    setProducto("");
+                    setPrecioUnitario("");
+                } else {
+                    // Mostrar alerta
+                    alert("La cantidad que está ingresando es superior a la cantidad de productos en stock");
+
+                    setCantidad(stockDisponible); // Establecer la cantidad máxima disponible
+                }
             } catch (error) {
                 console.error("Error al obtener la información del producto:", error);
             }
         }
+    };
+
+    const quitarProducto = (index) => {
+        const nuevasVentas = [...ventas];
+        nuevasVentas.splice(index, 1);
+        setVentas(nuevasVentas);
+    };
+
+    const handleFechaEntregaChange = (date) => {
+        setFechaEntrega(date ? format(date, 'yyyy-MM-dd') : ''); // Formatear la fecha y establecer en fechaEntrega
     };
 
     const handleHoraEntrega = () => {
@@ -329,12 +375,18 @@ const Pedidos = () => {
         setHoraEntrega(selectedTime);
     };
 
+    const isNumber = (value) => /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
+
     const handleCantidadChange = (e) => {
-        setCantidad(e.target.value);
+        if (isNumber(e.target.value) || e.target.value === "") {
+            setCantidad(e.target.value);
+        }
     };
 
     const handleProductoChange = (e) => {
-        setProducto(e.target.value);
+        if (/^[0-9]{0,4}$/.test(e.target.value)) {
+            setProducto(e.target.value);
+        }
     };
 
     const handlePrecioUnitarioChange = (e) => {
@@ -367,29 +419,120 @@ const Pedidos = () => {
         return ventas.reduce((total, producto) => total + parseFloat(producto.subtotal), 0).toFixed(2);
     };
 
-    const cancelarVenta = () => {
-        if (window.confirm("¿Estás seguro de cancelar la venta?")) {
+    const cambio = () => {
+        const totalVenta = parseFloat(calcularTotal());
+        const montoRecibidoFloat = parseFloat(montoRecibido);
+
+        if (montoRecibidoFloat < calcularTotal()) {
+            return "0.00"
+        } else if (!isNaN(totalVenta) && !isNaN(montoRecibidoFloat)) {
+            return (montoRecibidoFloat - totalVenta).toFixed(2);
+        } else {
+            return "";
+        }        
+    };
+
+    const cancelarPedido = () => {
+        if (window.confirm("¿Estás seguro de cancelar el pedido?")) {
             resetForm();
-            console.log("Venta cancelada");
+            console.log("Pedido cancelado");
         }
     }
 
     const resetForm = () => {
         setDepartamentoSeleccionado('');
         setClienteSeleccionado('');
+        setFechaEntrega('');
+        setHoraEntrega('');
         setCantidad("");
         setProducto("");
         setPrecioUnitario("");
         setVentas([]);
         setMontoRecibido("");
     }
+    const estadoPago = () => {
+        if (montoRecibido < calcularTotal()) {
+            return "Pendiente";
+        } else if (montoRecibido >= calcularTotal){
+            return "Pagado";
+        }
+    }
 
+    const estadoPedido = () => {
+        return 'En proceso'
+    }
+
+    // Componente para la nota de venta en PDF
+    const downloadPDF = () => {
+        // Obtener el nombre del departamento seleccionado
+        const nombreDepartamentoSeleccionado = departamento.find(dep => dep.idDepartamento === parseInt(departamentoSeleccionado))?.nombre || '';
+
+        // Obtener el nombre y apellidos del cliente seleccionado
+        const clienteSeleccionadoData = cliente.find(cli => cli.idCliente === parseInt(clienteSeleccionado));
+        const nombreClienteSeleccionado = clienteSeleccionadoData ? `${clienteSeleccionadoData.nombre} ${clienteSeleccionadoData.apellidos}` : '';
+
+        const pdf = new jsPDF();
+        pdf.text('Pedido', 20, 20);
+        pdf.text('Fecha: ' + hoy.toDateString(), 20, 30);
+        pdf.text('Empleado: ' + nombre, 20, 40);
+        pdf.text('Departamento: ' + nombreDepartamentoSeleccionado, 20, 50);
+        pdf.text('Cliente: ' + nombreClienteSeleccionado, 20, 60);
+        pdf.text('Fecha de entrega: ' + fechaEntrega, 20, 70);
+        pdf.text('Hora de entrega: ' + horaEntrega, 20, 80);
+        pdf.text('Estado de Pago: ' + estadoPago(), 20, 90);
+        pdf.text('Estado del Pedido: ' + estadoPedido(), 20, 100);
+
+        // Detalles del Reporte
+        pdf.text('Productos:', 20, 110);
+        pdf.autoTable({
+            startY: 120,
+            head: [['Cantidad', 'Código del producto', 'Nombre Producto', 'Precio Unitario', 'Subtotal']],
+            body: ventas.map((producto) => [
+                producto.cantidad,
+                producto.producto,
+                producto.nombre,
+                producto.precioUnitario,
+                producto.subtotal,
+            ]),
+        });
+
+        // Total
+        const totalY = pdf.autoTable.previous.finalY + 10;
+        pdf.text('Total: $' + calcularTotal(), 20, totalY);
+
+        // Monto
+        const montoY = totalY + 10; // Ajusta el espaciado aquí
+        pdf.text('Monto recibido: $' + montoRecibido, 20, montoY);
+
+        // Cambio
+        const cambioY = montoY + 10; // Ajusta el espaciado aquí
+        pdf.text('Cambio: $' + cambio(), 20, cambioY);
+
+        // Descargar el PDF
+        pdf.save('Pedido_' + fechaFormateada + '.pdf');
+    };
+
+
+    const [userRole, setUserRole] = useState({});
+
+    useEffect(() => {
+        // Modificación 2: Parsear el rol al cargar el componente
+        const storedRole = localStorage.getItem('userRole');
+        console.log('Stored Role:', storedRole);
+
+        const parsedRole = storedRole ? JSON.parse(storedRole) : null;
+        console.log('Parsed Role:', parsedRole);
+
+        setUserRole(parsedRole);
+    }, []);
+    
     return (
         <div className="registro">
             <MenuHamburguesa />
             <h1>Nuevo pedido</h1>
             <div className="fecha">
-                <label className="fecha">Fecha : {hoy.toDateString()}</label>
+                <label className="fecha"><b>Fecha: </b>{hoy.toDateString()}</label> <br />
+                <label className="fecha"><b>Empleado: </b>{nombre}</label>
             </div>
             <br />
             <div className="pedidos">
@@ -456,7 +599,10 @@ const Pedidos = () => {
             )}
             <div className="input">
                 <div>
-                    <Calendar />
+                    <Calendar
+                        value={fechaEntrega}
+                        onChange={handleFechaEntregaChange}
+                    />
                     <input
                         className="hora"
                         placeholder="Hora de entrega (HH:mm)"
@@ -491,7 +637,11 @@ const Pedidos = () => {
                     value={precioUnitario}
                     onChange={handlePrecioUnitarioChange}
                 />
-                <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
+                    <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
+                ) : (
+                    <p>No tienes permisos para acceder a este sitio.</p>
+                )}
                 <div className="scroll-panel">
                     <table>
                         <thead className="ventas">
@@ -501,6 +651,7 @@ const Pedidos = () => {
                                 <th className="ventas">Producto</th>
                                 <th className="ventas">Precio Unitario</th>
                                 <th className="ventas">Subtotal</th>
+                                <th className="ventas">Quitar</th>
                             </tr>
                         </thead>
                         <tbody className="ventas">
@@ -511,6 +662,9 @@ const Pedidos = () => {
                                     <td className="ventas">{producto.nombre}</td>
                                     <td className="ventas">${producto.precioUnitario}</td>
                                     <td className="ventas">${parseFloat(producto.subtotal)}</td>
+                                    <td className="ventas">
+                                        <button className="btn-editar" onClick={() => quitarProducto(index)}>Quitar</button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -524,12 +678,16 @@ const Pedidos = () => {
                     onChange={handleMontoRecibidoChange}
                 />
                 <br /><br />
+                {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
                 <div className="btns">
-                    <button className="btn-finalizar">
-                        Finalizar
+                    <button className="btn-finalizar" onClick={() => { handleCreatePedido(); downloadPDF(); }}>
+                        Guardar Pedido
                     </button>
-                    <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
+                    <button className="btn-cancelar" onClick={cancelarPedido}>Cancelar Pedido</button>
                 </div>
+                ) : (
+                    <p>No tienes permisos para accedera este sitio.</p>
+                )}
             </div>
         </div>
     );

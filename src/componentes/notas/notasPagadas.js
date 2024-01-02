@@ -12,6 +12,7 @@ const NotasPagadas = () => {
     const [filtroCliente, setFiltroCliente] = useState('');
     const [filtroFecha, setFiltroFecha] = useState('');
     const [filtroDepartamento, setFiltroDepartamento] = useState('');
+    const [departamentos, setDepartamentos] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,7 +24,17 @@ const NotasPagadas = () => {
             }
         };
 
+        const fetchDepartamentos = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/api/departamento`);
+                setDepartamentos(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
         fetchData();
+        fetchDepartamentos();
     }, [filtroCliente, filtroFecha, filtroDepartamento]);
 
     const handleFiltroClienteChange = (e) => {
@@ -54,13 +65,13 @@ const NotasPagadas = () => {
             <MenuHamburguesa />
             <h1>Lista de Notas de Venta Pagadas</h1>
             <h4>Filtros:</h4>
-            <div className='r-1'>
-                <div>
+            <div className='filtro'>
+                <div className='filter-container'>
                     <label>Filtrar por Cliente:</label>
-                    <input type="text" value={filtroCliente} onChange={handleFiltroClienteChange} />
+                    <input className='fecha-entrega' type="text" value={filtroCliente} onChange={handleFiltroClienteChange} />
                 </div>
 
-                <div>
+                <div className='filter-container'>
                     <label>Filtrar por Fecha Nota:</label>
                     <Calendar
                         selectedDate={filtroFecha}
@@ -68,13 +79,24 @@ const NotasPagadas = () => {
                     />
                 </div>
 
-                <div>
+                <div className='filter-container'>
                     <label>Filtrar por Departamento:</label>
-                    <input type="text" value={filtroDepartamento} onChange={handleFiltroDepartamentoChange} />
+                    <select
+                        className='rectangulos-container'
+                        value={filtroDepartamento}
+                        onChange={handleFiltroDepartamentoChange}
+                    >
+                        <option value="">Selecciona un departamento</option>
+                        {departamentos.map((departamento) => (
+                            <option key={departamento.idDepartamento} value={departamento.nombre}>
+                                {departamento.nombre}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
             <table>
-                <thead>
+                <thead className='encabezado'>
                     <tr>
                         <th>Numero Nota</th>
                         <th>Nombre Cliente</th>
@@ -82,9 +104,7 @@ const NotasPagadas = () => {
                         <th>Dirección</th>
                         <th>Nombre Vendedor</th>
                         <th>Fecha Nota</th>
-                        <th>Fecha Anticipo</th>
-                        <th>Monto</th>
-                        <th>Resto</th>
+                        <th>Fecha Anticipo</th>                        
                         <th>Total</th>
                         <th>Departamento</th>
                     </tr>
@@ -98,9 +118,7 @@ const NotasPagadas = () => {
                             <td>{item.direccionCliente}</td>
                             <td>{item.nombreCompletoEmpleado}</td>
                             <td>{item.fechaNota}</td>
-                            <td>{item.fechaAnticipo}</td>
-                            <td>{item.monto}</td>
-                            <td>{item.resto}</td>
+                            <td>{item.fechaAnticipo}</td>                            
                             <td>{item.total}</td>
                             <td>{item.nombreDepartamento}</td>
                         </tr>

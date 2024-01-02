@@ -5,42 +5,8 @@ import "./Ventas.css";
 import axios from 'axios';
 import { format } from 'date-fns';
 import MenuHamburguesa from './MenuHamburguesa';
-import { PDFDownloadLink, Page, Document } from '@react-pdf/renderer';
-import { SalesReportPDF } from '../componentes/pantallasGerente/styleSalesReportPDF';
-
-// Componente para el informe de ventas en PDF
-const SalesReport = ({ salesData, fecha, total, montoRecibido, cambio }) => (
-    <Document>
-        <Page size="A4">
-            <label className="fecha">Fecha: {fecha}</label>
-            <table>
-                <thead className="ventas">
-                    <tr className="ventas">
-                        <th className="ventas">Cantidad</th>
-                        <th className="ventas">Código Producto</th>
-                        <th className="ventas">Producto</th>
-                        <th className="ventas">Precio Unitario</th>
-                        <th className="ventas">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody className="ventas">
-                    {salesData.map((producto, index) => (
-                        <tr key={index} className="ventas">
-                            <td className="ventas">{producto.cantidad}</td>
-                            <td className="ventas">{producto.producto}</td>
-                            <td className="ventas">{producto.nombre}</td>
-                            <td className="ventas">${producto.precioUnitario}</td>
-                            <td className="ventas">${parseFloat(producto.subtotal)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <h4>Total: ${total}</h4>
-            <h4>Monto Recibido: ${montoRecibido}</h4>
-            <h4>Cambio: ${cambio}</h4>
-        </Page>
-    </Document>
-);
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const Ventas = () => {
     const [cantidad, setCantidad] = useState("");
@@ -55,11 +21,14 @@ const Ventas = () => {
     const hoy = new Date(tiempoTranscurrido);
 
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
+    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
     // Verificar si localStorage tiene datos y asignar a userRole
     const storedUserRole = localStorage.getItem('userRole');
     console.log('Valor almacenado en localStorage:', storedUserRole);
     const userRole = storedUserRole ? JSON.parse(storedUserRole) : null;
+    const id_empleado = localStorage.getItem('idEmpleado');
+    const nombre = localStorage.getItem('nombreEmpleado');
 
     const handleCreateVenta = async () => {
         try {
@@ -70,10 +39,10 @@ const Ventas = () => {
                     monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
                 },
                 cliente: {
-                    idCliente: 2
+                    idCliente: 1
                 },
                 empleado: {
-                    idEmpleado: 3
+                    idEmpleado: parseInt(id_empleado)
                 },
                 departamento: {
                     idDepartamento: parseInt(departamentoSeleccionado)
@@ -92,7 +61,7 @@ const Ventas = () => {
                 })),
             };
             console.log('Nueva venta:', nuevaVenta);
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas/crearlimpio', nuevaVenta);
+            const response = await axios.post(URL_API + 'api/notasventas/crearlimpio', nuevaVenta);
             console.log('Venta creada:', response.data);
             alert('Nota de venta creada con éxito');
             resetForm();
@@ -105,7 +74,7 @@ const Ventas = () => {
     useEffect(() => {
         const fetchDepartamento = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/departamento');
+                const response = await axios.get(URL_API + 'api/departamento');
                 setDepartamento(response.data);
             } catch (error) {
                 console.error('Error al obtener los departamentos', error);
@@ -117,7 +86,7 @@ const Ventas = () => {
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${codigo}`);
+                const response = await fetch(URL_API + `api/productos/${codigo}`);
                 const data = await response.json();
                 console.log(data);
                 setPrecioUnitario(data.precio); // Asume que la API devuelve un objeto con la propiedad 'precio'
@@ -131,12 +100,18 @@ const Ventas = () => {
         }
     }, [producto]);
 
+    const isNumber = (value) => /^[0-9]+(\.[0-9]{1,2})?$/.test(value);
+
     const handleCantidadChange = (e) => {
-        setCantidad(e.target.value);
+        if (isNumber(e.target.value) || e.target.value === "") {
+            setCantidad(e.target.value);
+        }
     };
 
     const handleProductoChange = (e) => {
-        setProducto(e.target.value);
+        if (/^[0-9]{0,4}$/.test(e.target.value)) {
+            setProducto(e.target.value);
+        }
     };
 
     const handlePrecioUnitarioChange = (e) => {
@@ -150,7 +125,7 @@ const Ventas = () => {
     const agregarProducto = async () => {
         if (cantidad && producto && precioUnitario) {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${producto}`);
+                const response = await fetch(URL_API + `api/productos/${producto}`);
                 const data = await response.json();
                 const unidadDeMedida = data.unidadMedida;
 
@@ -162,16 +137,32 @@ const Ventas = () => {
                     subtotal: parseFloat(calcularSubtotal(unidadDeMedida)).toFixed(2),
                 };
 
-                setVentas([...ventas, nuevoProducto]);
+                const stockDisponible = data.existencia;
 
-                // Limpiar los campos después de agregar el producto
-                setCantidad("");
-                setProducto("");
-                setPrecioUnitario("");
+                if (nuevoProducto.cantidad <= stockDisponible) {
+                    setVentas([...ventas, nuevoProducto]);
+
+                    // Limpiar los campos después de agregar el producto
+                    setCantidad("");
+                    setProducto("");
+                    setPrecioUnitario("");
+                } else {
+                    // Mostrar alerta
+                    alert("La cantidad que está ingresando es superior a la cantidad de productos en stock");
+                    
+                    setCantidad(stockDisponible);
+                }
+
             } catch (error) {
                 console.error("Error al obtener la información del producto:", error);
             }
         }
+    };
+
+    const quitarProducto = (index) => {
+        const nuevasVentas = [...ventas];
+        nuevasVentas.splice(index, 1);
+        setVentas(nuevasVentas);
     };
 
     const calcularSubtotal = (unidadDeMedida) => {
@@ -206,7 +197,6 @@ const Ventas = () => {
         }
     };
 
-
     const resetForm = () => {
         setDepartamentoSeleccionado('');
         setCantidad("");
@@ -220,13 +210,50 @@ const Ventas = () => {
     console.log('userRole.rol en RegistroEmp:', userRole && userRole.rol);
     console.log('¿Es Jefe?', userRole && userRole.rol && userRole.rol.includes("Jefe"));
 
+    // Componente para la nota de venta en PDF
+    const downloadPDF = () => {
+        const pdf = new jsPDF();
+        pdf.text('Nota de venta', 20, 20);
+        pdf.text('Fecha: ' + hoy.toDateString(), 20, 30);
+        pdf.text('Empleado: ' + nombre, 20, 40);
+
+        // Detalles del Reporte
+        pdf.text('Productos:', 20, 60);
+        pdf.autoTable({
+            startY: 70,
+            head: [['Cantidad', 'Código del producto', 'Nombre Producto', 'Precio Unitario', 'Subtotal']],
+            body: ventas.map((producto) => [
+                producto.cantidad,
+                producto.producto,
+                producto.nombre,
+                producto.precioUnitario,
+                producto.subtotal,
+            ]),
+        });
+
+        // Total
+        const totalY = pdf.autoTable.previous.finalY + 10;
+        pdf.text('Total: $' + calcularTotal(), 20, totalY);
+
+        // Monto
+        const montoY = totalY + 10; // Ajusta el espaciado aquí
+        pdf.text('Monto recibido: $' + montoRecibido, 20, montoY);
+
+        // Cambio
+        const cambioY = montoY + 10; // Ajusta el espaciado aquí
+        pdf.text('Cambio: $' + cambio(), 20, cambioY);
+
+        // Descargar el PDF
+        pdf.save('SalesReport_' + fechaFormateada + '.pdf');
+    };
 
     return (
         <div className="registro">
             <MenuHamburguesa />
             <h1>Ventas</h1>
             <div className="fecha">
-                <label className="fecha">Fecha : {hoy.toDateString()}</label>
+                <label className="fecha">Fecha : {hoy.toDateString()}</label><br />
+                <label className="fecha"><b>Empleado: </b>{nombre}</label>
             </div>
             <br />
             <select
@@ -271,6 +298,7 @@ const Ventas = () => {
                                     <th className="ventas">Producto</th>
                                     <th className="ventas">Precio Unitario</th>
                                     <th className="ventas">Subtotal</th>
+                                    <th className="ventas">Quitar</th>
                                 </tr>
                             </thead>
                             <tbody className="ventas">
@@ -281,6 +309,9 @@ const Ventas = () => {
                                         <td className="ventas">{producto.nombre}</td>
                                         <td className="ventas">${producto.precioUnitario}</td>
                                         <td className="ventas">${parseFloat(producto.subtotal)}</td>
+                                        <td className="ventas">
+                                            <button className="btn-editar" onClick={() => quitarProducto(index)}>Quitar</button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -295,15 +326,9 @@ const Ventas = () => {
                     />
                     <h4 className="total">Cambio: ${cambio()}</h4>
                     <div className="btns">
-                        <button className="btn-finalizar" onClick={handleCreateVenta}>
-                            <PDFDownloadLink className="no-underline1"
-                                document={<SalesReportPDF salesData={ventas} fecha={fechaFormateada} total={calcularTotal()} montoRecibido={montoRecibido} cambio={cambio()} />}
-                                fileName="sales_report.pdf"
-                            >
-                                {({ blob, url, loading, error }) =>
-                                    loading ? 'Generando PDF...' : 'Finalizar Venta'
-                                }
-                            </PDFDownloadLink></button>
+                        <button className="btn-finalizar" onClick={() => { handleCreateVenta(); downloadPDF(); }}>
+                            Finalizar Venta
+                        </button>
                         <button className="btn-cancelar" onClick={cancelarVenta}>Cancelar Venta</button>
                     </div>
                 </div>

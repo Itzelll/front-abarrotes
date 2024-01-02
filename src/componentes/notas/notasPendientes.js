@@ -13,10 +13,22 @@ const NotasPendientes = () => {
     const [showModal, setShowModal] = useState(false);
     const [abonoAmount, setAbonoAmount] = useState(0);
     const [selectedNota, setSelectedNota] = useState(null);
+    const [departamentos, setDepartamentos] = useState([]);
+    const [selectedDepartamento, setSelectedDepartamento] = useState('');
 
     useEffect(() => {
         fetchNotasVentaPendientes();
+        fetchDepartamentos();
     }, []);
+
+    const fetchDepartamentos = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/departamento`);
+            setDepartamentos(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     const fetchNotasVentaPendientes = async () => {
         try {
@@ -29,12 +41,18 @@ const NotasPendientes = () => {
         }
     };
 
-    const handleBuscar = () => {
+    const applyFilters = () => {
         const notasFiltradas = notasVentaPendientes.filter(
-            (nota) => nota.nombreCompletoCliente.toLowerCase().includes(filtroNombreCliente.toLowerCase())
+            (nota) =>
+                nota.nombreCompletoCliente.toLowerCase().includes(filtroNombreCliente.toLowerCase()) &&
+                (selectedDepartamento === '' || nota.nombreDepartamento.toLowerCase() === selectedDepartamento.toLowerCase())
         );
         setNotasFiltradas(notasFiltradas);
     };
+
+    useEffect(() => {
+        applyFilters();
+    }, [filtroNombreCliente, selectedDepartamento]);
 
     const handleAbonar = (nota) => {
         if (nota.resto <= 0) {
@@ -92,9 +110,18 @@ const NotasPendientes = () => {
                     value={filtroNombreCliente}
                     onChange={(e) => setFiltroNombreCliente(e.target.value)}
                 />
-                <div className='botones'>
-                    <button onClick={handleBuscar} className='btn-editar btn-ventas botones btn-finalizar'>Buscar</button>
-                </div>
+                <select
+                    className='select-producto'
+                    value={selectedDepartamento}
+                    onChange={(e) => setSelectedDepartamento(e.target.value)}
+                >
+                    <option value="">Selecciona un departamento</option>
+                    {departamentos.map((departamento) => (
+                        <option key={departamento.idDepartamento} value={departamento.nombre}>
+                            {departamento.nombre}
+                        </option>
+                    ))}
+                </select>
             </div>
             <div className="rectangulos-container">
                 {notasFiltradas.map((nota) => (

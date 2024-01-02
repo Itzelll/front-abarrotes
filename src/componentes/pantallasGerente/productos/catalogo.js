@@ -37,6 +37,10 @@ const Catalogo = () => {
         }
     };
 
+    useEffect(() => {
+        handleBuscarProducto();
+    }, [nombreBusqueda]);
+
     return (
         <div className='registro'>
             <MenuHamburguesa />
@@ -49,68 +53,35 @@ const Catalogo = () => {
                     value={nombreBusqueda}
                     onChange={(e) => setNombreBusqueda(e.target.value.toLowerCase())}
                 />
-                <div className='botones'>
-                    <button onClick={handleBuscarProducto} className='btn-finalizar'>Buscar</button>
-                </div>
                 {errorBusqueda && <p className='error-message'>{errorBusqueda}</p>}
-                {productosEncontrados.length > 0 && (
-                    <div>
-                        <h3>Productos Encontrados:</h3>
-                        <table className='registroEmp'>
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Nombre</th>
-                                    <th>Existencia</th>
-                                    <th>Precio</th>
-                                    <th>Categoría</th>
-                                    <th>Marca</th>
-                                    <th>Unidad de Medida</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {productosEncontrados.map((producto) => (
-                                    <tr key={producto.codigo}>
-                                        <td>{producto.codigo}</td>
-                                        <td>{producto.nombre}</td>
-                                        <td>{producto.existencia}</td>
-                                        <td>{producto.precio}</td>
-                                        <td>{producto.categoria}</td>
-                                        <td>{producto.marca}</td>
-                                        <td>{producto.unidadMedida}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>                        
-                    </div>
-                )}
-            </div>
-
-            <h2 className='titulos'>Catálogo de Productos</h2>
-            <table className='registroEmp'>
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Existencia</th>
-                        <th>Categoría</th>
-                        <th>Marca</th>
-                        <th>Unidad de Medida</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {productos.map((producto) => (
-                        <tr key={producto.codigo}>
-                            <td>{producto.codigo}</td>
-                            <td>{producto.nombre}</td>
-                            <td>{producto.existencia}</td>
-                            <td>{producto.categoria}</td>
-                            <td>{producto.marca}</td>
-                            <td>{producto.unidadMedida}</td>
+                <h2 className='titulos'>Catálogo de Productos</h2>
+                <table className='registroEmp'>
+                    <thead className='encabezado'>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Existencia</th>
+                            <th>Precio</th>
+                            <th>Categoría</th>
+                            <th>Marca</th>
+                            <th>Unidad de Medida</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {(productosEncontrados.length > 0 ? productosEncontrados : productos).map((producto) => (
+                            <tr key={producto.codigo}>
+                                <td>{producto.codigo}</td>
+                                <td>{producto.nombre}</td>
+                                <td>{producto.existencia}</td>
+                                <td>{producto.precio}</td>
+                                <td>{producto.categoria}</td>
+                                <td>{producto.marca}</td>
+                                <td>{producto.unidadMedida}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };

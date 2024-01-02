@@ -13,6 +13,8 @@ const AgregarEmpleado = () => {
     });
 
     const [userRole, setUserRole] = useState({});
+    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -24,7 +26,7 @@ const AgregarEmpleado = () => {
 
         try {
             console.log('Antes de la llamada a fetch:', empleado);
-            const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados/crearConDTO', {
+            const response = await fetch(URL_API + 'api/empleados/crearConDTO', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
