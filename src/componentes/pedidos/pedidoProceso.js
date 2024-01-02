@@ -3,7 +3,6 @@ import axios from 'axios';
 import MenuHamburguesa from '../MenuHamburguesa';
 import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
-import { IoSearchCircleOutline } from "react-icons/io5";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import DetallesVentaModal from './DetallesVentaModal';
 
@@ -15,11 +14,22 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
   const [notasFiltradas, setNotasFiltradas] = useState([]);
   const [showDetalles, setShowDetalles] = useState(false);
   const [selectedNota, setSelectedNota] = useState(null);
-  // const [pedidoEstado, setPedidoEstado] = useState('');
+  const [departamentos, setDepartamentos] = useState([]);
+  const [selectedDepartamento, setSelectedDepartamento] = useState('');
 
   useEffect(() => {
     fetchNotasVentaEnProceso();
+    fetchDepartamentos();
   }, []);
+
+  const fetchDepartamentos = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/departamento`);
+      setDepartamentos(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const fetchNotasVentaEnProceso = async () => {
     try {
@@ -31,17 +41,18 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
     }
   };
 
-  const handleBuscar = () => {
-    if (filtroNombreCliente.length < 1) {
-      alert('El campo no debe estar vacío.');
-      return;
-    }
-    
+  const applyFilters = () => {
     const notasFiltradas = notasVentaEnProceso.filter(
-      (nota) => nota.nombreCompletoCliente.toLowerCase().includes(filtroNombreCliente.toLowerCase())
+      (nota) =>
+        nota.nombreCompletoCliente.toLowerCase().includes(filtroNombreCliente.toLowerCase())
+        && (selectedDepartamento === '' || nota.nombreDepartamento.toLowerCase() === selectedDepartamento.toLowerCase())
     );
     setNotasFiltradas(notasFiltradas);
   };
+
+  useEffect(() => {
+    applyFilters();
+  }, [filtroNombreCliente, selectedDepartamento]);
 
   const handleVerDetalles = (nota) => {
     setSelectedNota(nota);
@@ -111,12 +122,12 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
       console.error('Error en la solicitud', error);
       // Manejar el error según tus necesidades
     }
-  };  
+  };
 
   return (
     <div className='registro'>
       <MenuHamburguesa />
-      <h1 className='titulos'>Estados de Pedidos de Notas de Venta</h1>
+      <h1 className='titulos'>Estados de Pedidos</h1>
       <div className='btns'>
         <h4>Buscar nota:</h4>
         <input
@@ -126,11 +137,19 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
           value={filtroNombreCliente}
           onChange={(e) => setFiltroNombreCliente(e.target.value)}
         />
-        <div className='botones'>
-          <button onClick={handleBuscar} className='btn-icons'>
-            <IoSearchCircleOutline />
-          </button>
-        </div>
+        <select
+          className='select-producto'
+          value={selectedDepartamento}
+          onChange={(e) => setSelectedDepartamento(e.target.value)}
+        >
+          <option value="">Selecciona un departamento</option>
+          {departamentos.map((departamento) => (
+            <option key={departamento.idDepartamento} value={departamento.nombre}>
+              {departamento.nombre}
+            </option>
+          ))}
+        </select>
+
       </div>
       <div className="rectangulos-container">
         {notasFiltradas.map((nota) => (
@@ -172,7 +191,7 @@ const VistaNotaVentaPedidoEnProcesoComponent = () => {
             <div className="rectangulo-header" style={{ backgroundColor: '#ddd' }}>
               <div className='r-1'>
                 <p><b>Fecha Anticipo: </b>{nota.fechaAnticipo}</p>
-                <p><b>Departamento: </b>{nota.departamento}</p>
+                <p><b>Departamento: </b>{nota.nombreDepartamento}</p>
               </div>
               <div className='r-1'>
                 <p><b>Total: </b>{nota.total}</p>
