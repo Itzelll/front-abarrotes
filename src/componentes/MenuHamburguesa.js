@@ -32,6 +32,8 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     
                     <li className='titulo'>Informe</li>
                     <Link to='/informeReportes' className='no-underline'><li className='opc'>Reportes</li></Link>
+                    <Link to='/crearReporteSemanal' className='no-underline'><li className='opc'>Reporte Semanal</li></Link>
+                    <Link to='/crearReporteMensual' className='no-underline'><li className='opc'>Reporte Mensual</li></Link>
                     <Link to='/salesReportAbarrotes' className='no-underline'><li className='opc'>Abarrotes</li></Link>
                     <Link to='/salesReportFerreteria' className='no-underline'><li className='opc'>Ferretería</li></Link>                    
                     <Link to='/salesReportBanqueteria' className='no-underline'><li className='opc'>Banquetería</li></Link>

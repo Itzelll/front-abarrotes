@@ -29,6 +29,8 @@ import PedidoCancelado from './componentes/pedidos/pedidoCancelado';
 import PedidoEntregado from './componentes/pedidos/pedidoEntregado';
 import InformeReportes from './componentes/pantallasGerente/informeReportes';
 import DetalleReporte from './componentes/pantallasGerente/detalleReporte';
+import CrearReporteSemanal from './componentes/pantallasGerente/crearReporteSemanal';
+import CrearReporteMensual from './componentes/pantallasGerente/crearReporteMensual';
 
 function App() {
   return (
@@ -65,6 +67,8 @@ function App() {
         <Route path="/pedidoEntregado" element={<PedidoEntregado />} />
         <Route path="/informeReportes" element={<InformeReportes />} />
         <Route path="/detalleReporte/:id" element={<DetalleReporte />} ></Route>
+        <Route path="/crearReporteSemanal" element={<CrearReporteSemanal />} />
+        <Route path="/crearReporteMensual" element={<CrearReporteMensual />} />
       </Routes>
     </Router>
     </div>
