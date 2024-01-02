@@ -21,6 +21,7 @@ const Ventas = () => {
     const hoy = new Date(tiempoTranscurrido);
 
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
+    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
     // Verificar si localStorage tiene datos y asignar a userRole
     const storedUserRole = localStorage.getItem('userRole');
@@ -38,7 +39,7 @@ const Ventas = () => {
                     monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
                 },
                 cliente: {
-                    idCliente: 2
+                    idCliente: 1
                 },
                 empleado: {
                     idEmpleado: parseInt(id_empleado)
@@ -60,7 +61,7 @@ const Ventas = () => {
                 })),
             };
             console.log('Nueva venta:', nuevaVenta);
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/notasventas/crearlimpio', nuevaVenta);
+            const response = await axios.post(URL_API + 'api/notasventas/crearlimpio', nuevaVenta);
             console.log('Venta creada:', response.data);
             alert('Nota de venta creada con éxito');
             resetForm();
@@ -73,7 +74,7 @@ const Ventas = () => {
     useEffect(() => {
         const fetchDepartamento = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/departamento');
+                const response = await axios.get(URL_API + 'api/departamento');
                 setDepartamento(response.data);
             } catch (error) {
                 console.error('Error al obtener los departamentos', error);
@@ -85,7 +86,7 @@ const Ventas = () => {
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${codigo}`);
+                const response = await fetch(URL_API + `api/productos/${codigo}`);
                 const data = await response.json();
                 console.log(data);
                 setPrecioUnitario(data.precio); // Asume que la API devuelve un objeto con la propiedad 'precio'
@@ -118,7 +119,7 @@ const Ventas = () => {
     const agregarProducto = async () => {
         if (cantidad && producto && precioUnitario) {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${producto}`);
+                const response = await fetch(URL_API + `api/productos/${producto}`);
                 const data = await response.json();
                 const unidadDeMedida = data.unidadMedida;
 
@@ -143,9 +144,7 @@ const Ventas = () => {
                     // Mostrar alerta
                     alert("La cantidad que está ingresando es superior a la cantidad de productos en stock");
                     
-                    setCantidad("");
-                    setProducto("");
-                    setPrecioUnitario("");
+                    setCantidad(stockDisponible);
                 }
 
             } catch (error) {

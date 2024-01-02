@@ -14,6 +14,8 @@ import 'jspdf-autotable';
 const id_empleado = localStorage.getItem('idEmpleado');
 const nombre = localStorage.getItem('nombreEmpleado');
 
+const URL_API = 'https://abarrotesapi-service-yacruz.cloud.okteto.net/';
+
 const Calendar = ({ onChange }) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -109,20 +111,28 @@ const Pedidos = () => {
 
     const fetchClientes = async () => {
         try {
-            const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes');
+            const response = await axios.get(URL_API + 'api/clientes');
             setCliente(response.data);
         } catch (error) {
             console.error('Error al obtener los clientes', error);
         }
     };
 
+    const monto = () => {
+        if (montoRecibido > calcularTotal()) {
+            return calcularTotal();
+        } else if (montoRecibido <= calcularTotal()) {
+            return montoRecibido;
+        }
+
+    }
     const handleCreatePedido = async () => {
         try {
             const nuevoPedido = {
                 fecha: fechaFormateada,
                 total: parseFloat(calcularTotal()),
                 anticipo: {
-                    monto: parseFloat(calcularTotal()), // Asume que el anticipo es el total de la venta                
+                    monto: parseFloat(monto()), // Asume que el anticipo es el total de la venta                
                 },
                 cliente: {
                     idCliente: parseInt(clienteSeleccionado)
@@ -146,7 +156,7 @@ const Pedidos = () => {
                 })),
             };
             console.log('Nueva venta:', nuevoPedido);
-            const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/pedido', nuevoPedido);
+            const response = await axios.post(URL_API + 'api/pedido', nuevoPedido);
             console.log('Pedido creado:', response.data);
             alert('Pedido creado con éxito');
             resetForm();
@@ -160,7 +170,7 @@ const Pedidos = () => {
     useEffect(() => {
         const fetchDepartamento = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/departamento');
+                const response = await axios.get(URL_API + 'api/departamento');
                 setDepartamento(response.data);
             } catch (error) {
                 console.error('Error al obtener los departamentos', error);
@@ -172,7 +182,7 @@ const Pedidos = () => {
     useEffect(() => {
         const fetchCliente = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes');
+                const response = await axios.get(URL_API + 'api/clientes');
                 setCliente(response.data);
             } catch (error) {
                 console.error('Error al obtener los clientes', error);
@@ -184,7 +194,7 @@ const Pedidos = () => {
     useEffect(() => {
         const fetchClienteDetalle = async (idCliente) => {
             try {
-                const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes/${idCliente}`);
+                const response = await axios.get(URL_API + `api/clientes/${idCliente}`);
                 setClienteInfo(response.data);
                 if (clienteCreado) {
                     setClienteCreado(false); // Reiniciar el estado después de mostrar la información
@@ -204,7 +214,7 @@ const Pedidos = () => {
     useEffect(() => {
         const obtenerPrecioUnitario = async (codigo) => {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${codigo}`);
+                const response = await fetch(URL_API + `api/productos/${codigo}`);
                 const data = await response.json();
                 console.log(data);
                 setPrecioUnitario(data.precio); // Asume que la API devuelve un objeto con la propiedad 'precio'
@@ -233,7 +243,7 @@ const Pedidos = () => {
                     direccion: direccion,
                 };
 
-                const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/clientes', nuevoCliente);
+                const response = await axios.post(URL_API + 'api/clientes', nuevoCliente);
                 await fetchClientes();
                 console.log('Cliente creado:', response.data);
                 setClienteSeleccionado(response.data.idCliente);
@@ -307,7 +317,7 @@ const Pedidos = () => {
     const agregarProducto = async () => {
         if (cantidad && producto && precioUnitario) {
             try {
-                const response = await fetch(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/productos/${producto}`);
+                const response = await fetch(URL_API + `api/productos/${producto}`);
                 const data = await response.json();
                 const unidadDeMedida = data.unidadMedida;
 
@@ -332,9 +342,7 @@ const Pedidos = () => {
                     // Mostrar alerta
                     alert("La cantidad que está ingresando es superior a la cantidad de productos en stock");
 
-                    setCantidad("");
-                    setProducto("");
-                    setPrecioUnitario("");
+                    setCantidad(stockDisponible);
                 }
             } catch (error) {
                 console.error("Error al obtener la información del producto:", error);
@@ -406,11 +414,15 @@ const Pedidos = () => {
         const totalVenta = parseFloat(calcularTotal());
         const montoRecibidoFloat = parseFloat(montoRecibido);
 
-        if (!isNaN(totalVenta) && !isNaN(montoRecibidoFloat)) {
+        if (montoRecibidoFloat < calcularTotal()) {
+            return "0.00"
+        } else if (!isNaN(totalVenta) && !isNaN(montoRecibidoFloat)) {
             return (montoRecibidoFloat - totalVenta).toFixed(2);
         } else {
             return "";
         }
+
+        
     };
 
     const cancelarPedido = () => {
@@ -432,6 +444,18 @@ const Pedidos = () => {
         setMontoRecibido("");
     }
 
+    const estadoPago = () => {
+        if (montoRecibido < calcularTotal()) {
+            return "Pendiente";
+        } else if (montoRecibido >= calcularTotal){
+            return "Pagado";
+        }
+    }
+
+    const estadoPedido = () => {
+        return 'En proceso'
+    }
+
     // Componente para la nota de venta en PDF
     const downloadPDF = () => {
         // Obtener el nombre del departamento seleccionado
@@ -449,11 +473,13 @@ const Pedidos = () => {
         pdf.text('Cliente: ' + nombreClienteSeleccionado, 20, 60);
         pdf.text('Fecha de entrega: ' + fechaEntrega, 20, 70);
         pdf.text('Hora de entrega: ' + horaEntrega, 20, 80);
+        pdf.text('Estado de Pago: ' + estadoPago(), 20, 90);
+        pdf.text('Estado del Pedido: ' + estadoPedido(), 20, 100);
 
         // Detalles del Reporte
-        pdf.text('Productos:', 20, 90);
+        pdf.text('Productos:', 20, 110);
         pdf.autoTable({
-            startY: 100,
+            startY: 120,
             head: [['Cantidad', 'Código del producto', 'Nombre Producto', 'Precio Unitario', 'Subtotal']],
             body: ventas.map((producto) => [
                 producto.cantidad,
