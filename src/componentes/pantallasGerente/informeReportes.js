@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../MenuHamburguesa';
 import { Link } from 'react-router-dom';
+import './style/registroEmp.css';
 
 const InformeReportes = () => {
     const [reportes, setReportes] = useState([]);
@@ -20,7 +21,7 @@ const InformeReportes = () => {
     }, []);
 
     return (
-        <div>
+        <div className="registro">
             <MenuHamburguesa />
             <h1>Reportes</h1>
             <table>
