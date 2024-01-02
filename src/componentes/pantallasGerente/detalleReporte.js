@@ -8,11 +8,12 @@ import 'jspdf-autotable';
 const DetalleReporte = () => {
   const { id } = useParams();
   const [reporte, setReporte] = useState(null);
+  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
   useEffect(() => {
     const fetchReporte = async () => {
       try {
-        const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/reportes/${id}`);
+        const response = await axios.get(URL_API +  `api/reportes/${id}`);
         setReporte(response.data);
       } catch (error) {
         console.error(`Error al obtener el detalle del reporte con ID ${id}:`, error);

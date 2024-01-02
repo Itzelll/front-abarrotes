@@ -6,11 +6,12 @@ import './style/registroEmp.css';
 
 const InformeReportes = () => {
     const [reportes, setReportes] = useState([]);
+    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
     useEffect(() => {
         const fetchReportes = async () => {
             try {
-                const response = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/reportes');
+                const response = await axios.get(URL_API + 'api/reportes');
                 setReportes(response.data);
             } catch (error) {
                 console.error('Error al obtener los reportes:', error);
@@ -21,7 +22,7 @@ const InformeReportes = () => {
     }, []);
     const fetchReporteByCve = async (cve) => {
         try {
-            const response = await axios.get(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/reportes/byCve/${cve}`);
+            const response = await axios.get(URL_API + `api/reportes/byCve/${cve}`);
             setReportes(response.data);
         } catch (error) {
             console.error(`Error al obtener el detalle del reporte con CVE ${cve}:`, error);

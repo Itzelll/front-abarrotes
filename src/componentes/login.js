@@ -7,6 +7,7 @@ const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
   useEffect(() => {
     // Lógica de inicialización aquí
@@ -16,7 +17,7 @@ const LoginForm = () => {
   const init = async () => {
     try {
       // Lógica para inicializar con una solicitud GET
-      const responseGet = await axios.get('https://abarrotesapi-service-yacruz.cloud.okteto.net/initEmpleados');
+      const responseGet = await axios.get(URL_API + 'initEmpleados');
       console.log('Respuesta de inicialización con GET', responseGet.data);
     } catch (error) {
       console.error('Error en la inicialización', error.message);
@@ -25,7 +26,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://abarrotesapi-service-yacruz.cloud.okteto.net/login', {
+      const response = await axios.post(URL_API + 'login', {
         usuario: username,
         contrasenia: password,
       });

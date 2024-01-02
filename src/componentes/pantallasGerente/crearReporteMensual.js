@@ -6,11 +6,12 @@ import MenuHamburguesa from '../MenuHamburguesa';
 const CrearReporteMensual = () => {
     const [reportId, setReportId] = useState('');  // State to hold the report ID
     const [userRole, setUserRole] = useState({});
+    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
 
     // Method to update the report
     const handleUpdateClick = async () => {
         try {
-            const response = await axios.put(`https://abarrotesapi-service-yacruz.cloud.okteto.net/api/detallesventas/actualizarReporteMensual/${reportId}`);
+            const response = await axios.put(URL_API + `api/detallesventas/actualizarReporteMensual/${reportId}`);
 
             if (response.status === 200) {
                 const data = response.data;
@@ -26,7 +27,7 @@ const CrearReporteMensual = () => {
     // Method to create a new report
     const handleCreateClick = async () => {
         try {
-            const response = await fetch('https://abarrotesapi-service-yacruz.cloud.okteto.net/api/detallesventas/crearReporteMensual', {
+            const response = await fetch(URL_API + 'api/detallesventas/crearReporteMensual', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
