@@ -76,7 +76,7 @@ const RegistroEmp = () => {
                     </tbody>
                 </table>
             ) : (
-                <p>No tienes permisos para acceder a este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
         </div>
     );

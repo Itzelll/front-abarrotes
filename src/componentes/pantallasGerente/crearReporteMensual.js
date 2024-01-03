@@ -76,14 +76,14 @@ const CrearReporteMensual = () => {
                     Actualizar Reporte Mensual
                 </button>
             ) : (
-                <p>No tienes permisos para accedera este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
             {userRole && userRole.rol && userRole.rol.includes("Encargado_Departamento") ? (
                 <button className="btn-crud" onClick={handleCreateClick}>
                     Crear Reporte Mensual
                 </button>
             ) : (
-                <p>No tienes permisos para accedera este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
         </div>
     );

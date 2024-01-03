@@ -126,7 +126,7 @@ const AgregarEmpleado = () => {
                     <button type='submit' className='confirmar'>Confirmar</button>
                 </form>
             ) : (
-                <p>No tienes permisos para accedera este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
         </div>
     );
