@@ -40,7 +40,7 @@ const UpdateProduct = ({ productId }) => {
       {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento") ? (
         <button onClick={handleUpdate}>Actualizar</button>
       ) : (
-        <p>No tienes permisos para acceder a este sitio.</p>
+        <p>No cuentas con los permisos.</p>
       )}
     </div>
   );

@@ -311,7 +311,7 @@ const Pedidos = () => {
                         </div>
                     </div>
                 ) : (
-                    <p>No tienes permisos para accedera este sitio.</p>
+                    <p>No cuentas con los permisos.</p>
                 )}
             </div>
         );
@@ -640,7 +640,7 @@ const Pedidos = () => {
                 {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento" || userRole.rol === "Encargado_Caja") ? (
                     <button className="agregar-prod" onClick={agregarProducto}>Agregar Producto</button>
                 ) : (
-                    <p>No tienes permisos para acceder a este sitio.</p>
+                    <p>No cuentas con los permisos.</p>
                 )}
                 <div className="scroll-panel">
                     <table>
@@ -686,7 +686,7 @@ const Pedidos = () => {
                     <button className="btn-cancelar" onClick={cancelarPedido}>Cancelar Pedido</button>
                 </div>
                 ) : (
-                    <p>No tienes permisos para accedera este sitio.</p>
+                    <p>No cuentas con los permisos.</p>
                 )}
             </div>
         </div>
