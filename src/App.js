@@ -23,6 +23,7 @@ import InformeReportes from './componentes/pantallasGerente/informeReportes';
 import DetalleReporte from './componentes/pantallasGerente/detalleReporte';
 import CrearReporteSemanal from './componentes/pantallasGerente/crearReporteSemanal';
 import CrearReporteMensual from './componentes/pantallasGerente/crearReporteMensual';
+import CerrarSesion from './componentes/pantallasGerente/cerrarSesion';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         <Route path="/detalleReporte/:id" element={<DetalleReporte />} ></Route>
         <Route path="/crearReporteSemanal" element={<CrearReporteSemanal />} />
         <Route path="/crearReporteMensual" element={<CrearReporteMensual />} />
+        <Route path="/cerrarSesion" element={<CerrarSesion />} />
       </Routes>
     </Router>
     </div>

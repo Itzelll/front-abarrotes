@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './MenuHamburguesa.css';
+import CerrarSesion from './pantallasGerente/cerrarSesion';
 
 const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -28,8 +29,8 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <Link to='/pedidos' className='no-underline'><li className='opc'>Crear Pedidos</li></Link>
                     <Link to='/pedidoProceso' className='no-underline'><li className='opc'>Estado Pedidos</li></Link>
                     <Link to='/pedidoEntregado' className='no-underline'><li className='opc'>Pedidos Entregados</li></Link>
-                    <Link to='/pedidoCancelado' className='no-underline'><li className='opc'>Pedidos Cancelados</li></Link>                    
-                    
+                    <Link to='/pedidoCancelado' className='no-underline'><li className='opc'>Pedidos Cancelados</li></Link>
+
                     <li className='titulo'>Informe</li>
                     <Link to='/informeReportes' className='no-underline'><li className='opc'>Reportes</li></Link>
                     <Link to='/crearReporteSemanal' className='no-underline'><li className='opc'>Reporte Semanal</li></Link>
@@ -38,7 +39,7 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <li className='titulo'>Notas</li>
                     <Link to='/notasPendientes' className='no-underline'><li className='opc'>Pendientes</li></Link>
                     <Link to='/notasPagadas' className='no-underline'><li className='opc'>Pagadas</li></Link>
-                    <Link to='/notasCanceladas' className='no-underline'><li className='opc'>Canceladas</li></Link>                    
+                    <Link to='/notasCanceladas' className='no-underline'><li className='opc'>Canceladas</li></Link>
 
                     <li className='titulo'>Productos</li>
                     <Link to='/catalogo' className='no-underline'><li className='opc'>Catalogo</li></Link>
@@ -47,6 +48,10 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <Link to='/marcas' className='no-underline'><li className='opc'>Listado marcas</li></Link>
                     <Link to='/categoria' className='no-underline'><li className='opc'>Categoria</li></Link>
                     <Link to='/unidadMedida' className='no-underline'><li className='opc'>Unidad medida</li></Link>
+
+                    <li className='opc'><CerrarSesion /></li>
+
+                    
                 </ul>
             </div>
         </div>
