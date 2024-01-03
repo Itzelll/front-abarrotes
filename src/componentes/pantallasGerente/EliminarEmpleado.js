@@ -9,7 +9,7 @@ const EliminarEmpleado = () => {
   const [resultados, setResultados] = useState([]);
   const [empleadoId, setEmpleadoId] = useState('');
   const [userRole, setUserRole] = useState({});
-  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+  const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
   const buscarEmpleado = async () => {
     try {
@@ -89,7 +89,7 @@ const EliminarEmpleado = () => {
           </button>
         </form>
       ) : (
-        <p>No tienes permisos para acceder a este sitio.</p>
+        <p>No cuentas con los permisos.</p>
       )}
 
       {resultados.length > 0 && (

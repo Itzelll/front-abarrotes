@@ -4,7 +4,7 @@ import MenuHamburguesa from '../../MenuHamburguesa';
 import '../style/catalogo.css';
 import '../style/salesReport.css';
 
-const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+const API_URL = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net';
 
 const Catalogo = () => {
     const [productos, setProductos] = useState([]);

@@ -6,7 +6,7 @@ import './style/registroEmp.css';
 
 const InformeReportes = () => {
     const [reportes, setReportes] = useState([]);
-    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+    const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
     useEffect(() => {
         const fetchReportes = async () => {

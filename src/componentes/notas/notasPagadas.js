@@ -5,7 +5,7 @@ import '../pantallasGerente/style/catalogo.css';
 import '../pantallasGerente/style/salesReport.css';
 import Calendar from '../Calendar';
 
-const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+const API_URL = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net';
 
 const NotasPagadas = () => {
     const [data, setData] = useState([]);

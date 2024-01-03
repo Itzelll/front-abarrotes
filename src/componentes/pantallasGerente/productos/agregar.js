@@ -6,7 +6,7 @@ import '../style/catalogo.css';
 import '../style/salesReport.css';
 import '../style/registroEmp.css';
 
-const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+const API_URL = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net';
 
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);
@@ -310,7 +310,7 @@ const CreateProduct = () => {
                     </div>
                 </div>
             ) : (
-                <p>No tienes permisos para acceder a este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
             <h4>Lista de Productos</h4>
             {userRole && userRole.rol && (userRole.rol === "Encargado_Departamento" || userRole.rol === "Gerente_Departamento") ? (
@@ -348,7 +348,7 @@ const CreateProduct = () => {
                     </tbody>
                 </table>
             ) : (
-                <p>No tienes permisos para agregar empleados.</p>
+                <p>No cuentas con los permisos.</p>
             )}
         </div>
     );

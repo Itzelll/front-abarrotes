@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import './style/registroEmp.css';
 import MenuHamburguesa from '../MenuHamburguesa';
 
+const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/"
 const RegistroEmp = () => {
     const [empleados, setEmpleados] = useState([]);
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ const RegistroEmp = () => {
     useEffect(() => {
         const obtenerEmpleados = async () => {
             try {
-                const response = await fetch("https://abarrotesapi-service-yacruz.cloud.okteto.net/api/empleados", {
+                const response = await fetch(URL_API + "api/empleados", {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ const RegistroEmp = () => {
                     </tbody>
                 </table>
             ) : (
-                <p>No tienes permisos para acceder a este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
         </div>
     );

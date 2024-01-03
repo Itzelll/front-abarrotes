@@ -50,8 +50,6 @@ const MenuHamburguesa = ({ items, activeIndex, onItemClick }) => {
                     <Link to='/unidadMedida' className='no-underline'><li className='opc'>Unidad medida</li></Link>
 
                     <li className='opc'><CerrarSesion /></li>
-
-                    
                 </ul>
             </div>
         </div>

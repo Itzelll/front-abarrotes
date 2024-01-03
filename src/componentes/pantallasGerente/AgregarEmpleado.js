@@ -13,7 +13,7 @@ const AgregarEmpleado = () => {
     });
 
     const [userRole, setUserRole] = useState({});
-    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+    const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
 
     const handleInputChange = (e) => {
@@ -126,7 +126,7 @@ const AgregarEmpleado = () => {
                     <button type='submit' className='confirmar'>Confirmar</button>
                 </form>
             ) : (
-                <p>No tienes permisos para accedera este sitio.</p>
+                <p>No cuentas con los permisos.</p>
             )}
         </div>
     );

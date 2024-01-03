@@ -2,7 +2,6 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginForm from './componentes/login';
 import RegistroEmp from './componentes/pantallasGerente/registroEmp';
-import InfoVentas from './componentes/pantallasGerente/infoVentas';
 import AgregarEmpleado from './componentes/pantallasGerente/AgregarEmpleado';
 import EliminarEmpleado from './componentes/pantallasGerente/EliminarEmpleado';
 import Ventas from './componentes/Ventas'
@@ -33,7 +32,6 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginForm />} />
         <Route path="/registroEmpleado" element={<RegistroEmp />} />
-        <Route path="infoVentas" element={<InfoVentas />} />
         <Route path="/agregarEmpleado" element={<AgregarEmpleado />} />
         <Route path="/eliminarEmpleado" element={<EliminarEmpleado />} />
         <Route path="/ventas" element={<Ventas />} />

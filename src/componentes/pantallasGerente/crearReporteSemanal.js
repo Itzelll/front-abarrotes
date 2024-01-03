@@ -6,7 +6,7 @@ import MenuHamburguesa from '../MenuHamburguesa';
 const CrearReporteSemanal = () => {
   const [reportId, setReportId] = useState('');  // State to hold the report ID
   const [userRole, setUserRole] = useState({});
-  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+  const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
 
   // Method to update the report
@@ -75,14 +75,14 @@ const CrearReporteSemanal = () => {
           Actualizar Reporte Semanal
         </button>
       ) : (
-        <p>No tienes permisos para accedera este sitio.</p>
+        <p>No cuentas con los permisos.</p>
       )}
       {userRole && userRole.rol && userRole.rol.includes("Encargado_Departamento") ? (
         <button className="btn-crud" onClick={handleCreateClick}>
           Crear Reporte Semanal
         </button>
       ) : (
-        <p>No tienes permisos para accedera este sitio.</p>
+        <p>No cuentas con los permisos.</p>
       )}
     </div>
   );
