@@ -21,7 +21,7 @@ const Ventas = () => {
     const hoy = new Date(tiempoTranscurrido);
 
     const fechaFormateada = format(hoy, 'yyyy-MM-dd');
-    const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+    const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
     // Verificar si localStorage tiene datos y asignar a userRole
     const storedUserRole = localStorage.getItem('userRole');

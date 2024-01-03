@@ -14,7 +14,7 @@ import 'jspdf-autotable';
 const id_empleado = localStorage.getItem('idEmpleado');
 const nombre = localStorage.getItem('nombreEmpleado');
 
-const URL_API = 'https://abarrotesapi-service-yacruz.cloud.okteto.net/';
+const URL_API = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net/';
 
 const Calendar = ({ onChange }) => {
     const [selectedDate, setSelectedDate] = useState(null);

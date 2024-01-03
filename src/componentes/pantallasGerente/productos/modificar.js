@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import MenuHamburguesa from '../../MenuHamburguesa';
 
+const API_URL = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net"
 const UpdateProduct = ({ productId }) => {
   const [nuevoNombre, setNuevoNombre] = useState('');
   // Verificar si localStorage tiene datos y asignar a userRole
@@ -13,7 +14,7 @@ const UpdateProduct = ({ productId }) => {
 
   const handleUpdate = async () => {
     try {
-      const response = await axios.put(`http://localhost:8080/api/productos/${productId}`, {
+      const response = await axios.put(API_URL + `/${productId}`, {
         nombre: nuevoNombre,
       });
       console.log('Producto actualizado:', response.data);

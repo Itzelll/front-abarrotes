@@ -6,7 +6,7 @@ import MenuHamburguesa from '../MenuHamburguesa';
 const CrearReporteSemanal = () => {
   const [reportId, setReportId] = useState('');  // State to hold the report ID
   const [userRole, setUserRole] = useState({});
-  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+  const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
 
   // Method to update the report
