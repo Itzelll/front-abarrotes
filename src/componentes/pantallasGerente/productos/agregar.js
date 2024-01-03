@@ -6,7 +6,7 @@ import '../style/catalogo.css';
 import '../style/salesReport.css';
 import '../style/registroEmp.css';
 
-const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+const API_URL = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net';
 
 const CreateProduct = () => {
     const [productos, setProductos] = useState([]);

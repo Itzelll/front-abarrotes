@@ -6,7 +6,7 @@ import '../pantallasGerente/style/salesReport.css';
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import DetallesVentaModal from './DetallesVentaModal';
 
-const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+const API_URL = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net';
 
 const VistaNotaVentaPedidoEnProcesoComponent = () => {
   const [notasVentaEnProceso, setNotasVentaEnProceso] = useState([]);

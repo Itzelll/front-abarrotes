@@ -7,7 +7,7 @@ const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+  const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
   useEffect(() => {
     // Lógica de inicialización aquí

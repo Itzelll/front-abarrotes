@@ -6,7 +6,7 @@ import '../Calendar.js'; // Asegúrate de importar el componente Calendar si es 
 import Calendar from '../Calendar.js';
 import axios from 'axios';
 
-const API_URL = 'https://abarrotesapi-service-yacruz.cloud.okteto.net';
+const API_URL = 'https://abarrotesapi-service-api-yacruz.cloud.okteto.net';
 
 const PedidoEntregado = () => {
     const [notasVentaPedidoEntregado, setNotasVentaPedidoEntregado] = useState([]);

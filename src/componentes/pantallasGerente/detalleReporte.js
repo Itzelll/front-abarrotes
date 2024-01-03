@@ -8,7 +8,7 @@ import 'jspdf-autotable';
 const DetalleReporte = () => {
   const { id } = useParams();
   const [reporte, setReporte] = useState(null);
-  const URL_API = "https://abarrotesapi-service-yacruz.cloud.okteto.net/";
+  const URL_API = "https://abarrotesapi-service-api-yacruz.cloud.okteto.net/";
 
   useEffect(() => {
     const fetchReporte = async () => {
